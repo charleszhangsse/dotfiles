@@ -1,0 +1,20 @@
+# Maybe run the following command to make it valid:
+#   git config --global core.excludesfile ~/.gitignore_global
+
+Session.vim
+session.vim
+Default.vim
+default.vim
+log.*
+patch.*
+tage
+tags
+tagx
+.tage
+.tags
+.tagx
+*.orig
+*.rej
+.gdb_history
+fgtcoveragebuild.tar.xz
+migadmin/node_modules/grunt-jscs/*
