@@ -142,10 +142,11 @@ function _mytail()
 alias tail='_mytail'
 
 export LFTP_CMD='lftp -u test,test ftpsvr -e '
+export LFTP_DIR=$USER
 
 function _myftpls()
 {
-    eval "$LFTP_CMD 'cd upload/hyu; ls; quit;'"
+    eval "$LFTP_CMD 'cd upload/$LFTP_DIR; ls; quit;'"
 };
 alias ftpls='_myftpls'
 
@@ -159,7 +160,7 @@ function _myftpget()
 
   for var in "$@"
   do
-    eval "$LFTP_CMD 'cd upload/hyu; get $var; quit;'"
+    eval "$LFTP_CMD 'cd upload/$LFTP_DIR; get $var; quit;'"
   done
 };
 alias ftpget='_myftpget'
@@ -174,7 +175,7 @@ function _myftpput()
 
   for var in "$@"
   do
-    eval "$LFTP_CMD 'cd upload/hyu; put $var; quit;'"
+    eval "$LFTP_CMD 'cd upload/$LFTP_DIR; put $var; quit;'"
   done
 };
 alias ftpput='_myftpput'
@@ -184,16 +185,16 @@ function _myftprm()
     if [ -z ${1} ]; then
         dname=${PWD##*/}
         echo "  Removing '$dname'!"
-        eval "$LFTP_CMD 'cd upload/hyu; rm -fr $dname; quit;'"
+        eval "$LFTP_CMD 'cd upload/$LFTP_DIR; rm -fr $dname; quit;'"
     else
         for var in "$@"
         do
             echo "  Removing '$var'!"
-            eval "$LFTP_CMD 'cd upload/hyu; rm -fr $var; quit;'"
+            eval "$LFTP_CMD 'cd upload/$LFTP_DIR; rm -fr $var; quit;'"
         done
     fi
 
-    eval "$LFTP_CMD 'cd upload/hyu; ls; quit;'"
+    eval "$LFTP_CMD 'cd upload/$LFTP_DIR; ls; quit;'"
 };
 alias ftprm='_myftprm'
 
@@ -207,14 +208,14 @@ function _myftp()
 
   if [ -f image.out ]; then
     file=image.out
-    eval "$LFTP_CMD 'cd upload/hyu; ls; mkdir $dname; cd $dname; put $file; put patch.diff; put patch.eco.diff; put fgtcoveragebuild.tar.xz; put fgtcoveragebuild.tar.bz2; put checklist.txt; put fortios.qcow2; put fortiproxy.qcow2; put image.out.vmware.zip; put image.out.ovf.zip; put image.out.hyperv.zip; put image.out.gcp.tar.gz;put image.out.kvm.zip; put image.out.gcp.tar.gz;lpwd; pwd; ls; quit;'"
+    eval "$LFTP_CMD 'cd upload/$LFTP_DIR; ls; mkdir $dname; cd $dname; put $file; put patch.diff; put patch.eco.diff; put fgtcoveragebuild.tar.xz; put fgtcoveragebuild.tar.bz2; put checklist.txt; put fortios.qcow2; put fortiproxy.qcow2; put image.out.vmware.zip; put image.out.ovf.zip; put image.out.hyperv.zip; put image.out.gcp.tar.gz;put image.out.kvm.zip; put image.out.gcp.tar.gz;lpwd; pwd; ls; quit;'"
   else
     if [ -z "$1" ]; then
       echo "File $1 not found!"
       return 1
     else
       file=$1
-      eval "$LFTP_CMD 'cd upload/hyu; mkdir $dname; cd $dname; put $file; ls; quit;'"
+      eval "$LFTP_CMD 'cd upload/$LFTP_DIR; mkdir $dname; cd $dname; put $file; ls; quit;'"
     fi
   fi
 };
