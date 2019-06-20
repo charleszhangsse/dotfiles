@@ -36,6 +36,8 @@
 "
 "   Documentation {{{2
 "   -------------------
+"   [vimscript-functions](https://devhints.io/vimscript-functions)
+"   [vim regex](http://vimregex.com/)
 "   [Writing Plugin](http://stevelosh.com/blog/2011/09/writing-vim-plugins/)
 "   [Scripting the Vim editor](https://www.ibm.com/developerworks/library/l-vim-script-4/index.html)
 "
@@ -1269,209 +1271,239 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
 
 " Autocmd {{{2
 
-   function! AdjustWindowHeight(minheight, maxheight)
-       let l = 1
-       let n_lines = 0
-       let w_width = winwidth(0)
-       while l <= line('$')
-           " number to float for division
-           let l_len = strlen(getline(l)) + 0.0
-           let line_width = l_len/w_width
-           let n_lines += float2nr(ceil(line_width))
-           let l += 1
-       endw
-       let exp_height = max([min([n_lines, a:maxheight]), a:minheight])
-       if (abs(winheight(0) - exp_height)) > 2
-           exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
-       endif
-   endfunction
-
-   " Jump to the next or previous line that has the same level or a lower
-   " level of indentation than the current line.
-   "
-   " exclusive (bool): true: Motion is exclusive
-   " false: Motion is inclusive
-   " fwd (bool): true: Go to next line
-   " false: Go to previous line
-   " lowerlevel (bool): true: Go to line with lower indentation level
-   " false: Go to line with the same indentation level
-   " skipblanks (bool): true: Skip blank lines
-   " false: Don't skip blank lines
-   function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
-     let line = line('.')
-     let column = col('.')
-     let lastline = line('$')
-     let indent = indent(line)
-     let stepvalue = a:fwd ? 1 : -1
-     while (line > 0 && line <= lastline)
-       let line = line + stepvalue
-       if ( ! a:lowerlevel && indent(line) == indent ||
-             \ a:lowerlevel && indent(line) < indent)
-         if (! a:skipblanks || strlen(getline(line)) > 0)
-           if (a:exclusive)
-             let line = line - stepvalue
-           endif
-           "exe line
-           " column different when tabs
-           "   exe "normal " column . "|"
-           "exe "normal " column . "l"
-           call cursor(line, column)
-           return
-         endif
-       endif
-     endwhile
-   endfunction
-
-   " Moving back and forth between lines of same or lower indentation.
-   nnoremap <silent> <a-p> :call NextIndent(0, 0, 0, 1)<CR>
-   nnoremap <silent> <a-n> :call NextIndent(0, 1, 0, 1)<CR>
-   nnoremap <silent> <a-P> :call NextIndent(0, 0, 1, 1)<CR>
-   nnoremap <silent> <a-N> :call NextIndent(0, 1, 1, 1)<CR>
-   vnoremap <silent> <a-p> <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
-   vnoremap <silent> <a-n> <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
-   vnoremap <silent> <a-P> <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
-   vnoremap <silent> <a-N> <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
-   onoremap <silent> <a-p> :call NextIndent(0, 0, 0, 1)<CR>
-   onoremap <silent> <a-n> :call NextIndent(0, 1, 0, 1)<CR>
-   onoremap <silent> <a-P> :call NextIndent(1, 0, 1, 1)<CR>
-   onoremap <silent> <a-N> :call NextIndent(1, 1, 1, 1)<CR>
-   "nnoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
-   "nnoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
-   "nnoremap <silent> [L :call NextIndent(0, 0, 1, 1)<CR>
-   "nnoremap <silent> ]L :call NextIndent(0, 1, 1, 1)<CR>
-   "vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
-   "vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
-   "vnoremap <silent> [L <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
-   "vnoremap <silent> ]L <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
-   "onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
-   "onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
-   "onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
-   "onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
-
-   function SelectIndent()
-     let cur_line = line(".")
-     let cur_ind = indent(cur_line)
-     let line = cur_line
-     while indent(line - 1) >= cur_ind
-       let line = line - 1
-     endw
-     " Select above line
-     let line = line - 1
-     exe "normal " . line . "G"
-     exe "normal V"
-     let line = cur_line
-     while indent(line + 1) >= cur_ind
-       let line = line + 1
-     endw
-     " Select below line
-     let line = line + 1
-     exe "normal " . line . "G"
-   endfunction
-   nnoremap vip :call SelectIndent()<CR>
-
-   " Maximizes the current window if it is not the quickfix window.
-   function! SetIndentTabForCfiletype()
-       " auto into terminal-mode
-       if &buftype == 'terminal'
-           startinsert
-           return
-       elseif &buftype == 'quickfix'
-           call AdjustWindowHeight(2, 10)
-           return
-       endif
-
-       let my_ft = &filetype
-       if (my_ft == "c" || my_ft == "cpp" || my_ft == "diff" )
-           execute ':C8'
-
-           " If logfile reset NonText bright, this will override it.
-           "" The 'NonText' highlighting will be used for 'eol', 'extends' and 'precedes'  
-           "" The 'SpecialKey' for 'nbsp', 'tab' and 'trail'.
-           "hi NonText          ctermfg=238
-           "hi SpecialKey       ctermfg=238
-       elseif (my_ft == 'vimwiki')
-           execute ':C0'
-       endif
-   endfunction
-
-   "" Easier and better than plugin 'autotag'
-   "let s:retag_time = localtime()
-   "function! RetagFile()
-   "    if   (!filereadable(g:autotagTagsFile))
-   "       \ || (localtime() - s:retag_time) < s:autotag_inter
-   "        return
-   "    endif
-   "    let cdir = getcwd()
-   "    let file = expand('%:p')
-   "    let ext = expand('%:e')
-   "    if g:asyncrun_status =~ 'running' || empty(ext) || file !~ cdir. '/'
-   "        return
-   "    elseif index(g:autotagExcSuff, ext) < 0
-   "        execute ":AsyncRun tagme ". expand('%:p')
-   "    endif
-   "endfunction
-
-    function! ToggleCalendar()
-      execute ":Calendar"
-      if exists("g:calendar_open")
-        if g:calendar_open == 1
-          execute "q"
-          unlet g:calendar_open
-        else
-          g:calendar_open = 1
-        end
-      else
-        let g:calendar_open = 1
-      end
+    function! AdjustWindowHeight(minheight, maxheight)
+        let l = 1
+        let n_lines = 0
+        let w_width = winwidth(0)
+        while l <= line('$')
+            " number to float for division
+            let l_len = strlen(getline(l)) + 0.0
+            let line_width = l_len/w_width
+            let n_lines += float2nr(ceil(line_width))
+            let l += 1
+        endw
+        let exp_height = max([min([n_lines, a:maxheight]), a:minheight])
+        if (abs(winheight(0) - exp_height)) > 2
+            exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
+        endif
     endfunction
 
+    function! Indent(linenum, islog)
+        if a:islog
+            let cur_str = getline(a:linenum)
+            if cur_str =~? '^T@'
+                " Non-greed: replace '.*' with '.\{-}'
+                let cur_str = substitute(cur_str, '^T@.\{-}-  ', '  ', '')
+                let indent = match(cur_str, '\S')
+                return indent
+            endif
+        endif
+        return indent(a:linenum)
+    endfunction
 
-   augroup fieltype_automap
-       " Voom/VOom:
-       " <Enter>             selects node the cursor is on and then cycles between Tree and Body.
-       " <Tab>               cycles between Tree and Body windows without selecting node.
-       " <C-Up>, <C-Down>    move node or a range of sibling nodes Up/Down.
-       " <C-Left>, <C-Right> move nodes Left/Right (promote/demote).
-       "
-       autocmd!
-       "autocmd VimLeavePre * cclose | lclose
-       autocmd InsertEnter,InsertLeave * set cul!
-       " Sometime crack the tag file
-       "autocmd BufWritePost,FileWritePost * call RetagFile()
+    " Jump to the next or previous line that has the same level or a lower
+    " level of indentation than the current line.
+    "
+    " exclusive (bool): true: Motion is exclusive
+    "                   false: Motion is inclusive
+    " fwd (bool): true: Go to next line
+    "             false: Go to previous line
+    " lowerlevel (bool): true: Go to line with lower indentation level
+    "                    false: Go to line with the same indentation level
+    " skipblanks (bool): true: Skip blank lines
+    "                    false: Don't skip blank lines
+    function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
+        let line = line('.')
+        let column = col('.')
+        let lastline = line('$')
 
-       " current position in jumplist
-       autocmd CursorHold * normal! m'
+        " check logfile
+        let is_log = 0
+        let cur_str = getline('.')
+        if cur_str =~? '^T@'
+            let is_log = 1
+        endif
 
-       autocmd BufEnter * call SetIndentTabForCfiletype()
+        let indent = Indent(line, is_log)
+        let stepvalue = a:fwd ? 1 : -1
+        while (line > 0 && line <= lastline)
+            let line = line + stepvalue
 
-       " Always show sign column
-       autocmd BufEnter * sign define dummy
-       autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+            " if logfile, skip non-log lines
+            if is_log == 1
+                let cur_str = getline(line)
+                if (! cur_str =~? '^T@')
+                    continue
+                endif
+            endif
 
-       autocmd BufNewFile,BufRead *.c.rej,*.c.orig,h.rej,*.h.orig,patch.*,*.diff,*.patch set ft=diff
-       autocmd BufNewFile,BufRead *.c,*.c,*.h,*.cpp,*.C,*.CXX,*.CPP set ft=c
-       autocmd BufWritePre [\,:;'"\]\)\}]* throw 'Forbidden file name: ' . expand('<afile>')
+            if ( ! a:lowerlevel && Indent(line, is_log) == indent ||
+                        \ a:lowerlevel && Indent(line, is_log) < indent)
+                if (! a:skipblanks || strlen(getline(line)) > 0)
+                    if (a:exclusive)
+                        let line = line - stepvalue
+                    endif
+                    "exe line
+                    " column different when tabs
+                    "   exe "normal " column . "|"
+                    "exe "normal " column . "l"
+                    call cursor(line, column)
+                    return
+                endif
+            endif
+        endwhile
+    endfunction
 
-       "autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle vimwiki<CR>
-       autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle markdown<CR>
-       autocmd filetype vimwiki  nnoremap <a-n> :VimwikiMakeDiaryNote<CR>
-       autocmd filetype vimwiki  nnoremap <a-i> :VimwikiDiaryGenerateLinks<CR>
-       autocmd filetype vimwiki  nnoremap <a-c> :call ToggleCalendar()<CR>
+    " Moving back and forth between lines of same or lower indentation.
+    nnoremap <silent> <a-p> :call NextIndent(0, 0, 0, 1)<CR>
+    nnoremap <silent> <a-n> :call NextIndent(0, 1, 0, 1)<CR>
+    nnoremap <silent> <a-P> :call NextIndent(0, 0, 1, 1)<CR>
+    nnoremap <silent> <a-N> :call NextIndent(0, 1, 1, 1)<CR>
+    vnoremap <silent> <a-p> <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
+    vnoremap <silent> <a-n> <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
+    vnoremap <silent> <a-P> <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
+    vnoremap <silent> <a-N> <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
+    onoremap <silent> <a-p> :call NextIndent(0, 0, 0, 1)<CR>
+    onoremap <silent> <a-n> :call NextIndent(0, 1, 0, 1)<CR>
+    onoremap <silent> <a-P> :call NextIndent(1, 0, 1, 1)<CR>
+    onoremap <silent> <a-N> :call NextIndent(1, 1, 1, 1)<CR>
+    "nnoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+    "nnoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+    "nnoremap <silent> [L :call NextIndent(0, 0, 1, 1)<CR>
+    "nnoremap <silent> ]L :call NextIndent(0, 1, 1, 1)<CR>
+    "vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
+    "vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
+    "vnoremap <silent> [L <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
+    "vnoremap <silent> ]L <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
+    "onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+    "onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+    "onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
+    "onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
 
-       autocmd filetype markdown nnoremap <buffer> <a-o> :VoomToggle markdown<CR>
-       autocmd filetype python   nnoremap <buffer> <a-o> :VoomToggle python<CR>
+    function SelectIndent()
+        let cur_line = line(".")
+        let cur_ind = indent(cur_line)
+        let line = cur_line
+        while indent(line - 1) >= cur_ind
+            let line = line - 1
+        endw
+        " Select above line
+        let line = line - 1
+        exe "normal " . line . "G"
+        exe "normal V"
+        let line = cur_line
+        while indent(line + 1) >= cur_ind
+            let line = line + 1
+        endw
+        " Select below line
+        let line = line + 1
+        exe "normal " . line . "G"
+    endfunction
+    nnoremap vip :call SelectIndent()<CR>
 
-       autocmd filetype qf call AdjustWindowHeight(2, 10)
-       autocmd filetype c,cpp,diff C8
-       autocmd filetype zsh,bash C2
-       autocmd filetype vim,markdown C08
-       autocmd filetype vimwiki,txt C0
+    " Maximizes the current window if it is not the quickfix window.
+    function! SetIndentTabForCfiletype()
+        " auto into terminal-mode
+        if &buftype == 'terminal'
+            startinsert
+            return
+        elseif &buftype == 'quickfix'
+            call AdjustWindowHeight(2, 10)
+            return
+        endif
 
-       "autocmd filetype log nnoremap <buffer> <leader>la :call log#filter(expand('%'), 'all')<CR>
-       "autocmd filetype log nnoremap <buffer> <leader>le :call log#filter(expand('%'), 'error')<CR>
-       "autocmd filetype log nnoremap <buffer> <leader>lf :call log#filter(expand('%'), 'flow')<CR>
-       "autocmd filetype log nnoremap <buffer> <leader>lt :call log#filter(expand('%'), 'tcp')<CR>
-   augroup END
+        let my_ft = &filetype
+        if (my_ft == "c" || my_ft == "cpp" || my_ft == "diff" )
+            execute ':C8'
+
+            " If logfile reset NonText bright, this will override it.
+            "" The 'NonText' highlighting will be used for 'eol', 'extends' and 'precedes'  
+            "" The 'SpecialKey' for 'nbsp', 'tab' and 'trail'.
+            "hi NonText          ctermfg=238
+            "hi SpecialKey       ctermfg=238
+        elseif (my_ft == 'vimwiki')
+            execute ':C0'
+        endif
+    endfunction
+
+    "" Easier and better than plugin 'autotag'
+    "let s:retag_time = localtime()
+    "function! RetagFile()
+    "    if   (!filereadable(g:autotagTagsFile))
+    "       \ || (localtime() - s:retag_time) < s:autotag_inter
+    "        return
+    "    endif
+    "    let cdir = getcwd()
+    "    let file = expand('%:p')
+    "    let ext = expand('%:e')
+    "    if g:asyncrun_status =~ 'running' || empty(ext) || file !~ cdir. '/'
+    "        return
+    "    elseif index(g:autotagExcSuff, ext) < 0
+    "        execute ":AsyncRun tagme ". expand('%:p')
+    "    endif
+    "endfunction
+
+     function! ToggleCalendar()
+       execute ":Calendar"
+       if exists("g:calendar_open")
+         if g:calendar_open == 1
+           execute "q"
+           unlet g:calendar_open
+         else
+           g:calendar_open = 1
+         end
+       else
+         let g:calendar_open = 1
+       end
+     endfunction
+
+
+    augroup fieltype_automap
+        " Voom/VOom:
+        " <Enter>             selects node the cursor is on and then cycles between Tree and Body.
+        " <Tab>               cycles between Tree and Body windows without selecting node.
+        " <C-Up>, <C-Down>    move node or a range of sibling nodes Up/Down.
+        " <C-Left>, <C-Right> move nodes Left/Right (promote/demote).
+        "
+        autocmd!
+        "autocmd VimLeavePre * cclose | lclose
+        autocmd InsertEnter,InsertLeave * set cul!
+        " Sometime crack the tag file
+        "autocmd BufWritePost,FileWritePost * call RetagFile()
+
+        " current position in jumplist
+        autocmd CursorHold * normal! m'
+
+        autocmd BufEnter * call SetIndentTabForCfiletype()
+
+        " Always show sign column
+        autocmd BufEnter * sign define dummy
+        autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+
+        autocmd BufNewFile,BufRead *.c.rej,*.c.orig,h.rej,*.h.orig,patch.*,*.diff,*.patch set ft=diff
+        autocmd BufNewFile,BufRead *.c,*.c,*.h,*.cpp,*.C,*.CXX,*.CPP set ft=c
+        autocmd BufWritePre [\,:;'"\]\)\}]* throw 'Forbidden file name: ' . expand('<afile>')
+
+        "autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle vimwiki<CR>
+        autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle markdown<CR>
+        autocmd filetype vimwiki  nnoremap <a-n> :VimwikiMakeDiaryNote<CR>
+        autocmd filetype vimwiki  nnoremap <a-i> :VimwikiDiaryGenerateLinks<CR>
+        autocmd filetype vimwiki  nnoremap <a-c> :call ToggleCalendar()<CR>
+
+        autocmd filetype markdown nnoremap <buffer> <a-o> :VoomToggle markdown<CR>
+        autocmd filetype python   nnoremap <buffer> <a-o> :VoomToggle python<CR>
+
+        autocmd filetype qf call AdjustWindowHeight(2, 10)
+        autocmd filetype c,cpp,diff C8
+        autocmd filetype zsh,bash C2
+        autocmd filetype vim,markdown C08
+        autocmd filetype vimwiki,txt C0
+
+        "autocmd filetype log nnoremap <buffer> <leader>la :call log#filter(expand('%'), 'all')<CR>
+        "autocmd filetype log nnoremap <buffer> <leader>le :call log#filter(expand('%'), 'error')<CR>
+        "autocmd filetype log nnoremap <buffer> <leader>lf :call log#filter(expand('%'), 'flow')<CR>
+        "autocmd filetype log nnoremap <buffer> <leader>lt :call log#filter(expand('%'), 'tcp')<CR>
+    augroup END
 
 "}}}
 "}}}
