@@ -1293,9 +1293,10 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
             let cur_str = getline(a:linenum)
             if cur_str =~? '^T@'
                 " Non-greed: replace '.*' with '.\{-}'
-                let cur_str = substitute(cur_str, '^T@.\{-}-  ', '  ', '')
-                let indent = match(cur_str, '\S')
-                return indent
+                let cur_str2 = substitute(cur_str, '^T@.\{-}-  ', '  ', '')
+                let off_set = match(cur_str, cur_str2)
+                let indent = match(cur_str2, '\S')
+                return off_set + indent
             endif
         endif
         return indent(a:linenum)
@@ -1324,7 +1325,13 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
             let is_log = 1
         endif
 
-        let indent = Indent(line, is_log)
+        " indent by cursor position (only by-space), or by builtin indent (by-space/tab)
+        if is_log
+            let indent = column - 1
+        else
+            let indent = Indent(line, is_log)
+        endif
+
         let stepvalue = a:fwd ? 1 : -1
         while (line > 0 && line <= lastline)
             let line = line + stepvalue
