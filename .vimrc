@@ -521,6 +521,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'idanarye/vim-vebugger'
     Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
 
+    Plug 'rhysd/conflict-marker.vim'             | "[x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'cohama/agit.vim'    | " :Agit show git log like gitk
     Plug 'tpope/vim-fugitive' | " Awesome git wrapper
       " :Gblame   Show help in blame window and input 'g?'
@@ -1659,7 +1660,8 @@ endif
   endfunction
   function! s:JumpComma(mode)
       if v:count == 0
-          silent call utils#Declaration()
+          "silent call utils#Declaration()
+          call utils#Declaration()
       else
       endif
   endfunction
