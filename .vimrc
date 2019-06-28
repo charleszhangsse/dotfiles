@@ -270,6 +270,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'tpope/vim-speeddating'
     "Plug 'vim-scripts/tcl.vim'
     "Plug 'vim-syntastic/syntastic'
+    Plug 'lyuts/vim-rtags'
 "}}}
 
 " Facade {{{2
