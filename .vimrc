@@ -270,7 +270,10 @@ call plug#begin('~/.vim/bundle')
     Plug 'tpope/vim-speeddating'
     "Plug 'vim-scripts/tcl.vim'
     "Plug 'vim-syntastic/syntastic'
-    Plug 'lyuts/vim-rtags'
+
+    "Plug 'lyuts/vim-rtags'
+    "Plug 'w0rp/ale'
+    Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 "}}}
 
 " Facade {{{2
@@ -1593,17 +1596,19 @@ endif
   endfunction
   vnoremap <silent> <expr> p <sid>Repl()
 
-  nnoremap <silent> <a-o> :VoomToggle<cr>
+  nnoremap <silent> <a-o> <C-o>
+  nnoremap <silent> <a-i> <C-i>
+
   nnoremap <silent> <a-w> :MaximizerToggle<CR>
   nnoremap <silent> <a-e> :NERDTreeTabsToggle<cr>
   nnoremap <silent> <a-f> :NERDTreeFind<cr>
   nnoremap <silent> <a-u> :GundoToggle<CR>
-  "nnoremap <silent> <a-i> :Null<cr>
 
-  "nnoremap <silent> <a-;> :TMToggle<CR>
-  nnoremap <silent> <a-.> :BuffergatorToggle<CR>
+  nnoremap <silent> <a-'> :VoomToggle<cr>
   nnoremap <silent> <a-;> :<c-u>call <SID>ToggleTagbar()<CR>
-  "nnoremap <silent> <a-,> :Null<CR>
+  "nnoremap <silent> <a-;> :TMToggle<CR>
+  "nnoremap <silent> <a-.> :BuffergatorToggle<CR>
+  "nnoremap <silent> <a-,> :VoomToggle<CR>
   "nnoremap <silent> <a-[> :Null<CR>
   "nnoremap <silent> <a-]> :Null<CR>
   "nnoremap <silent> <a-\> :Null<CR>
@@ -1866,6 +1871,44 @@ endif
 
   nnoremap <f3> :VimwikiFollowLink
 "}
+
+" using coc.vim ccls {{{1
+    nmap <silent> <a-]> <Plug>(coc-definition)
+    nmap <silent> <a-\> <Plug>(coc-references)
+    nmap <silent> <a-h> <Plug>(coc-type-definition)
+    nmap <silent> <a-j> <Plug>(coc-implementation)
+    nmap <silent> <a-[> call CocAction('doHover')
+    nmap <silent> <a-r> <Plug>(coc-rename)
+    nmap <silent> <a-,> <Plug>(coc-diagnostic-prev)
+    nmap <silent> <a-.> <Plug>(coc-diagnostic-next)
+
+    "autocmd CursorHold * silent call CocActionAsync('highlight')
+"}}}
+
+" using ale.vim ccls {{{1
+    "nmap <silent> <M-j> :ALEGoToDefinition<cr>
+    "nmap <silent> <M-k> :ALEFindReferences<cr>
+    "nmap <silent> <M-l> :ALESymbolSearch<cr>
+    "nmap <silent> <M-h> :ALEHover<cr><Paste>
+
+    "let g:ale_cpp_ccls_init_options = {
+    "  \   'cache': {
+    "  \       'directory': './ccls-cache',
+    "  \   },
+    "  \ }
+    "call deoplete#custom#option('sources', {
+    "  \ '_': ['ale'],
+    "  \})
+
+    "let g:ale_set_loclist = 0
+    "let g:ale_set_quickfix = 1
+    "let g:ale_open_list = 1
+    "let g:ale_keep_list_window_open = 1
+    "let g:ale_lint_on_text_changed = 'never'
+    "let g:ale_lint_on_enter = 0
+    "let g:ale_lint_on_enter = 0
+"}}}
+
 
 " VimL Debug{{{1
   silent! call logger#init('ALL', ['/tmp/vim.log'])
