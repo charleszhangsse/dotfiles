@@ -271,6 +271,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'vim-scripts/tcl.vim'
     "Plug 'vim-syntastic/syntastic'
 
+    "Plug 'ludovicchabant/vim-gutentags'        | " autogen annoy tags
     "Plug 'lyuts/vim-rtags'
     "Plug 'w0rp/ale'
     Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}

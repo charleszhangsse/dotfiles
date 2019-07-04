@@ -10,11 +10,12 @@ patch.*
 tage
 tags
 tagx
-.tage
-.tags
-.tagx
+*.tage
+*.tags
+*.tagx
 *.orig
 *.rej
-.gdb_history
+*.gdb_history
+*.ccls-cache
 fgtcoveragebuild.tar.xz
 migadmin/node_modules/grunt-jscs/*
