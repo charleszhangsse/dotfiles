@@ -297,7 +297,11 @@ call plug#begin('~/.vim/bundle')
     "Plug 'AnsiEsc.vim'
     Plug 'powerman/vim-plugin-AnsiEsc'
     Plug 'huawenyu/robotframework-vim'
+    "Plug 'bpstahlman/txtfmt'
+    "Plug 'dhruvasagar/vim-table-mode'
+    Plug 'godlygeek/tabular'   | " require by vim-markdown
     Plug 'plasticboy/vim-markdown'
+
     "
     " http://www.thegeekstuff.com/2009/02/make-vim-as-your-bash-ide-using-bash-support-plugin/
     " Must config to avoid annoy popup message:
@@ -511,8 +515,6 @@ call plug#begin('~/.vim/bundle')
 
         Plug 'vim-scripts/DrawIt'                       | " \di \ds: start/stop;  draw by direction-key
         Plug 'reedes/vim-pencil'
-        "Plug 'godlygeek/tabular'
-        "Plug 'dhruvasagar/vim-table-mode'
         Plug 'chrisbra/NrrwRgn'                         | " focus on a selected region. <leader>nr :NR - Open selected into new window; :w - (in the new window) write the changes back
         Plug 'stefandtw/quickfix-reflector.vim'
         Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
@@ -549,6 +551,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'mattn/gist-vim'        | " :'<,'>Gist -e 'list-sample'
 
     " share copy/paste between vim(""p)/tmux
+    "Plug 'svermeulen/vim-easyclip'  | " sudo apt-get install xsel
     Plug 'huawenyu/vimux-script'
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
@@ -1051,6 +1054,9 @@ let g:w3m#command = '/usr/bin/w3m'
 let g:w3m#lang = 'en_US'
 
 " plasticboy/vim-markdown {{{2
+  " ge: jump follow link
+  " gx: open link in browser
+  "
   "set conceallevel=0
   "let g:vim_markdown_conceal = 1
   "let g:vim_markdown_toc_autofit = 1
@@ -1062,10 +1068,14 @@ let g:w3m#lang = 'en_US'
   "
   let g:vim_markdown_emphasis_multiline = 0
   let g:vim_markdown_new_list_item_indent = 2
-  let g:vim_markdown_no_default_key_mappings = 1
+  "let g:vim_markdown_no_default_key_mappings = 1
   let g:vim_markdown_json_frontmatter = 1
   let g:vim_markdown_fenced_languages = ['C=c', 'c=c', 'Shell=sh', 'Java=java'
         \ , 'Csharp=cs', 'c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+  let g:vim_markdown_autowrite = 1       | " automatically save before jump
+  let g:vim_markdown_follow_anchor = 1   | " `ge` command to follow anchors: file#anchor or #anchor
+  let g:vim_markdown_strikethrough = 1   | " ~~Scratch this.~~
+  "let g:vim_markdown_no_extensions_in_markdown = 1      | "`ge`: [link text](link-url), the (link-url) part donnot need .md extention
 "}}}
 
 let g:AutoComplPop_CompleteoptPreview = 1
@@ -1481,6 +1491,7 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         " <C-Left>, <C-Right> move nodes Left/Right (promote/demote).
         "
         autocmd!
+
         "autocmd VimLeavePre * cclose | lclose
         autocmd InsertEnter,InsertLeave * set cul!
         " Sometime crack the tag file
@@ -1497,6 +1508,8 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
 
         autocmd BufNewFile,BufRead *.c.rej,*.c.orig,h.rej,*.h.orig,patch.*,*.diff,*.patch set ft=diff
         autocmd BufNewFile,BufRead *.c,*.c,*.h,*.cpp,*.C,*.CXX,*.CPP set ft=c
+        autocmd BufNewFile,BufRead *.wiki set syntax=markdown
+        "autocmd BufNewFile,BufRead *.wiki set ft=markdown
         autocmd BufWritePre [\,:;'"\]\)\}]* throw 'Forbidden file name: ' . expand('<afile>')
 
         "autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle vimwiki<CR>
