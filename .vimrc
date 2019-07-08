@@ -244,6 +244,10 @@ call plug#begin('~/.vim/bundle')
     " Javascript {{{3
         Plug 'pangloss/vim-javascript'
         Plug 'elzr/vim-json'
+
+        " https://hackernoon.com/using-neovim-for-javascript-development-4f07c289d862
+        Plug 'ternjs/tern_for_vim'      | " Tern-based JavaScript editing support.
+        Plug 'carlitux/deoplete-ternjs'
     "}}}
 
     " Database {{{3
@@ -530,7 +534,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'idanarye/vim-vebugger'
     Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
 
-    Plug 'rhysd/conflict-marker.vim'             | "[x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
+    Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
+    Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
     Plug 'cohama/agit.vim'    | " :Agit show git log like gitk
     Plug 'tpope/vim-fugitive' | " Awesome git wrapper
       " :Gblame   Show help in blame window and input 'g?'
@@ -551,7 +556,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'mattn/gist-vim'        | " :'<,'>Gist -e 'list-sample'
 
     " share copy/paste between vim(""p)/tmux
-    "Plug 'svermeulen/vim-easyclip'  | " sudo apt-get install xsel
+    "Plug 'svermeulen/vim-easyclip'  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
+    Plug 'svermeulen/vim-yoink'  | " 
     Plug 'huawenyu/vimux-script'
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
@@ -602,6 +608,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'tpope/vim-scriptease'
     Plug 'huawenyu/vimlogger'
     "Plug 'huawenyu/Decho'
+    "Plug 'c9s/vim-dev-plugin'   | " gf: goto-function-define, but when edit vimrc will trigger error
 "}}}
 call plug#end()
 
@@ -1269,6 +1276,26 @@ let g:vimwiki_conceallevel = 0 | "Default=2, -1 Disable conceal
     endif
 "}}}
 
+" vim-yoink: yank/paste {{{2
+    let g:yoinkIncludeDeleteOperations=1
+    let g:yoinkSavePersistently=1
+    let g:yoinkMoveCursorToEndOfPaste=1
+    let g:yoinkIncludeNamedRegisters=1
+    let g:yoinkSyncNumberedRegisters=1
+    "nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+    "nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+
+    nmap qy :Yanks<cr>
+
+    nmap p <plug>(YoinkPaste_p)
+    nmap P <plug>(YoinkPaste_P)
+    nmap [y <plug>(YoinkRotateBack)
+    nmap ]y <plug>(YoinkRotateForward)
+
+    nmap y <plug>(YoinkYankPreserveCursorPosition)
+    vmap y <plug>(YoinkYankPreserveCursorPosition)
+    xmap y <plug>(YoinkYankPreserveCursorPosition)
+"}}}
 " Commands {{{1
 
 command! -nargs=* Wrap set wrap linebreak nolist
@@ -1541,8 +1568,10 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
   let mapleader = "\<Space>"
   " diable Ex mode
   map Q <Nop>
-  " Stop that stupid window from popping up
-  map q: :q
+
+  "" Stop that stupid window from popping up
+  "map q: :q
+
   " Disable F1 built-in help key
   map <F1> <Esc>
   " map <leader><Esc> :AnsiEsc<cr>
@@ -1701,8 +1730,9 @@ endif
   nnoremap <silent> <leader>;  :<c-u>call <SID>JumpComma(0)<cr>
   vnoremap          <leader>;  :<c-u>call <SID>JumpComma(1)<cr>
 
-  " Toggle implement/header
-  nnoremap <silent> <leader>a  :<c-u>FuzzyOpen <C-R>=printf("%s\\.", expand('%:t:r'))<cr><cr>
+  " Toggle source/header
+  "nnoremap <silent> <leader>a  :<c-u>FuzzyOpen <C-R>=printf("%s\\.", expand('%:t:r'))<cr><cr>
+  nnoremap <silent> <leader>a  :<c-u>call CurtineIncSw()<cr>
 
   " Set log
   "nnoremap <silent> <leader>ll :<c-u>call log#log(expand('%'))<CR>
