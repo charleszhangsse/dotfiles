@@ -557,7 +557,8 @@ call plug#begin('~/.vim/bundle')
 
     " share copy/paste between vim(""p)/tmux
     "Plug 'svermeulen/vim-easyclip'  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
-    Plug 'svermeulen/vim-yoink'  | " 
+    "Plug 'bfredl/nvim-miniyank'
+    Plug 'svermeulen/vim-yoink'  | " Not support colomn copy/paste
     Plug 'huawenyu/vimux-script'
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
