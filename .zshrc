@@ -261,6 +261,7 @@ export FORTIPKG=$HOME/fortipkg
 
 # minicom line wrap: sudo -E minicom
 export MINICOM="-w"
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
 
 # Disable warning messsage:
 #   WARNING: gnome-keyring:: couldn't connect to: /run/user/1000/keyring-s99rSr/pkcs11: Connection refused

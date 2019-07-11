@@ -1,0 +1,34 @@
+# We can define type here, then give option in command line:
+#    only search type by `-t`,
+#    not search the type by `-T`.
+
+# Don't let ripgrep vomit really long lines to my terminal, and show a preview.
+--max-columns=250
+--max-columns-preview
+
+# Add my 'web' type.
+--type-add
+web:*.{html,css,js}*
+
+# Add my 'config' type.
+--type-add
+conf:*.{json,conf,log,diff,ini}*
+
+# Add my 'c' type.
+--type-add
+c:c,h
+
+# Using glob patterns to include/exclude files or folders
+--glob=!git/*
+
+# or
+--glob
+!git/*
+
+# Set the colors.
+--colors=line:none
+--colors=line:style:bold
+
+# Because who cares about case!?
+--smart-case
+--no-heading
