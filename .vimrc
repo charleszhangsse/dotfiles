@@ -1572,6 +1572,8 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
 
   "" Stop that stupid window from popping up
   "map q: :q
+  nmap ql :ls<cr>
+  nmap qw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
 
   " Disable F1 built-in help key
   map <F1> <Esc>
