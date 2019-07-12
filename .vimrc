@@ -1854,6 +1854,7 @@ endif
   "map <leader>ds :call Asm() <CR>
   nnoremap <leader>df :%s/\s\+$//g
   nnoremap <leader>dd :g/<C-R><C-w>/ norm dd
+  vnoremap <leader>dd :<c-u>g/<C-R>*/ norm dd
   nnoremap <leader>de :g/.\{200,\}/d
 
   nnoremap <leader>qw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
