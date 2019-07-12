@@ -1541,13 +1541,13 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         autocmd BufWritePre [\,:;'"\]\)\}]* throw 'Forbidden file name: ' . expand('<afile>')
 
         "autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle vimwiki<CR>
-        autocmd filetype vimwiki  nnoremap <buffer> <a-/> :VoomToggle markdown<CR>
+        autocmd filetype vimwiki  nnoremap <buffer> <a-'> :VoomToggle markdown<CR>
         autocmd filetype vimwiki  nnoremap <a-n> :VimwikiMakeDiaryNote<CR>
         autocmd filetype vimwiki  nnoremap <a-i> :VimwikiDiaryGenerateLinks<CR>
         autocmd filetype vimwiki  nnoremap <a-c> :call ToggleCalendar()<CR>
 
-        autocmd filetype markdown nnoremap <buffer> <a-/> :VoomToggle markdown<CR>
-        autocmd filetype python   nnoremap <buffer> <a-/> :VoomToggle python<CR>
+        autocmd filetype markdown nnoremap <buffer> <a-'> :VoomToggle markdown<CR>
+        autocmd filetype python   nnoremap <buffer> <a-'> :VoomToggle python<CR>
 
         autocmd filetype qf call AdjustWindowHeight(2, 10)
         autocmd filetype c,cpp,diff C8
@@ -1652,7 +1652,7 @@ endif
   nnoremap <silent> <a-f> :NERDTreeFind<cr>
   nnoremap <silent> <a-u> :GundoToggle<CR>
 
-  nnoremap <silent> <a-/> :VoomToggle<cr>
+  nnoremap <silent> <a-'> :VoomToggle<cr>
   nnoremap <silent> <a-;> :<c-u>call <SID>ToggleTagbar()<CR>
   "nnoremap <silent> <a-;> :TMToggle<CR>
   "nnoremap <silent> <a-.> :BuffergatorToggle<CR>

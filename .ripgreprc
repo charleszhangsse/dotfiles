@@ -6,17 +6,18 @@
 --max-columns=250
 --max-columns-preview
 
-# Add my 'web' type.
+# Add my types.
 --type-add
 web:*.{html,css,js}*
 
-# Add my 'config' type.
 --type-add
 conf:*.{json,conf,log,diff,ini}*
 
-# Add my 'c' type.
 --type-add
 c:c,h
+
+--type-add
+wiki:wiki,md,sh
 
 # Using glob patterns to include/exclude files or folders
 --glob=!git/*
