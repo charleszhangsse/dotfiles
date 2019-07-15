@@ -126,6 +126,11 @@
 "       ctrl-h          delete one letter
 "       ctrl-u          delete to begin
 "       ctrl-w          delete one word
+"
+"   Registers:
+"       \"ry            add the selected text to the register r.
+"       \"rp            paste the content of this register r.
+"       Ctrl-r r        access the registers in insert/command mode with Ctrl-r + register name.
 "   Terminal-mode:
 "       - enter terminal mode   i
 "       - exit terminal mode    <C-\><C-n>
