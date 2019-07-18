@@ -263,6 +263,11 @@ export FORTIPKG=$HOME/fortipkg
 export MINICOM="-w"
 export RIPGREP_CONFIG_PATH=~/.ripgreprc
 
+# todo.txt-cli
+export TODOTXT_DEFAULT_ACTION=ls
+#alias t='$HOME/tools/todo.txt-cli-ex/todo.sh -d $HOME/tools/todo.txt-cli-ex/todo.cfg'
+alias t='$HOME/tools/todo.txt-cli-ex/todo.sh'
+
 # Disable warning messsage:
 #   WARNING: gnome-keyring:: couldn't connect to: /run/user/1000/keyring-s99rSr/pkcs11: Connection refused
 unset GNOME_KEYRING_CONTROL

@@ -12,6 +12,8 @@ sudo apt-get install -y audacious gnome-mplayer xfce4-notes
 
 sudo apt-get install -y curl zsh mutt rxvt-unicode tmux ruby silversearcher-ag traceroute rlwrap smbclient sshpass openssh-server minicom lftp meld taskwarrior
 
+sudo apt-get install -y git git-svn subversion
+
 ## tmuxinator
 #mkdir ~/.tmuxinator
 #sudo gem install tmuxinator
@@ -23,7 +25,17 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # tig
 ln -s ~/dotfiles/tigrc ~/tigrc
 
-sudo apt-get install -y git git-svn subversion
+# todo.txt-cli
+mkdir -p ~/tools
+cd ~/tools
+git clone https://github.com/todotxt/todo.txt-cli.git
+git clone https://github.com/huawenyu/todo.txt-cli-ex.git
+
+# should link the existed dir "todo" into the dir 'todo.txt-cli-ex':
+cd todo.txt-cli-ex
+# copy sh from 'todo.txt-cli' into our dir 'todo.txt-cli-ex':
+make -B
+
 # vim (+clientserver)
 sudo apt-get install -y vim-gnome
 # vim (+lua): apt-cache search libluajit
@@ -42,6 +54,7 @@ sudo apt-get install -y build-essential ia32-libs libc6-dbg:i386 manpages-dev
 # [brew](http://http://linuxbrew.sh/): substitute for apt-get install
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 brew install neovim
+brew install todo-txt
 brew unlink python@2
 brew unlink python@3
 

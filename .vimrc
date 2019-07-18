@@ -336,6 +336,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'rickhowe/diffchar.vim'
     Plug 'huawenyu/vim-log-syntax'
     Plug 'Shougo/vinarise.vim' | " Hex viewer
+    Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  | " brew install prettier
 "}}}
 
 " Vimwiki {{{2
@@ -434,6 +435,9 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tbabej/taskwiki'          | " comment reason: have python3 call error
     Plug 'powerman/vim-plugin-AnsiEsc'
     Plug 'blindFS/vim-taskwarrior'
+
+    "Plug 'freitass/todo.txt-vim'     | " Like todo.txt-cli command-line, but here really needed is the wrap of Todo.txt-cli.
+    Plug 'elentok/todo.vim'
 "}}}
 
 " Improve {{{2
@@ -491,7 +495,7 @@ call plug#begin('~/.vim/bundle')
         "Plug 'tpope/vim-dispatch'
         "Plug 'huawenyu/vim-dispatch'        | " Run every thing. :Dispatch :Make :Start man 3 printf
         "Plug 'radenling/vim-dispatch-neovim', Cond(has('nvim'))
-        Plug 'huawenyu/asyncrun.vim'
+        Plug 'skywind3000/asyncrun.vim'
         Plug 'huawenyu/neomake', Cond(has('nvim'))
     "}}}
 
@@ -591,6 +595,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'honza/vim-snippets'
     "Plug 'vim-scripts/CmdlineComplete'
     Plug 'reedes/vim-wordy'
+    Plug 'tenfyzhong/CompleteParameter.vim'
 "}}}
 
 " Text Objects {{{2, https://github.com/kana/vim-textobj-user/wiki
@@ -2047,6 +2052,20 @@ endif
     "let g:ale_keep_list_window_open = 1
 "}}}
 
+" vim-prettier{{{1
+    nmap <Leader>fm <Plug>(Prettier)
+
+    let g:prettier#autoformat = 0
+    let g:prettier#quickfix_enabled = 0
+    let g:prettier#quickfix_auto_focus = 0
+"}}}
+
+" todo.vim{{{1
+"   :Todo
+"   :Todo {filter}
+    let g:todo_root = '~/tools/todo.txt-cli-ex/todo'
+    let g:todo_open_command = '~/tools/todo.txt-cli-ex/todo.sh'
+"}}}
 
 " VimL Debug{{{1
   silent! call logger#init('ALL', ['/tmp/vim.log'])
