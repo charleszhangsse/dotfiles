@@ -146,6 +146,7 @@
   set verbose=0
   "set verbose=8
   "set verbosefile=/tmp/vim.log
+  set shell=/bin/sh
 
   let g:decho_enable = 0
   let g:bg_color = 233 | " current background's color value, used by mylog.syntax
@@ -228,8 +229,18 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Mode {{{2
-    " Base Engine {{{3
-        "Plug 'w0rp/ale'   | "Asynchronous Lint Engine
+    " Tags {{{3
+        " [Tags](https://zhuanlan.zhihu.com/p/36279445)
+        " [C++](https://www.zhihu.com/question/47691414/answer/373700711)
+        "
+        "Plug 'ludovicchabant/vim-gutentags'        | " autogen tags
+        "Plug 'skywind3000/gutentags_plus'
+        "Plug 'skywind3000/vim-preview'
+        "Plug 'whatot/gtags-cscope.vim'
+
+        "Plug 'lyuts/vim-rtags'
+        "Plug 'w0rp/ale'   | " 1. Not using clang's lint, 2. find references look not work
+        Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometime find references fail
     "}}}
 
     " Python {{{3
@@ -255,12 +266,17 @@ call plug#begin('~/.vim/bundle')
         Plug 'carlitux/deoplete-ternjs'
     "}}}
 
+    " Clojure {{{3
+        Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+    "}}}
+
     " Database {{{3
         Plug 'tpope/vim-dadbod'       | " :DB mongodb:///test < big_query.js
     "}}}
 
     " Golang {{{3
         Plug 'fatih/vim-go'
+        Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
     "}}}
 
     " Tcl {{{3
@@ -280,10 +296,6 @@ call plug#begin('~/.vim/bundle')
     "Plug 'vim-scripts/tcl.vim'
     "Plug 'vim-syntastic/syntastic'
 
-    "Plug 'ludovicchabant/vim-gutentags'        | " autogen annoy tags
-    "Plug 'lyuts/vim-rtags'
-    "Plug 'w0rp/ale'
-    Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 "}}}
 
 " Facade {{{2
@@ -484,7 +496,7 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " View/Outline {{{3
-        Plug 'scrooloose/nerdtree'    | " :NERDTreeToggle; <Enter> open-file; '?' Help
+        Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }   | " :NERDTreeToggle; <Enter> open-file; '?' Help
         Plug 'scrooloose/nerdcommenter'
         Plug 'jistr/vim-nerdtree-tabs' | " :NERDTreeTabsToggle, Just one NERDTree, always and ever. It will always look the same in all tabs, including expanded/collapsed nodes, scroll position etc.
         Plug 'kien/tabman.vim'         | " Tab management for Vim
@@ -926,7 +938,12 @@ let g:editqf_saveloc_filename = "vim.qflocal"
   set notagrelative
 
   " http://arjanvandergaag.nl/blog/combining-vim-and-ctags.html
-  "set tags=tags;/
+  "
+  " 前半部分 “./.tags; ”代表在文件的所在目录下（不是 “:pwd”返回的 Vim 当前目录）查找名字为 '.tags'的符号文件，
+  " 后面一个分号代表查找不到的话向上递归到父目录，直到找到 .tags 文件或者递归到了根目录还没找到，
+  " 逗号分隔的后半部分 .tags 是指同时在 Vim 的当前目录（“:pwd”命令返回的目录，可以用 :cd ..命令改变）下面查找 .tags 文件。
+  "set tags=./.tags;,.tags
+  "
   set tags=./tags,tags,./.tags,.tags;$HOME
 "}}}
 
@@ -1927,7 +1944,68 @@ endif
   nnoremap <f3> :VimwikiFollowLink
 "}
 
-" using coc.vim ccls {{{1
+" vim-gutentags {{{1
+    let g:cutils_cscope_map = 1
+    if !g:cutils_cscope_map
+        " Disable auto-load gtags file
+        let g:gutentags_auto_add_gtags_cscope = 1
+
+        " touch .root
+        let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project', 'Makefile']
+        let g:gutentags_ctags_tagfile = '.tags'
+
+        "let s:vim_tags = expand('./.ccls-cache')
+        "let g:gutentags_cache_dir = s:vim_tags
+        "if !isdirectory(s:vim_tags)
+        "    silent! call mkdir(s:vim_tags, 'p')
+        "endif
+
+        let g:gutentags_modules = []
+        "if executable('ctags')
+        "    let g:gutentags_modules += ['ctags']
+        "endif
+        if executable('gtags-cscope') && executable('gtags')
+            let g:gutentags_modules += ['gtags_cscope']
+        endif
+
+        let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+        let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+        let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+        let g:gutentags_ctags_extra_args += ['--exclude=.git', '--exclude=node_modules', '--exclude=.ccls-cache']
+        if filereadable("./cscope.files")
+            let g:gutentags_ctags_extra_args += ['-L cscope.files']
+        endif
+
+        " Force universal ctags to generate old ctags format
+        let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+
+        " gutentags_plus
+        let g:cutils_cscope_map = 0
+        let g:gutentags_plus_nomap = 1
+        noremap <silent> <leader>fs :GscopeFind s <C-R><C-W><cr>
+        noremap <silent> <leader>fg :GscopeFind g <C-R><C-W><cr>
+        noremap <silent> <leader>fc :GscopeFind c <C-R><C-W><cr>
+        noremap <silent> <leader>ft :GscopeFind t <C-R><C-W><cr>
+        noremap <silent> <leader>fe :GscopeFind e <C-R><C-W><cr>
+        noremap <silent> <leader>ff :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
+        noremap <silent> <leader>fi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
+        noremap <silent> <leader>fd :GscopeFind d <C-R><C-W><cr>
+        noremap <silent> <leader>fa :GscopeFind a <C-R><C-W><cr>
+
+        "let g:gutentags_plus_nomap = 1
+        "noremap <silent> <leader>fs :cs find s <C-R><C-W><cr>
+        "noremap <silent> <leader>fg :cs find g <C-R><C-W><cr>
+        "noremap <silent> <leader>fc :cs find c <C-R><C-W><cr>
+        "noremap <silent> <leader>ft :cs find t <C-R><C-W><cr>
+        "noremap <silent> <leader>fe :cs find e <C-R><C-W><cr>
+        "noremap <silent> <leader>ff :cs find f <C-R>=expand("<cfile>")<cr><cr>
+        "noremap <silent> <leader>fi :cs find i <C-R>=expand("<cfile>")<cr><cr>
+        "noremap <silent> <leader>fd :cs find d <C-R><C-W><cr>
+        "noremap <silent> <leader>fa :cs find a <C-R><C-W><cr>
+    endif
+"}}}
+
+" using coc.vim/ale with ccls-cache which base on clang {{{1
     nmap <silent> <a-]> <Plug>(coc-definition)
     nmap <silent> <a-\> <Plug>(coc-references)
     nmap <silent> <a-h> <Plug>(coc-type-definition)
@@ -1941,27 +2019,32 @@ endif
 "}}}
 
 " using ale.vim ccls {{{1
-    "nmap <silent> <M-j> :ALEGoToDefinition<cr>
-    "nmap <silent> <M-k> :ALEFindReferences<cr>
-    "nmap <silent> <M-l> :ALESymbolSearch<cr>
-    "nmap <silent> <M-h> :ALEHover<cr><Paste>
+    "nmap <silent> <a-]> :ALEGoToDefinition<cr>
+    "nmap <silent> <a-\> :ALEFindReferences<cr>
+    "nmap <silent> <a-h> :ALESymbolSearch<cr>
+    "nmap <silent> <a-[> :ALEHover<cr>
+    "nmap <silent> <a-,> <Plug>(ale_previous_wrap)
+    "nmap <silent> <a-.> <Plug>(ale_next_wrap)
 
     "let g:ale_cpp_ccls_init_options = {
     "  \   'cache': {
     "  \       'directory': './ccls-cache',
     "  \   },
     "  \ }
+    ""let g:ale_completion_enabled = 1
     "call deoplete#custom#option('sources', {
     "  \ '_': ['ale'],
     "  \})
 
+    "let g:ale_lint_on_text_changed = 'never'
+    "let g:ale_lint_on_insert_leave = 0
+    "let g:ale_lint_on_enter = 0
+    ""let g:ale_lint_on_save = 0
+    ""let g:ale_list_window_size = 5
+    "let g:ale_open_list = 1
     "let g:ale_set_loclist = 0
     "let g:ale_set_quickfix = 1
-    "let g:ale_open_list = 1
     "let g:ale_keep_list_window_open = 1
-    "let g:ale_lint_on_text_changed = 'never'
-    "let g:ale_lint_on_enter = 0
-    "let g:ale_lint_on_enter = 0
 "}}}
 
 
