@@ -25,17 +25,6 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # tig
 ln -s ~/dotfiles/tigrc ~/tigrc
 
-# todo.txt-cli
-mkdir -p ~/tools
-cd ~/tools
-git clone https://github.com/todotxt/todo.txt-cli.git
-git clone https://github.com/huawenyu/todo.txt-cli-ex.git
-
-# should link the existed dir "todo" into the dir 'todo.txt-cli-ex':
-cd todo.txt-cli-ex
-# copy sh from 'todo.txt-cli' into our dir 'todo.txt-cli-ex':
-make -B
-
 # vim (+clientserver)
 sudo apt-get install -y vim-gnome
 # vim (+lua): apt-cache search libluajit

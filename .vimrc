@@ -430,14 +430,15 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tomtom/vikibase_vim'
     Plug 'mattn/calendar-vim' | " :Calendar
 
+    "Plug 'freitass/todo.txt-vim'     | " Like todo.txt-cli command-line, but here really needed is the wrap of Todo.txt-cli.
+    "Plug 'elentok/todo.vim'
+    "
     " Require vimwiki, tasklib, [taskwarrior](https://taskwarrior.org/download/)
     " taskwarrior: a command line task management tool, config by ~/.taskrc
     "Plug 'tbabej/taskwiki'          | " comment reason: have python3 call error
+    "Plug 'blindFS/vim-taskwarrior'
     Plug 'powerman/vim-plugin-AnsiEsc'
-    Plug 'blindFS/vim-taskwarrior'
-
-    "Plug 'freitass/todo.txt-vim'     | " Like todo.txt-cli command-line, but here really needed is the wrap of Todo.txt-cli.
-    Plug 'elentok/todo.vim'
+    Plug 'tbabej/taskwiki'           | " Only handles check lists beginwith asterisk '*'.
 "}}}
 
 " Improve {{{2
@@ -880,10 +881,6 @@ let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
 " tcl.vim
 let tcl_extended_syntax=1
-
-" vim-taskwarrior
-let g:task_rc_override = 'rc.defaultwidth=0'
-let g:task_rc_override = 'rc.defaultheight=0'
 
 " vim-rooter
 let g:rooter_manual_only = 1
@@ -2065,6 +2062,12 @@ endif
 "   :Todo {filter}
     let g:todo_root = '~/tools/todo.txt-cli-ex/todo'
     let g:todo_open_command = '~/tools/todo.txt-cli-ex/todo.sh'
+"}}}
+
+" vim-taskwarrior{{{1
+    let g:task_rc_override = 'rc.defaultwidth=0'
+    let g:task_rc_override = 'rc.defaultheight=0'
+    let g:task_report_name = 'long'
 "}}}
 
 " VimL Debug{{{1
