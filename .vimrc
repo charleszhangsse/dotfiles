@@ -435,10 +435,19 @@ call plug#begin('~/.vim/bundle')
     "
     " Require vimwiki, tasklib, [taskwarrior](https://taskwarrior.org/download/)
     " taskwarrior: a command line task management tool, config by ~/.taskrc
-    "Plug 'tbabej/taskwiki'          | " comment reason: have python3 call error
     "Plug 'blindFS/vim-taskwarrior'
     Plug 'powerman/vim-plugin-AnsiEsc'
-    Plug 'tbabej/taskwiki'           | " Only handles check lists beginwith asterisk '*'.
+
+    " Prerequirement: brew install task; sudo pip3 install tasklib; ln -s ~/.task, ~/.taskrc;
+    Plug 'tbabej/taskwiki'  | " Only handles *.wiki file contain check lists which beginwith asterisk '*'
+                  " <leader>t + <option>
+                  "| a  annotate         | C  calendar       | Ga ghistory annual | p  projects |
+                  "| bd burndown daily   | d  done           | hm history month   | s  summary  |
+                  "| bw burndown weekly  | D  delete         | ha history annual  | S  stats    |
+                  "| bm burndown monthly | e  edit           | i  (or <CR>) info  | t  tags     |
+                  "| cp choose project   | g  grid           | l  back-link       | +  start    |
+                  "| ct choose tag       | Gm ghistory month | m  modify          | -  stop     |
+
 "}}}
 
 " Improve {{{2
@@ -2064,10 +2073,15 @@ endif
     let g:todo_open_command = '~/tools/todo.txt-cli-ex/todo.sh'
 "}}}
 
-" vim-taskwarrior{{{1
+" vim-taskwarrior/taskwiki{{{1
     let g:task_rc_override = 'rc.defaultwidth=0'
     let g:task_rc_override = 'rc.defaultheight=0'
     let g:task_report_name = 'long'
+
+    "let g:taskwiki_suppress_mappings="yes"
+    "let g:taskwiki_taskrc_location="~/.taskrc"
+    "let g:taskwiki_data_location="~/.task"
+    let g:taskwiki_sort_orders={"T": "project+,due-"}
 "}}}
 
 " VimL Debug{{{1
