@@ -14,7 +14,12 @@
 "      $ ln -s ~/.vim ~/.config/nvim
 "      $ ln -s ~/.vimrc ~/.config/nvim/init.vim
 "
+"      ### Make neovim work with plugs
 "      $ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+"         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"
+"      ### Make vim work with plugs
+"      $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 "         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
 "      $ vi .vimrc
@@ -205,6 +210,17 @@ if has("unix")
         let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
         let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
     endif
+endif
+
+" Auto download the plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    silent curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " Plugins {{{1}}}
@@ -463,7 +479,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tomtom/tmarks_vim'
     "Plug 'tomtom/quickfixsigns_vim'
     "Plug 'tomtom/vimform_vim'
-    Plug 'jceb/vim-editqf'             | " notes when review source
+    "Plug 'jceb/vim-editqf'            | " notes when review source
+    Plug 'romainl/vim-qf'              | " Tame the quickfix window
     "Plug 'huawenyu/highlight.vim'
     Plug 'huawenyu/vim-signature'      | " place, toggle and display marks
 
@@ -589,7 +606,7 @@ call plug#begin('~/.vim/bundle')
     " share copy/paste between vim(""p)/tmux
     "Plug 'svermeulen/vim-easyclip'  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
     "Plug 'bfredl/nvim-miniyank'
-    Plug 'svermeulen/vim-yoink'  | " Not support colomn copy/paste
+    Plug 'svermeulen/vim-yoink', Cond(has('nvim')) | " Not support colomn copy/paste
     Plug 'huawenyu/vimux-script'
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
@@ -918,11 +935,6 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " neoterm
 let g:neoterm_default_mod = 'vertical'
-
-" vim-editqf
-let g:editqf_no_mappings = 1
-let g:editqf_saveqf_filename  = "vim.qf"
-let g:editqf_saveloc_filename = "vim.qflocal"
 
 " easymotion {{{2
   let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -1781,9 +1793,6 @@ endif
   "bookmark
   nnoremap <silent> <leader>mm :silent! call mark#MarkCurrentWord(expand('cword'))<CR>
   "nnoremap <leader>mf :echo(statusline#GetFuncName())<CR>
-  nnoremap <leader>mn :QFAddNote note: 
-  nnoremap <leader>ms :QFSave! 
-  nnoremap <leader>ml :QFLoad 
   "nnoremap <leader>mo :BookmarkLoad Default
   "nnoremap <leader>ma :BookmarkShowAll <CR>
   "nnoremap <leader>mg :BookmarkGoto <C-R><c-w>
@@ -1889,13 +1898,6 @@ endif
   nnoremap <leader>dd :g/<C-R><C-w>/ norm dd
   vnoremap <leader>dd :<c-u>g/<C-R>*/ norm dd
   nnoremap <leader>de :g/.\{200,\}/d
-
-  nnoremap <leader>qw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
-  nnoremap <leader>qs :QSave
-  nnoremap <leader>ql :QLoad
-  nnoremap <leader>qf :call utilquickfix#QuickFixFilter() <CR>
-  nnoremap <leader>qq :call utilquickfix#QuickFixFunction() <CR>
-
 
   "autocmd WinEnter * if !utils#IsLeftMostWindow() | let g:tagbar_left = 0 | else | let g:tagbar_left = 1 | endif
   function! s:ToggleTagbar()
@@ -2078,10 +2080,38 @@ endif
     let g:task_rc_override = 'rc.defaultheight=0'
     let g:task_report_name = 'long'
 
+    " Troubleshooting:
+    " If the edit file locked: rm ~/.task/task.*.task
+    "
     "let g:taskwiki_suppress_mappings="yes"
     "let g:taskwiki_taskrc_location="~/.taskrc"
     "let g:taskwiki_data_location="~/.task"
     let g:taskwiki_sort_orders={"T": "project+,due-"}
+"}}}
+
+" vim-editqf/vim-qf {{{1
+    "let g:editqf_no_mappings = 1
+    "let g:editqf_saveqf_filename  = "vim.qf"
+    "let g:editqf_saveloc_filename = "vim.qflocal"
+
+    nnoremap <leader>mw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
+
+    "nnoremap <leader>mn :QFAddNote note:
+    nnoremap <leader>ms :SaveList 
+    nnoremap <leader>mS :SaveListAdd 
+    nnoremap <leader>ml :LoadList 
+    nnoremap <leader>mL :LoadListAdd 
+    nnoremap <leader>mo :copen<cr>
+    nnoremap <leader>mn :cnewer<cr>
+    nnoremap <leader>mp :colder<cr>
+
+    nnoremap <leader>md :Doline 
+    nnoremap <leader>mx :RemoveList 
+    nnoremap <leader>mh :ListLists<cr>
+    nnoremap <leader>mk :Keep 
+    nnoremap <leader>mj :Reject 
+    nnoremap <leader>mf :call utilquickfix#QuickFixFilter() <CR>
+    nnoremap <leader>mc :call utilquickfix#QuickFixFunction() <CR>
 "}}}
 
 " VimL Debug{{{1
