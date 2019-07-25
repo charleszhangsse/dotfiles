@@ -2108,8 +2108,8 @@ endif
     nnoremap <leader>md :Doline 
     nnoremap <leader>mx :RemoveList 
     nnoremap <leader>mh :ListLists<cr>
-    nnoremap <leader>mk :Keep 
-    nnoremap <leader>mj :Reject 
+    "nnoremap <leader>mk :Keep 
+    nnoremap <leader>mF :Reject 
     nnoremap <leader>mf :call utilquickfix#QuickFixFilter() <CR>
     nnoremap <leader>mc :call utilquickfix#QuickFixFunction() <CR>
 "}}}
