@@ -33,6 +33,7 @@ wiki:wiki,md,sh
 --glob=!.tagx
 --glob=!*.orig
 --glob=!*.rej
+--glob=!.cscope.files
 
 # Set the colors.
 --colors=line:none

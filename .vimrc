@@ -2114,6 +2114,16 @@ endif
     nnoremap <leader>mc :call utilquickfix#QuickFixFunction() <CR>
 "}}}
 
+" vim-cpp-enhanced-highlight{{{1
+    let g:cpp_class_scope_highlight = 0
+    let g:cpp_member_variable_highlight = 0
+    let g:cpp_class_decl_highlight = 0
+    let g:cpp_experimental_simple_template_highlight = 0
+    let g:cpp_experimental_template_highlight = 0
+    let g:cpp_concepts_highlight = 0
+    let g:cpp_no_function_highlight = 0
+"}}}
+
 " VimL Debug{{{1
   silent! call logger#init('ALL', ['/tmp/vim.log'])
   "silent! call logger#init('ERROR', ['/tmp/vim.log'])
