@@ -256,7 +256,9 @@ call plug#begin('~/.vim/bundle')
 
         "Plug 'lyuts/vim-rtags'
         "Plug 'w0rp/ale'   | " 1. Not using clang's lint, 2. find references look not work
-        Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometime find references fail
+
+        "Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometime find references fail
+        Plug 'neoclide/coc.nvim', {'on': '<Plug>(coc-definition)', 'do': 'yarn install --frozen-lockfile'}
     "}}}
 
     " Python {{{3
@@ -581,6 +583,7 @@ call plug#begin('~/.vim/bundle')
 " Integration {{{2
     Plug 'idanarye/vim-vebugger'
     Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
+    Plug 'cpiger/NeoDebug', Cond(has('nvim'))
 
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header

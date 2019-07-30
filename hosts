@@ -1,0 +1,58 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+127.0.1.1	VAN-200912-PC0
+172.16.100.168	gerrit
+
+# My evn
+172.16.80.122	client
+172.16.80.132	client2
+172.16.80.129	server
+172.16.80.139	server2
+172.16.80.130	kvm
+172.18.2.169	ftpsvr
+
+# My gdb remote
+#10.1.1.127		dut
+172.18.20.61	dut
+
+#192.168.100.17	gerrit.fortinet.com
+172.16.100.52   scm-yvr-mirror.fortinet.com
+206.190.36.45	www.yahoo.com
+192.168.100.122 reviewboard.corp.fortinet.com
+192.168.100.177 jenkins.corp.fortinet.com
+172.16.100.34   phab.corp.fortinet.com
+
+# Hans Yin: autotest tool's database server
+172.18.7.215    hyin.pythonanywhere.com
+
+# Xiaoying Guo: mail server
+172.18.27.184   qa.fortinet.com
+
+#192.168.2.126	TONY_FGT_100D_A.BERBER.COM
+172.16.80.126	TONY_FGT_100D_A.BERBER.COM
+172.18.20.111	dq_kdc.berber.com
+172.18.20.111	berber.com
+
+# kerberos: Yingli Wang Env
+172.16.80.123	fgt67.devqa2.net
+#10.1.1.123	fgt67.devqa2.net
+#172.18.13.65	fgt67.devqa2.net
+
+172.18.13.193	krb.devqa2.net
+172.18.13.193	devqa2.net
+
+# self config for test
+198.167.239.174	www.tired.com
+10.1.1.123	www.fortigate123.com
+172.16.80.123	ftg123.mytest.com
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+# Blocksite:
+0.0.0.0   detectportal.firefox.com
+::0       detectportal.firefox.com
