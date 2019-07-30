@@ -514,7 +514,7 @@ call plug#begin('~/.vim/bundle')
     " Search {{{3
         Plug 'huawenyu/neovim-fuzzy', Cond(has('nvim'))
         "Plug 'Dkendal/fzy-vim'
-        Plug 'huawenyu/vim-grepper'    | " :Grepper text
+        Plug 'mhinz/vim-grepper'    | " :Grepper text
     "}}}
 
     " Async {{{3
@@ -527,9 +527,9 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " View/Outline {{{3
-        Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }   | " :NERDTreeToggle; <Enter> open-file; '?' Help
         Plug 'scrooloose/nerdcommenter'
-        Plug 'jistr/vim-nerdtree-tabs' | " :NERDTreeTabsToggle, Just one NERDTree, always and ever. It will always look the same in all tabs, including expanded/collapsed nodes, scroll position etc.
+        Plug 'scrooloose/nerdtree', { 'on':  ['NERDTreeToggle', 'NERDTreeTabsToggle'] }   | " :NERDTreeToggle; <Enter> open-file; '?' Help
+        Plug 'jistr/vim-nerdtree-tabs', { 'on':  'NERDTreeTabsToggle' }   | " :NERDTreeTabsToggle, Just one NERDTree, always and ever. It will always look the same in all tabs, including expanded/collapsed nodes, scroll position etc.
         Plug 'kien/tabman.vim'         | " Tab management for Vim
         Plug 'jeetsukumaran/vim-buffergator'
         Plug 'huawenyu/vim-rooter'  | " Get or change current dir
@@ -981,6 +981,7 @@ let g:autotagExcSuff = ['tml', 'xml', 'text', 'txt', 'md', 'mk', 'conf', 'html',
 
 " AsyncRun {{{2}}}
 let g:asyncrun_silent = 1
+let g:asyncrun_open = 8
 
 " vim-bookmarks {{{2}}}
 let g:bookmark_no_default_key_mappings = 1
@@ -1573,7 +1574,7 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         " current position in jumplist
         autocmd CursorHold * normal! m'
 
-        autocmd BufEnter * call SetIndentTabForCfiletype()
+        "autocmd BufEnter * call SetIndentTabForCfiletype()
 
         " Always show sign column
         autocmd BufEnter * sign define dummy
@@ -1815,10 +1816,15 @@ endif
 
   function! SelectedReplace()
       let sel_str = utils#GetSelected('')
-      normal [[ma%mb
-      call signature#sign#Refresh(1)
-      redraw
-      return "'a,'bs/\\<". sel_str. '\>/'. sel_str. '/gI'
+      let nr = winnr()
+      if getwinvar(nr, '&syntax') == 'qf'
+          return "%s/\\<". sel_str. '\>/'. sel_str. '/gI'
+      else
+          normal [[ma%mb
+          call signature#sign#Refresh(1)
+          redraw
+          return "'a,'bs/\\<". sel_str. '\>/'. sel_str. '/gI'
+      endif
   endfunction
 
   " For local replace
@@ -2122,6 +2128,15 @@ endif
     let g:cpp_experimental_template_highlight = 0
     let g:cpp_concepts_highlight = 0
     let g:cpp_no_function_highlight = 0
+"}}}
+
+" vim-grepper{{{1
+    let g:grepper = {}
+    let g:grepper.highlight = 0
+    let g:grepper.open = 1
+    let g:grepper.quickfix = 1
+    let g:grepper.switch = 0
+    let g:grepper.jump = 0
 "}}}
 
 " VimL Debug{{{1

@@ -34,6 +34,7 @@ wiki:wiki,md,sh
 --glob=!*.orig
 --glob=!*.rej
 --glob=!.cscope.files
+--glob=!compile_commands.json
 
 # Set the colors.
 --colors=line:none
