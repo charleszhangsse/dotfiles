@@ -352,7 +352,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'rickhowe/diffchar.vim'
     Plug 'huawenyu/vim-log-syntax'
     Plug 'Shougo/vinarise.vim' | " Hex viewer
-    Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  | " brew install prettier
+    "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  | " brew install prettier
 "}}}
 
 " Vimwiki {{{2
@@ -480,9 +480,9 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tomtom/quickfixsigns_vim'
     "Plug 'tomtom/vimform_vim'
     "Plug 'jceb/vim-editqf'            | " notes when review source
-    Plug 'romainl/vim-qf'              | " Tame the quickfix window
     "Plug 'huawenyu/highlight.vim'
     Plug 'huawenyu/vim-signature'      | " place, toggle and display marks
+    Plug 'romainl/vim-qf'              | " Tame the quickfix window
 
     " File/Explore {{{3
         " Plugin 'defx'
