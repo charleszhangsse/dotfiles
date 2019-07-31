@@ -12,8 +12,8 @@
 172.18.2.169	ftpsvr
 
 # My gdb remote
-#10.1.1.127		dut
-172.18.20.61	dut
+10.1.1.127		dut
+#172.18.20.61	dut
 
 #192.168.100.17	gerrit.fortinet.com
 172.16.100.52   scm-yvr-mirror.fortinet.com

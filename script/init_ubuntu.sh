@@ -43,7 +43,8 @@ sudo apt-get install -y build-essential ia32-libs libc6-dbg:i386 manpages-dev
 # [brew](http://http://linuxbrew.sh/): substitute for apt-get install
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 brew install neovim
-brew install todo-txt
+# An kind of node package manager
+brew install yarn
 brew unlink python@2
 brew unlink python@3
 

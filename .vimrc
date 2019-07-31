@@ -245,7 +245,7 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Mode {{{2
-    " Tags {{{3
+    " Tags/cscope {{{3
         " [Tags](https://zhuanlan.zhihu.com/p/36279445)
         " [C++](https://www.zhihu.com/question/47691414/answer/373700711)
         "
@@ -257,8 +257,9 @@ call plug#begin('~/.vim/bundle')
         "Plug 'lyuts/vim-rtags'
         "Plug 'w0rp/ale'   | " 1. Not using clang's lint, 2. find references look not work
 
+        " Please install yarn (-- a node package manger) first.
         "Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometime find references fail
-        Plug 'neoclide/coc.nvim', {'on': '<Plug>(coc-definition)', 'do': 'yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc.nvim', {'on': ['<Plug>(coc-definition)', '<Plug>(coc-references)'], 'do': 'yarn install --frozen-lockfile'}  | " Increase stable by only load the plugin after the 1st command call.
     "}}}
 
     " Python {{{3
@@ -485,6 +486,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'huawenyu/highlight.vim'
     Plug 'huawenyu/vim-signature'      | " place, toggle and display marks
     Plug 'romainl/vim-qf'              | " Tame the quickfix window
+    Plug 'Timoses/vim-venu'            | " :VenuPrint
 
     " File/Explore {{{3
         " Plugin 'defx'
@@ -520,10 +522,10 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " Async {{{3
-        Plug 'Shougo/vimproc.vim', {'do' : 'make'}
         "Plug 'tpope/vim-dispatch'
         "Plug 'huawenyu/vim-dispatch'        | " Run every thing. :Dispatch :Make :Start man 3 printf
         "Plug 'radenling/vim-dispatch-neovim', Cond(has('nvim'))
+        Plug 'Shougo/vimproc.vim', {'do' : 'make'}
         Plug 'skywind3000/asyncrun.vim'
         Plug 'huawenyu/neomake', Cond(has('nvim'))
     "}}}
@@ -556,8 +558,8 @@ call plug#begin('~/.vim/bundle')
         "Plug 'apalmer1377/factorus'
 
         " Execute eval script: using singlecompile
-        Plug 'thinca/vim-quickrun'                      | " :QuickRun
-        Plug 'fboender/bexec'                           | " :Bexec
+        "Plug 'thinca/vim-quickrun'                      | " :QuickRun
+        "Plug 'fboender/bexec'                           | " :Bexec
         Plug 'huawenyu/SingleCompile'                     | " :SingleCompile, SingleCompileRun
         Plug 'amiorin/vim-eval'
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
@@ -653,6 +655,8 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " ThirdpartLibrary {{{2
+    "Plug 'vim-jp/vital.vim'
+    "Plug 'google/vim-maktaba'
     Plug 'tomtom/tlib_vim'
 "}}}
 
@@ -1877,13 +1881,15 @@ endif
 
   " vim-eval
   let g:eval_viml_map_keys = 0
-  autocmd FileType vim nnoremap <buffer> <leader>ec  <Plug>eval_viml
+  autocmd FileType vim nnoremap <buffer> <leader>ec <Plug>eval_viml
   autocmd FileType vim vnoremap <buffer> <leader>ec <Plug>eval_viml_region
 
   " Test
   "nnoremap <silent> <leader>t :<c-u>R <C-R>=printf("python -m doctest -m trace --listfuncs --trackcalls %s \| tee log.test", expand('%:p'))<cr><cr>
-  nnoremap <silent> <leader>tt :<c-u>R <C-R>=printf("python -m doctest %s \| tee log.test", expand('%:p'))<cr><cr>
-  nnoremap <silent> <leader>tr :<c-u>R <C-R>=printf("python -m trace --trace %s \|  grep %s", expand('%:p'), expand('%'))<cr><cr>
+  autocmd FileType python nnoremap <buffer> <leader>tt :<c-u>R <C-R>=printf("python -m doctest %s \| tee log.test", expand('%:p'))<cr><cr>
+  autocmd FileType python nnoremap <buffer> <leader>tr :<c-u>R <C-R>=printf("python -m trace --trace %s \|  grep %s", expand('%:p'), expand('%'))<cr><cr>
+
+  autocmd FileType c nnoremap <buffer> <leader>tt :<c-u>AsyncRun! tagme<cr>
 
   vnoremap <silent> <leader>yy :<c-u>call utils#GetSelected("/tmp/vim.yank")<CR>
   nnoremap <silent> <leader>yy  :<c-u>call vimuxscript#Copy() <CR>
@@ -2105,6 +2111,17 @@ endif
 
     nnoremap <leader>mw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
 
+    " Please silent and don't make troubles
+    let g:qf_mapping_ack_style = 0
+    let g:qf_window_bottom = 0
+    let g:qf_loclist_window_bottom = 0
+    let g:qf_auto_open_quickfix = 0
+    let g:qf_auto_open_loclist = 0
+    let g:qf_auto_resize = 0
+    let g:qf_auto_quit = 0
+    let g:qf_save_win_view = 0
+    let g:qf_max_height = 4
+
     "nnoremap <leader>mn :QFAddNote note:
     nnoremap <leader>ms :SaveList 
     nnoremap <leader>mS :SaveListAdd 
@@ -2140,6 +2157,27 @@ endif
     let g:grepper.quickfix = 1
     let g:grepper.switch = 0
     let g:grepper.jump = 0
+"}}}
+
+" vim-venu{{{1
+    let s:menu1 = venu#create('My first V̂enu')
+    call venu#addItem(s:menu1, 'Item of first menu', 'echo "Called first item"')
+    call venu#register(s:menu1)
+
+    function! s:myfunction() abort
+        echo "I called myfunction"
+    endfunction
+
+    let s:menu2 = venu#create('My second V̂enu')
+    call venu#addItem(s:menu2, 'Call a function ref', function("s:myfunction"))
+
+    let s:submenu = venu#create('My awesome subV̂enu')
+    call venu#addItem(s:submenu, 'Item 1', ':echo "First item of submenu!"')
+    call venu#addItem(s:submenu, 'Item 2', ':echo "Second item of submenu!"')
+
+    " Add the submenu to the second menu
+    call venu#addItem(s:menu2, 'Sub menu', s:submenu)
+    call venu#register(s:menu2)
 "}}}
 
 " VimL Debug{{{1
