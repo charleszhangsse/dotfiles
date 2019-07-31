@@ -270,6 +270,10 @@ call plug#begin('~/.vim/bundle')
         Plug 'python-mode/python-mode'
         Plug 'davidhalter/jedi-vim'
     "}}}
+    "
+    " LaTeX {{{3
+        Plug 'lervag/vimtex'  | " A modern vim plugin for editing LaTeX files
+    "}}}
 
     " Perl {{{3
         Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
@@ -327,6 +331,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'megaannum/self'
     "Plug 'megaannum/forms'
     "Plug 'mhinz/vim-startify'
+    "Plug 'pi314/ime.vim'    | " Chinese input in vim
 "}}}
 
 " Syntax/Language {{{2
@@ -591,16 +596,24 @@ call plug#begin('~/.vim/bundle')
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
     Plug 'cohama/agit.vim'    | " :Agit show git log like gitk
-    Plug 'tpope/vim-fugitive' | " Awesome git wrapper
-      " :Gblame   Show help in blame window and input 'g?'
-      "     o     open commit in horizontal split
-      "     O     open commit in new tab
-      "     ~     reblame at [count]th first grandparent
+    Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'  | " Awesome git wrapper
+      " vim-fugitive: git-base
+      "   :Gblame     Show help in blame window and input 'g?'
+      "       o       open commit in horizontal split
+      "       O       open commit in new tab
+      "       ~       reblame at [count]th first grandparent
       "
-      "     -     reblame at commit
-      "     P     reblame at [count]th parent (like HEAD^[count])
-      " :Glog     Show current file's all history version
-      " :Git      Execute git command
+      "       -       reblame at commit
+      "       P       reblame at [count]th parent (like HEAD^[count])
+      "   :Glog       Show current file's all history version
+      "   :Git        Execute git command
+      " gv.vim:       commit browser
+      "   :GV         to open commit browser, suppot log options, e.g. :GV -S foobar.
+      "   :GV!        will only list commits that affected the current file
+      "   :GV?        fills the location list with the revisions of the current file
+      "      o/<cr>   on a commit to display the content/diff on the new open side window.
+
+    "Plug 'junegunn/fzf.vim'      | " base-on: https://github.com/junegunn/fzf
     Plug 'codeindulgence/vim-tig' | " Using tig in neovim
     "Plug 'juneedahamed/svnj.vim'
     Plug 'juneedahamed/vc.vim'| " Support git, svn, ...
@@ -1812,6 +1825,7 @@ endif
 
   "nnoremap         <leader>bb :VCBlame<cr>
   nnoremap         <leader>bb :Gblame<cr>
+  nnoremap         <leader>bl :GV
 
   nnoremap <silent> <leader>v] :NeomakeSh! tagme<cr>
   nnoremap <silent> <leader>vi :call utils#VoomInsert(0) <CR>
@@ -2113,7 +2127,7 @@ endif
     nnoremap <leader>mw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
 
     " Please silent and don't make troubles
-    let g:qf_mapping_ack_style = 0
+    "let g:qf_mapping_ack_style = 0       | " donnot set this variable, for exist() trigger the keymap
     let g:qf_window_bottom = 0
     let g:qf_loclist_window_bottom = 0
     let g:qf_auto_open_quickfix = 0
