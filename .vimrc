@@ -584,8 +584,9 @@ call plug#begin('~/.vim/bundle')
 
 " Integration {{{2
     Plug 'idanarye/vim-vebugger'
+    "Plug 'huawenyu/neogdb.vim', {'on': ['Nbgdbattach', 'Nbgdb']}  |", Cond(has('nvim'))
     Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
-    Plug 'cpiger/NeoDebug', Cond(has('nvim'))
+    Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
 
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
