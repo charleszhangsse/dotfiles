@@ -8,14 +8,18 @@ import ast
 import fcntl
 import os
 import re
+import time
 import struct
 import termios
-import neovim
+import threading
+import queue
+import pynvim as neovim
 
 # Globals ------------------------------------------------------------
-g_gdb_tmux_id = ""
 g_vim_state = 0
 g_vim = None
+g_rpc_notify_Q = queue.Queue()        # receive request from nvim server
+g_rpc_command_Q = queue.Queue()       # the request waiting sendto nvim server
 
 g_vim_servername = "/tmp/nvim.gdb"
 g_vim_source_init_str = ""
@@ -187,6 +191,29 @@ def format_address(address):
     pointer_size = gdb.parse_and_eval('$pc').type.sizeof
     return ('0x{{:0{}x}}').format(pointer_size * 2).format(address)
 
+# Coperate with neovim-msgpack
+def request_cb(name, args):
+    global g_rpc_notify_Q
+
+    g_rpc_notify_Q.put(name)
+
+def notify_cb(name, args):
+    global g_rpc_notify_Q
+
+    g_rpc_notify_Q.put(name)
+
+def run_loop():
+    global g_vim
+
+    g_vim.run_loop(request_cb, notify_cb)
+
+def next_message():
+    global g_rpc_notify_Q
+
+    if not g_rpc_notify_Q.empty():
+        return g_rpc_notify_Q.get()
+    return None
+
 # Dashboard --------------------------------------------------------------------
 
 class Dashboard(gdb.Command):
@@ -206,6 +233,7 @@ class Dashboard(gdb.Command):
         # setup events
         gdb.events.cont.connect(lambda _: self.on_continue())
         gdb.events.stop.connect(lambda _: self.on_stop())
+        gdb.events.before_prompt.connect(lambda : self.on_before_prompt())
         gdb.events.exited.connect(lambda _: self.on_exit())
 
     def on_continue(self):
@@ -228,8 +256,16 @@ class Dashboard(gdb.Command):
             clear = Dashboard.clear_screen() if self.output else ''
             self.display(clear, self.build(), '\n')
 
+
+    def on_before_prompt(self):
+        print("gdb-event-type: prompt")
+
     def on_exit(self):
+        print("gdb-event-type: exit")
         pass
+
+    def handle_notify(self, name):
+        run(name)
 
     def load_modules(self, modules):
         self.modules = []
@@ -258,20 +294,48 @@ class Dashboard(gdb.Command):
         # Check vim server exist
         g_vim_state = 0
         try:
+            """
+            import threading
+            import Queue
+            from pynvim import attach
+
+            q = Queue.Queue()
+            nvim = attach('socket', path='/tmp/nvim')
+            buffer = nvim.current.buffer
+            buffer[0] = 'replace first line'
+            buffer[:] = ['replace whole buffer']
+            #nvim.command('vsplit')
+            #nvim.windows[1].width = 10
+            nvim.vars['global_var'] = [1, 2, 3]
+            nvim.eval('g:global_var')
+            nvim.channel_id
+
+            def notify_cb(name, args):
+                q.put(name)
+
+            def loop_me():
+                nvim.run_loop(None, notify_cb)
+
+            def peek():
+                if not q.empty():
+                    print q.get()
+
+            x = threading.Thread(target=loop_me, args=())
+            x.setDaemon(True)
+
+            # This is the main-thread, if call start(), the main-thread change
+            # to the daemon, that means we cannot use nvim.command() directly in
+            # current context, just use like: nvim.async_call(nvim.command, args)
+            #x.start()
+
+            """
             g_vim = neovim.attach('socket', path=os.environ.get(
                 "NVIM_LISTEN_ADDRESS", g_vim_servername))
             g_vim_state = 1
-            """
-            if not g_vim.eval('g:tmux_gdb'):
-                if not g_vim_source_init_str:
-                    g_vim_source_init_str = "<ESC>:silent! GdbMode " \
-                        + g_gdb_tmux_id + " " \
-                        + g_vim_servername + " " \
-                        + g_vim_gdb_output + " " \
-                        + "<Enter>"
-
-                g_vim.command(g_vim_source_init_str)
-            """
+            g_vim.vars['gdb_channel_id'] = g_vim.channel_id
+            t_rpc = threading.Thread(target=run_loop, args=())
+            t_rpc.setDaemon(True)
+            t_rpc.start()
         except:
             pass
 
@@ -316,9 +380,21 @@ class Dashboard(gdb.Command):
                     lines.extend(module_lines)
 
         if g_vim_state > 0:
-            g_vim.command("GdbRefresh " \
-                + g_vim_source_fname + " " \
-                + g_vim_source_fname_line)
+            #g_vim.command("GdbRefresh " \
+            #    + g_vim_source_fname + " " \
+            #    + g_vim_source_fname_line)
+
+            """ copy from bpython
+            │ nvim.async_call: (self, fn, *args, **kwargs)
+            │ async_call
+            │ Schedule `fn` to be called by the event loop soon.
+            │
+            │ This function is thread-safe, and is the only way code not
+            │ on the main thread could interact with nvim api objects.
+            """
+            g_vim.async_call(g_vim.command, "e " \
+                             + g_vim_source_fname + ":" \
+                             + g_vim_source_fname_line)
 
             return ""
         else:
@@ -330,11 +406,7 @@ class Dashboard(gdb.Command):
                     lines.append('No module to display (see `help dashboard`)')
 
             lines.append(divider(primary=True))
-
-            # print the dashboard
-            output_lines = '\n'.join(lines)
-
-            return output_lines
+# print the dashboard output_lines = '\n'.join(lines) return output_lines
 
     def display(self, *data):
         # gdb module has both write() and flush()
@@ -350,12 +422,7 @@ class Dashboard(gdb.Command):
 
     @staticmethod
     def start():
-        global g_gdb_tmux_id
-
         os.system("mkdir -p " + g_vim_gdb_output)
-        g_gdb_tmux_id = os.popen("tmux display -p '#I.#P'").read().strip('\n')
-        os.system("tmux pipe-pane -t " + g_gdb_tmux_id \
-                    + " -o 'cat >>" + g_vim_gdb_output + "out'")
 
         # initialize the dashboard
         dashboard = Dashboard()

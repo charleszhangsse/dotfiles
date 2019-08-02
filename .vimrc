@@ -258,8 +258,8 @@ call plug#begin('~/.vim/bundle')
         "Plug 'w0rp/ale'   | " 1. Not using clang's lint, 2. find references look not work
 
         " Please install yarn (-- a node package manger) first.
-        "Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometime find references fail
-        Plug 'neoclide/coc.nvim', {'on': ['<Plug>(coc-definition)', '<Plug>(coc-references)'], 'do': 'yarn install --frozen-lockfile'}  | " Increase stable by only load the plugin after the 1st command call.
+        Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometimes find references fail
+        "Plug 'neoclide/coc.nvim', {'on': ['<Plug>(coc-definition)', '<Plug>(coc-references)'], 'do': 'yarn install --frozen-lockfile'}  | " Increase stable by only load the plugin after the 1st command call.
     "}}}
 
     " Python {{{3
@@ -491,7 +491,10 @@ call plug#begin('~/.vim/bundle')
     "Plug 'huawenyu/highlight.vim'
     Plug 'huawenyu/vim-signature'      | " place, toggle and display marks
     Plug 'romainl/vim-qf'              | " Tame the quickfix window
+
+    " Gen menu
     Plug 'Timoses/vim-venu'            | " :VenuPrint
+    Plug 'skywind3000/quickmenu.vim'   | "
 
     " File/Explore {{{3
         " Plugin 'defx'
@@ -590,8 +593,9 @@ call plug#begin('~/.vim/bundle')
 " Integration {{{2
     Plug 'idanarye/vim-vebugger'
     "Plug 'huawenyu/neogdb.vim', {'on': ['Nbgdbattach', 'Nbgdb']}  |", Cond(has('nvim'))
-    Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
-    Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
+    "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
+    Plug 'huawenyu/neogdb2.vim', Cond(has('nvim'))
+    "Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
 
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
@@ -2193,6 +2197,34 @@ endif
     " Add the submenu to the second menu
     call venu#addItem(s:menu2, 'Sub menu', s:submenu)
     call venu#register(s:menu2)
+"}}}
+
+" Quickmenu{{{1
+    noremap <silent> <leader>mh :call quickmenu#toggle(0)<cr>
+
+    " clear all the items
+    call quickmenu#reset()
+    " enable cursorline (L) and cmdline help (H)
+    let g:quickmenu_options = "HL"
+
+    " new section: empty action with text starts with "#" represent a new section
+    call quickmenu#append("# Debug", '')
+
+    " script between %{ and } will be evaluated before menu open
+    call quickmenu#append("Run %{expand('%:t')}", '!./%', "Run current file")
+
+    " new section
+    call quickmenu#append("# Git", '')
+
+    " use fugitive to show diff
+    call quickmenu#append("git diff", 'Gvdiff', "use fugitive's Gvdiff on current document")
+    call quickmenu#append("git status", 'Gstatus', "use fugitive's Gstatus on current document")
+
+    " new section
+    call quickmenu#append("# Misc", '')
+    call quickmenu#append("Turn paste %{&paste? 'off':'on'}", "set paste!", "enable/disable paste mode (:set paste!)")
+    call quickmenu#append("Turn spell %{&spell? 'off':'on'}", "set spell!", "enable/disable spell check (:set spell!)")
+    call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 "}}}
 
 " VimL Debug{{{1
