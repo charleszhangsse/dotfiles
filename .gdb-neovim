@@ -13,6 +13,7 @@ import struct
 import termios
 import threading
 import queue
+import logging
 import pynvim as neovim
 
 # Globals ------------------------------------------------------------
@@ -26,6 +27,9 @@ g_vim_source_init_str = ""
 g_vim_gdb_output = "/tmp/gdb/"
 g_vim_source_fname = ""
 g_vim_source_fname_line = ""
+
+logging.basicConfig(level=logging.DEBUG, filename='/tmp/gdb.log')
+logging.info("gdb starting ...")
 
 # Common attributes ------------------------------------------------------------
 class R():
@@ -191,16 +195,18 @@ def format_address(address):
     pointer_size = gdb.parse_and_eval('$pc').type.sizeof
     return ('0x{{:0{}x}}').format(pointer_size * 2).format(address)
 
-# Coperate with neovim-msgpack
+# Cooperate with neovim-msgpack
 def request_cb(name, args):
     global g_rpc_notify_Q
 
     g_rpc_notify_Q.put(name)
+    return "Done"
 
 def notify_cb(name, args):
     global g_rpc_notify_Q
 
     g_rpc_notify_Q.put(name)
+    return "Done"
 
 def run_loop():
     global g_vim
@@ -236,6 +242,11 @@ class Dashboard(gdb.Command):
         gdb.events.before_prompt.connect(lambda : self.on_before_prompt())
         gdb.events.exited.connect(lambda _: self.on_exit())
 
+        #gdb.events.register_changed.connect(lambda _: self.on_register_changed())
+        #gdb.events.memory_changed.connect(lambda _: self.on_memory_changed())
+        #gdb.events.inferior_call.connect(lambda _: self.on_inferior_call())
+
+
     def on_continue(self):
         # try to contain the GDB messages in a specified area unless the
         # dashboard is printed to a separate file
@@ -252,20 +263,39 @@ class Dashboard(gdb.Command):
         # redisplay the dashboard when the target program stops (the screen is
         # cleared by on_continue when the dashboard is printed to a separate
         # file)
+        self.handle_notify()
         if self.enabled and self.is_running():
             clear = Dashboard.clear_screen() if self.output else ''
             self.display(clear, self.build(), '\n')
 
 
     def on_before_prompt(self):
-        print("gdb-event-type: prompt")
+        self.handle_notify()
+
+    def on_register_changed(self):
+        print("gdb-event-type: register")
+        pass
+
+    def on_memory_changed(self):
+        print("gdb-event-type: memory")
+        pass
+
+    def on_inferior_call(self):
+        print("gdb-event-type: inferior")
+        pass
 
     def on_exit(self):
         print("gdb-event-type: exit")
         pass
 
-    def handle_notify(self, name):
-        run(name)
+    def handle_notify(self):
+        while True:
+            msg = next_message()
+            if not msg:
+                break;
+            run('next')
+            #print(msg)
+            #elf.handle_notify(msg)
 
     def load_modules(self, modules):
         self.modules = []
@@ -329,13 +359,33 @@ class Dashboard(gdb.Command):
             #x.start()
 
             """
-            g_vim = neovim.attach('socket', path=os.environ.get(
-                "NVIM_LISTEN_ADDRESS", g_vim_servername))
-            g_vim_state = 1
-            g_vim.vars['gdb_channel_id'] = g_vim.channel_id
-            t_rpc = threading.Thread(target=run_loop, args=())
-            t_rpc.setDaemon(True)
-            t_rpc.start()
+
+            print("gdb start ...")
+            #print('gdb connect to {} ...'.format(path=os.environ.get(
+            #    "NVIM_LISTEN_ADDRESS", g_vim_servername)))
+
+            if g_vim and g_vim.channel_id:
+                print("gdb start 0 ...")
+                return g_vim_state
+            else:
+                print("gdb start 1 ...")
+                #print('gdb connect to {} ...'.format(path=os.environ.get(
+                #    "NVIM_LISTEN_ADDRESS", g_vim_servername)))
+
+                #g_vim = neovim.attach('socket', path=os.environ.get(
+                #    "NVIM_LISTEN_ADDRESS", g_vim_servername))
+                g_vim = neovim.attach('socket', path='/tmp/nvim.gdb')
+                print("gdb start 2 ...")
+                g_vim_state = 1
+                print('neovim channel_id={}'.format(g_vim.channel_id))
+                g_vim.vars['gdb_channel_id'] = g_vim.channel_id
+                g_vim.command('Nbgdb t1')
+                print(g_vim.eval('g:gdb_channel_id'))
+                logging.debug("set gdb_channel_id={}", g_vim.channel_id)
+
+                t_rpc = threading.Thread(target=run_loop, args=())
+                t_rpc.setDaemon(True)
+                t_rpc.start()
         except:
             pass
 

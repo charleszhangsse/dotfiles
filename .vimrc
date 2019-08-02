@@ -565,11 +565,6 @@ call plug#begin('~/.vim/bundle')
         "Plug 'bbchung/Clamp' | " support C-family code powered by libclang
         "Plug 'apalmer1377/factorus'
 
-        " Execute eval script: using singlecompile
-        "Plug 'thinca/vim-quickrun'                      | " :QuickRun
-        "Plug 'fboender/bexec'                           | " :Bexec
-        Plug 'huawenyu/SingleCompile'                     | " :SingleCompile, SingleCompileRun
-        Plug 'amiorin/vim-eval'
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
         Plug 'kassio/neoterm'    | " Wrapper of some vim/neovim's terminal: 
 
@@ -596,6 +591,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
     Plug 'huawenyu/neogdb2.vim', Cond(has('nvim'))
     "Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
+    " NVIM_LISTEN_ADDRESS=/tmp/nvim.gdb vi
 
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
@@ -679,9 +675,17 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Debug {{{2
-    Plug 'gu-fan/doctest.vim'     | " doctest for language vimscript
-    Plug 'tpope/vim-scriptease'
+    " Execute eval script: using singlecompile
+    "Plug 'thinca/vim-quickrun'                      | " :QuickRun
+    "Plug 'fboender/bexec'                           | " :Bexec
+    Plug 'huawenyu/SingleCompile'                     | " :SingleCompile, SingleCompileRun
+    Plug 'amiorin/vim-eval'
+
+    Plug 'gu-fan/doctest.vim'     | " doctest for language vimscript, :DocTest
+    Plug 'tpope/vim-scriptease'   | " A Vim plugin for Vim plugins
     Plug 'huawenyu/vimlogger'
+    "Plug 'vim-scripts/TailMinusF' | " Too slow, :Tail <file>
+    Plug 'junegunn/vader.vim'     | " A simple Vimscript test framework
     "Plug 'huawenyu/Decho'
     "Plug 'c9s/vim-dev-plugin'   | " gf: goto-function-define, but when edit vimrc will trigger error
 "}}}
@@ -1613,9 +1617,9 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
 
         "autocmd filetype vimwiki  nnoremap <buffer> <a-o> :VoomToggle vimwiki<CR>
         autocmd filetype vimwiki  nnoremap <buffer> <a-'> :VoomToggle markdown<CR>
-        autocmd filetype vimwiki  nnoremap <a-n> :VimwikiMakeDiaryNote<CR>
-        autocmd filetype vimwiki  nnoremap <a-i> :VimwikiDiaryGenerateLinks<CR>
-        autocmd filetype vimwiki  nnoremap <a-c> :call ToggleCalendar()<CR>
+        "autocmd filetype vimwiki  nnoremap <a-n> :VimwikiMakeDiaryNote<CR>
+        "autocmd filetype vimwiki  nnoremap <a-i> :VimwikiDiaryGenerateLinks<CR>
+        "autocmd filetype vimwiki  nnoremap <a-c> :call ToggleCalendar()<CR>
 
         autocmd filetype markdown nnoremap <buffer> <a-'> :VoomToggle markdown<CR>
         autocmd filetype python   nnoremap <buffer> <a-'> :VoomToggle python<CR>
