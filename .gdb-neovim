@@ -3,11 +3,22 @@ python
 # GDB dashboard - Modular visual interface for GDB in Python.
 #
 # https://github.com/cyrus-and/gdb-dashboard
+#
+# PreRequire:
+#   pip install pynvim
+#
+# Usage:
+#   1. softlink our customize pretty-printer dir into ~/.gdbinit.d/
+#   2. softlink our ~/.gdbinit:
+#        If link as ~/.gdbinit, then run gdb as usualy,
+#        Or $ gdb -x <this-file> <your-program>
 
 import ast
 import fcntl
 import os
+import os.path
 import re
+import sys
 import time
 import struct
 import termios
@@ -27,9 +38,16 @@ g_vim_source_init_str = ""
 g_vim_gdb_output = "/tmp/gdb/"
 g_vim_source_fname = ""
 g_vim_source_fname_line = ""
+g_listPseudoUpdate = ['up', 'down']
 
-logging.basicConfig(level=logging.DEBUG, filename='/tmp/gdb.log')
-logging.info("gdb starting ...")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+mylog_handler = logging.FileHandler('/tmp/gdb.log')
+mylog_handler.setLevel(logging.DEBUG)
+mylog_formatter = logging.Formatter('[%(asctime)s][%(levelname)5s] %(filename)s:%(lineno)s %(funcName)s(): %(message)s', "%H:%M:%S")
+mylog_handler.setFormatter(mylog_formatter)
+logger.addHandler(mylog_handler)
+logger.info('Hello .gdbinit with level={}'.format(logger.level))
 
 # Common attributes ------------------------------------------------------------
 class R():
@@ -202,11 +220,48 @@ def request_cb(name, args):
     g_rpc_notify_Q.put(name)
     return "Done"
 
+class Executor:
+    def __init__(self, cmd):
+        self.__cmd = cmd
+
+    def __call__(self):
+        logger.info('nvim notify_cb: {}'.format(self.__cmd))
+        gdb.execute(self.__cmd)
+
+class ExecutorUpdate:
+    def __init__(self, cmd):
+        self.__cmd = cmd
+
+    def __call__(self):
+        logger.info('pseudo notify_cb event triggered by {}'.format(self.__cmd))
+        global g_vim_source_fname
+        global g_vim_source_fname_line
+
+        logger.debug("gdb-event-type: before_prompt")
+        try:
+            frame = gdb.selected_frame()
+        except gdb.error:
+            return
+        if frame.type() != gdb.NORMAL_FRAME:
+            return
+        sal = frame.find_sal()
+        if sal is None or sal.symtab is None:
+            return
+        g_vim_source_fname = sal.symtab.fullname()
+        g_vim_source_fname_line = str(sal.line)
+
+        logger.debug("call GdbUpdate")
+        g_vim.async_call(g_vim.command, "GdbUpdate " \
+                            + g_vim_source_fname + " " \
+                            + g_vim_source_fname_line)
+
 def notify_cb(name, args):
     global g_rpc_notify_Q
 
-    g_rpc_notify_Q.put(name)
-    return "Done"
+    #g_rpc_notify_Q.put(name)
+    gdb.post_event(Executor(name)) # and post the continue command to gdb
+    if name in g_listPseudoUpdate:
+        gdb.post_event(ExecutorUpdate(name)) # fake event to trigger frame changed
 
 def run_loop():
     global g_vim
@@ -219,6 +274,27 @@ def next_message():
     if not g_rpc_notify_Q.empty():
         return g_rpc_notify_Q.get()
     return None
+
+# Customer commands ------------------------------------------------------------
+
+class IgnoreErrorsCommand (gdb.Command):
+    """ https://sourceware.org/ml/gdb/2010-06/msg00100.html
+    Execute a single command, ignoring all errors.
+    Only one-line commands are supported.
+    This is primarily useful in scripts.
+    """
+    def __init__ (self):
+        super (IgnoreErrorsCommand, self).__init__ ("ignore-errors",
+                                                    gdb.COMMAND_OBSCURE,
+                                                    # FIXME...
+                                                    gdb.COMPLETE_COMMAND)
+    def invoke (self, arg, from_tty):
+        try:
+            gdb.execute (arg, from_tty)
+        except:
+            pass
+
+IgnoreErrorsCommand()
 
 # Dashboard --------------------------------------------------------------------
 
@@ -239,17 +315,17 @@ class Dashboard(gdb.Command):
         # setup events
         gdb.events.cont.connect(lambda _: self.on_continue())
         gdb.events.stop.connect(lambda _: self.on_stop())
-        gdb.events.before_prompt.connect(lambda : self.on_before_prompt())
         gdb.events.exited.connect(lambda _: self.on_exit())
-
+        #gdb.events.before_prompt.connect(lambda : self.on_before_prompt())
         #gdb.events.register_changed.connect(lambda _: self.on_register_changed())
         #gdb.events.memory_changed.connect(lambda _: self.on_memory_changed())
         #gdb.events.inferior_call.connect(lambda _: self.on_inferior_call())
-
+        #gdb.events.new_inferior.connect(lambda _: self.on_new_inferior())
 
     def on_continue(self):
         # try to contain the GDB messages in a specified area unless the
         # dashboard is printed to a separate file
+        logger.debug("gdb-event-type: continue")
         if self.enabled and self.is_running() and not self.output:
             Dashboard.update_term_width()
 
@@ -263,39 +339,52 @@ class Dashboard(gdb.Command):
         # redisplay the dashboard when the target program stops (the screen is
         # cleared by on_continue when the dashboard is printed to a separate
         # file)
-        self.handle_notify()
+        logger.debug("gdb-event-type: stop")
         if self.enabled and self.is_running():
             clear = Dashboard.clear_screen() if self.output else ''
             self.display(clear, self.build(), '\n')
 
-
     def on_before_prompt(self):
-        self.handle_notify()
+        # If the command frame up/down come from outside, and execute by
+        # post_event(), no events.on_before_prompt triggered
+
+        global g_vim_source_fname
+        global g_vim_source_fname_line
+
+        logger.debug("gdb-event-type: before_prompt")
+        try:
+            frame = gdb.selected_frame()
+        except gdb.error:
+            return
+        if frame.type() != gdb.NORMAL_FRAME:
+            return
+        sal = frame.find_sal()
+        if sal is None or sal.symtab is None:
+            return
+        g_vim_source_fname = sal.symtab.fullname()
+        g_vim_source_fname_line = str(sal.line)
+        return
 
     def on_register_changed(self):
-        print("gdb-event-type: register")
-        pass
+        logger.debug("gdb-event-type: register")
+        return
 
     def on_memory_changed(self):
-        print("gdb-event-type: memory")
-        pass
+        logger.debug("gdb-event-type: memory")
+        return
 
     def on_inferior_call(self):
-        print("gdb-event-type: inferior")
-        pass
+        logger.debug("gdb-event-type: inferior_call")
+        return
+
+    def on_new_inferior(self):
+        logger.debug("gdb-event-type: new_inferior")
+        return
 
     def on_exit(self):
-        print("gdb-event-type: exit")
-        pass
-
-    def handle_notify(self):
-        while True:
-            msg = next_message()
-            if not msg:
-                break;
-            run('next')
-            #print(msg)
-            #elf.handle_notify(msg)
+        logger.debug("gdb-event-type: exit")
+        gdb.execute("save breakpoints /tmp/gdb/breakpoints.raw")
+        return
 
     def load_modules(self, modules):
         self.modules = []
@@ -320,9 +409,10 @@ class Dashboard(gdb.Command):
         global g_vim
         global g_vim_source_init_str
         global g_vim_gdb_output
+        global g_vim_servername
 
         # Check vim server exist
-        g_vim_state = 0
+        # g_vim_state = 0
         try:
             """
             import threading
@@ -360,28 +450,22 @@ class Dashboard(gdb.Command):
 
             """
 
-            print("gdb start ...")
-            #print('gdb connect to {} ...'.format(path=os.environ.get(
-            #    "NVIM_LISTEN_ADDRESS", g_vim_servername)))
-
             if g_vim and g_vim.channel_id:
-                print("gdb start 0 ...")
+                g_vim_state = 1
                 return g_vim_state
             else:
-                print("gdb start 1 ...")
-                #print('gdb connect to {} ...'.format(path=os.environ.get(
-                #    "NVIM_LISTEN_ADDRESS", g_vim_servername)))
-
-                #g_vim = neovim.attach('socket', path=os.environ.get(
-                #    "NVIM_LISTEN_ADDRESS", g_vim_servername))
-                g_vim = neovim.attach('socket', path='/tmp/nvim.gdb')
-                print("gdb start 2 ...")
+                logger.info("gdb connect to neovim at {}".format(os.getenv('NVIM_LISTEN_ADDRESS', g_vim_servername)))
+                g_vim = neovim.attach('socket', path=os.getenv('NVIM_LISTEN_ADDRESS', g_vim_servername))
                 g_vim_state = 1
-                print('neovim channel_id={}'.format(g_vim.channel_id))
                 g_vim.vars['gdb_channel_id'] = g_vim.channel_id
-                g_vim.command('Nbgdb t1')
-                print(g_vim.eval('g:gdb_channel_id'))
-                logging.debug("set gdb_channel_id={}", g_vim.channel_id)
+
+                logger.info("trigger GdbStart /tmp/nvim.gdb")
+                g_vim.command('GdbStart /tmp/nvim.gdb')
+
+                logger.info("trigger GdbEvent on_init")
+                g_vim.command('GdbEvent on_init')
+
+                logger.info("neovim gdb_channel_id={}".format(g_vim.channel_id))
 
                 t_rpc = threading.Thread(target=run_loop, args=())
                 t_rpc.setDaemon(True)
@@ -416,11 +500,17 @@ class Dashboard(gdb.Command):
             module = module.instance
             if g_vim_state > 0:
                 module_lines = module.vim_lines()
+                if not module_lines:
+                    continue
+
                 fname = g_vim_gdb_output + module.label().lower()
                 with open(fname, 'w+') as the_file:
                     output_lines = '\n'.join(module_lines)
                     the_file.write(output_lines)
                     the_file.close()
+
+                g_vim.async_call(g_vim.command,
+                                 "GdbEvent view_{}".format(module.label().lower()))
                 continue;
             else:
                 # active if more than zero lines
@@ -442,8 +532,9 @@ class Dashboard(gdb.Command):
             │ This function is thread-safe, and is the only way code not
             │ on the main thread could interact with nvim api objects.
             """
-            g_vim.async_call(g_vim.command, "e " \
-                             + g_vim_source_fname + ":" \
+            logger.debug("call GdbUpdate")
+            g_vim.async_call(g_vim.command, "GdbUpdate " \
+                             + g_vim_source_fname + " " \
                              + g_vim_source_fname_line)
 
             return ""
@@ -456,7 +547,7 @@ class Dashboard(gdb.Command):
                     lines.append('No module to display (see `help dashboard`)')
 
             lines.append(divider(primary=True))
-# print the dashboard output_lines = '\n'.join(lines) return output_lines
+            # print the dashboard output_lines = '\n'.join(lines) return output_lines
 
     def display(self, *data):
         # gdb module has both write() and flush()
@@ -1572,13 +1663,28 @@ end
 # Better GDB defaults ----------------------------------------------------------
 
 set history save
+set width 0
 set confirm off
 set verbose off
+set print elements 2048
 set print pretty on
 set print array off
 set print array-indexes on
 set python print-stack full
 set filename-display absolute
+
+# Some user program ipc principle, so no interrupt.
+handle SIGUSR2 noprint nostop
+
+# Uncomment if needed
+#set logging off
+#set logging file /tmp/gdb/out
+#set logging overwrite on
+#set logging redirect on
+#set logging on
+
+#if os.path.isfile('/tmp/gdb/breakpoints.raw'):
+ignore-errors source /tmp/gdb/breakpoints.raw
 
 # Start ------------------------------------------------------------------------
 python Dashboard.start()
