@@ -236,7 +236,7 @@ alias  perldoctest='perl -MTest::Doctest -e run'
 
 export AWKPATH=".:$HOME/script/awk:$HOME/script/awk/awk-libs:$AWKPATH";
 
-export PYTHONPATH="$HOME/dotwiki/lib/python"
+export PYTHONPATH=".:$HOME/dotwiki/lib/python:$PYTHONPATH"
 export PYENV_ROOT="${HOME}/.pyenv"
 
 if [ -d "${PYENV_ROOT}" ]; then

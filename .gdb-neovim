@@ -1662,7 +1662,10 @@ end
 
 # Better GDB defaults ----------------------------------------------------------
 
+set history filename ~/.gdb_history
 set history save
+set history expansion on
+set complaints 0
 set width 0
 set confirm off
 set verbose off
@@ -1672,6 +1675,10 @@ set print array off
 set print array-indexes on
 set python print-stack full
 set filename-display absolute
+
+# Enable auto load <work-dir>/.gdbinit which maybe load extra pretty-printer,
+#set auto-load safe-path $debugdir:$datadir/auto-load:./auto-load
+add-auto-load-safe-path ./
 
 # Some user program ipc principle, so no interrupt.
 handle SIGUSR2 noprint nostop
