@@ -566,7 +566,7 @@ call plug#begin('~/.vim/bundle')
         "Plug 'apalmer1377/factorus'
 
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
-        Plug 'kassio/neoterm'    | " Wrapper of some vim/neovim's terminal: 
+        Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
 
         "Plug 'webdevel/tabulous'
         Plug 'huawenyu/taboo.vim'
@@ -576,7 +576,6 @@ call plug#begin('~/.vim/bundle')
         Plug 'reedes/vim-pencil'
         Plug 'chrisbra/NrrwRgn'                         | " focus on a selected region. <leader>nr :NR - Open selected into new window; :w - (in the new window) write the changes back
         Plug 'stefandtw/quickfix-reflector.vim'
-        Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
         Plug 'junegunn/vim-easy-align'                  | " selected and ga=
         Plug 'huawenyu/c-utils.vim'
         Plug 'wsdjeg/SourceCounter.vim'
@@ -923,140 +922,170 @@ let g:neogdb_vars = {
       \ 'struct my_str *' : ['{}->val', '{}->len'],
       \ }
 
-" tabman {{{2}}}: disable old config
-let g:tabman_toggle = '<leader>xt'
-let g:tabman_focus  = '<leader>xf'
+" tabman: disable old config {{{2
+    let g:tabman_toggle = '<leader>xt'
+    let g:tabman_focus  = '<leader>xf'
+"}}}
 
-" neocomplcache {{{2}}}
-let g:acp_enableAtStartup = 0
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_smart_case = 1
-let g:neocomplcache_min_syntax_length = 3
-let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+" neocomplcache {{{2
+    let g:acp_enableAtStartup = 0
+    let g:neocomplcache_enable_at_startup = 1
+    let g:neocomplcache_enable_smart_case = 1
+    let g:neocomplcache_min_syntax_length = 3
+    let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+"}}}
 
-" tcl.vim
-let tcl_extended_syntax=1
+" tcl.vim{{{2
+    let tcl_extended_syntax=1
+"}}}
 
-" vim-rooter
-let g:rooter_manual_only = 1
-let g:rooter_patterns = ['Rakefile', '.git', '.git/', '.svn', '.svn/']
+" vim-rooter{{{2
+    let g:rooter_manual_only = 1
+    let g:rooter_patterns = ['Rakefile', '.git', '.git/', '.svn', '.svn/']
+"}}}
 
-" neomake: make & asynrun
-let g:neomake_open_list = 0
-let g:neomake_place_signs = 1
-"let g:neomake_verbose = 3
-"let g:neomake_logfile = './log.make'
-let g:neomake_warning_sign = {
-  \ 'text': 'W',
-  \ 'texthl': 'WarningMsg',
-  \ }
-let g:neomake_error_sign = {
-  \ 'text': 'E',
-  \ 'texthl': 'ErrorMsg',
-  \ }
+" neomake: make & asynrun{{{2
+    let g:neomake_open_list = 0
+    let g:neomake_place_signs = 1
+    "let g:neomake_verbose = 3
+    "let g:neomake_logfile = './log.make'
+    let g:neomake_warning_sign = {
+      \ 'text': 'W',
+      \ 'texthl': 'WarningMsg',
+      \ }
+    let g:neomake_error_sign = {
+      \ 'text': 'E',
+      \ 'texthl': 'ErrorMsg',
+      \ }
+"}}}
 
-" fuzzy
-"let g:fuzzy_file_list = ["cscope.files"]
-"let g:fuzzy_file_tag = ['tags.x', '.tags.x']
+" fuzzy{{{2
+    "let g:fuzzy_file_list = ["cscope.files"]
+    "let g:fuzzy_file_tag = ['tags.x', '.tags.x']
+"}}}
 
 " supertab
 let g:SuperTabDefaultCompletionType = "<c-n>"
 
-" neoterm
-let g:neoterm_default_mod = 'vertical'
+" neoterm{{{2
+    let g:neoterm_default_mod = 'vertical'
+    let g:neoterm_autoinsert = 1
+"}}}
 
 " easymotion {{{2
-  let g:EasyMotion_do_mapping = 0 " Disable default mappings
+    let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-  " Jump to anywhere you want with minimal keystrokes, with just one key binding.
-  " `s{char}{label}`
-  nmap s <Plug>(easymotion-overwin-f)
+    " Jump to anywhere you want with minimal keystrokes, with just one key binding.
+    " `s{char}{label}`
+    nmap s <Plug>(easymotion-overwin-f)
 
-  " or
-  " `s{char}{char}{label}`
-  " Need one more keystroke, but on average, it may be more comfortable.
-  "nmap s <Plug>(easymotion-overwin-f2)
+    " or
+    " `s{char}{char}{label}`
+    " Need one more keystroke, but on average, it may be more comfortable.
+    "nmap s <Plug>(easymotion-overwin-f2)
 "}}}
 
 " tags {{{2
 
-  " # Issue using tags:
-  "   olddir/tags
-  "   newdir/tags
-  "   cd newdir; vi ../olddir/file1 and 'ptag func'		# which will open the file in olddir
-  " # If using 'set cscopetag', this issue not exist.
-  " But if auto-update the tags with current file, we must using tags not 'set cscopetag'.
-  " And the follow one-line can fix the issue.
-  set notagrelative
+    " # Issue using tags:
+    "   olddir/tags
+    "   newdir/tags
+    "   cd newdir; vi ../olddir/file1 and 'ptag func'		# which will open the file in olddir
+    " # If using 'set cscopetag', this issue not exist.
+    " But if auto-update the tags with current file, we must using tags not 'set cscopetag'.
+    " And the follow one-line can fix the issue.
+    set notagrelative
 
-  " http://arjanvandergaag.nl/blog/combining-vim-and-ctags.html
-  "
-  " 前半部分 “./.tags; ”代表在文件的所在目录下（不是 “:pwd”返回的 Vim 当前目录）查找名字为 '.tags'的符号文件，
-  " 后面一个分号代表查找不到的话向上递归到父目录，直到找到 .tags 文件或者递归到了根目录还没找到，
-  " 逗号分隔的后半部分 .tags 是指同时在 Vim 的当前目录（“:pwd”命令返回的目录，可以用 :cd ..命令改变）下面查找 .tags 文件。
-  "set tags=./.tags;,.tags
-  "
-  set tags=./tags,tags,./.tags,.tags;$HOME
+    " http://arjanvandergaag.nl/blog/combining-vim-and-ctags.html
+    "
+    " 前半部分 “./.tags; ”代表在文件的所在目录下（不是 “:pwd”返回的 Vim 当前目录）查找名字为 '.tags'的符号文件，
+    " 后面一个分号代表查找不到的话向上递归到父目录，直到找到 .tags 文件或者递归到了根目录还没找到，
+    " 逗号分隔的后半部分 .tags 是指同时在 Vim 的当前目录（“:pwd”命令返回的目录，可以用 :cd ..命令改变）下面查找 .tags 文件。
+    "set tags=./.tags;,.tags
+    "
+    set tags=./tags,tags,./.tags,.tags;$HOME
 "}}}
 
-" autotag {{{2}}}
+" autotag {{{2
 " Logfile: /tmp/vim-autotag.log
-let g:autotagVerbosityLevel = 10
-let g:autotagmaxTagsFileSize = 50 * 1024 * 1024
-let g:autotagCtagsCmd = "LC_COLLATE=C ctags --extra=+f"
-let g:autotagTagsFile = ".tags"
-let s:autotag_inter = 10
-let g:autotagExcSuff = ['tml', 'xml', 'text', 'txt', 'md', 'mk', 'conf', 'html', 'yml', 'css', 'scss']
+    let g:autotagVerbosityLevel = 10
+    let g:autotagmaxTagsFileSize = 50 * 1024 * 1024
+    let g:autotagCtagsCmd = "LC_COLLATE=C ctags --extra=+f"
+    let g:autotagTagsFile = ".tags"
+    let s:autotag_inter = 10
+    let g:autotagExcSuff = ['tml', 'xml', 'text', 'txt', 'md', 'mk', 'conf', 'html', 'yml', 'css', 'scss']
+"}}}
 
-" AsyncRun {{{2}}}
-let g:asyncrun_silent = 1
-let g:asyncrun_open = 8
+" AsyncRun {{{2
+    let g:asyncrun_silent = 1
+    let g:asyncrun_open = 8
+"}}}
 
-" vim-bookmarks {{{2}}}
-let g:bookmark_no_default_key_mappings = 1
-let g:bookmark_highlight_lines = 1
-let g:bookmark_save_per_working_dir = 1
-let g:bookmark_auto_save = 0
-let g:bookmark_show_warning = 0
-"let g:bookmark_location_list = 1
+" vim-bookmarks {{{2
+    let g:bookmark_no_default_key_mappings = 1
+    let g:bookmark_highlight_lines = 1
+    let g:bookmark_save_per_working_dir = 1
+    let g:bookmark_auto_save = 0
+    let g:bookmark_show_warning = 0
+    "let g:bookmark_location_list = 1
+"}}}
 
-" vim-tmux-navigator
-"" Disable tmux navigator when zooming the Vim pane
-let g:tmux_navigator_disable_when_zoomed = 1
-"let g:tmux_navigator_no_mappings = 1
-"nnoremap <silent> <a-h> :TmuxNavigateLeft<cr>
-"nnoremap <silent> <a-j> :TmuxNavigateDown<cr>
-"nnoremap <silent> <a-k> :TmuxNavigateUp<cr>
-"nnoremap <silent> <a-l> :TmuxNavigateRight<cr>
-"nnoremap <silent> <a-\> :TmuxNavigatePrevious<cr>
+" vim-tmux-navigator{{{2
+    "" Disable tmux navigator when zooming the Vim pane
+    let g:tmux_navigator_disable_when_zoomed = 1
+    "let g:tmux_navigator_no_mappings = 1
+    "nnoremap <silent> <a-h> :TmuxNavigateLeft<cr>
+    "nnoremap <silent> <a-j> :TmuxNavigateDown<cr>
+    "nnoremap <silent> <a-k> :TmuxNavigateUp<cr>
+    "nnoremap <silent> <a-l> :TmuxNavigateRight<cr>
+    "nnoremap <silent> <a-\> :TmuxNavigatePrevious<cr>
+"}}}
 
-" EasyAlign {{{2}}}
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nnoremap ga <Plug>(EasyAlign)
+" EasyAlign {{{2
+    " Start interactive EasyAlign in visual mode (e.g. vipga)
+    xmap ga <Plug>(EasyAlign)
+    " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+    nnoremap ga <Plug>(EasyAlign)
+"}}}
 
-" netrw {{{2}}}
-"let g:netrw_banner = 0
-"let g:netrw_liststyle = 3
-"let g:netrw_browse_split = 4
-"let g:netrw_altv = 1
-"let g:netrw_winsize = 16
+" netrw {{{2
+    "let g:netrw_banner = 0
+    "let g:netrw_liststyle = 3
+    "let g:netrw_browse_split = 4
+    "let g:netrw_altv = 1
+    "let g:netrw_winsize = 16
+"}}}
 
-" NerdTree {{{2}}}
-let NERDTreeMouseMode = 3
-let NERDTreeAutoDeleteBuffer = 1
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-let NERDTreeAutoDeleteBuffer = 1
-let NERDTreeRespectWildIgnore = 1
-"let NERDTreeShowBookmarks = 1
-let NERDTreeWinSize = 25
+" NerdTree/NerdComment {{{2
+    let NERDTreeMouseMode = 3
+    let NERDTreeAutoDeleteBuffer = 1
+    let NERDTreeMinimalUI = 1
+    let NERDTreeDirArrows = 1
+    let NERDTreeAutoDeleteBuffer = 1
+    let NERDTreeRespectWildIgnore = 1
+    "let NERDTreeShowBookmarks = 1
+    let NERDTreeWinSize = 25
 
-" Defx {{{2}}}
+    " Add spaces after comment delimiters by default
+    let g:NERDSpaceDelims = 1
+    " Use compact syntax for prettified multi-line comments
+    let g:NERDCompactSexyComs = 1
+    " Align line-wise comment delimiters flush left instead of following code indentation
+    let g:NERDDefaultAlign = 'left'
+    " Set a language to use its alternate delimiters by default
+    let g:NERDAltDelims_java = 1
+    " Add your own custom formats or override the defaults
+    let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+    " Allow commenting and inverting empty lines (useful when commenting a region)
+    let g:NERDCommentEmptyLines = 1
+    " Enable trimming of trailing whitespace when uncommenting
+    let g:NERDTrimTrailingWhitespace = 1
+"}}}
+
+" Defx {{{2
 let g:defx_icons_enable_syntax_highlight = 0
 
-" Buffergator
+" Buffergator{{{2
 let g:buffergator_suppress_keymaps = 1
 let g:buffergator_suppress_mru_switch_into_splits_keymaps = 1
 let g:buffergator_autoupdate = 1
@@ -1069,26 +1098,12 @@ let g:buffergator_mru_cycle_loop = 1
 let g:buffergator_mru_cycle_local_to_window = 1
 let g:buffergator_sort_regime = 'filepath'
 "let g:buffergator_display_regime = 'basename'
+"}}}
 
 " voom {{{3}}}
 let g:voom_tree_width = 45
 let g:voom_tree_placement = 'right'
 
-" NerdComment {{{2}}}
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 1
-" Use compact syntax for prettified multi-line comments
-let g:NERDCompactSexyComs = 1
-" Align line-wise comment delimiters flush left instead of following code indentation
-let g:NERDDefaultAlign = 'left'
-" Set a language to use its alternate delimiters by default
-let g:NERDAltDelims_java = 1
-" Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
-" Allow commenting and inverting empty lines (useful when commenting a region)
-let g:NERDCommentEmptyLines = 1
-" Enable trimming of trailing whitespace when uncommenting
-let g:NERDTrimTrailingWhitespace = 1
 
 " Gist {{{2}}}
 let g:gist_show_privates = 1
@@ -1554,6 +1569,15 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         endif
     endfunction
 
+    function! OnEventBufEnter()
+        " auto into terminal-mode
+        if &buftype == 'terminal'
+            startinsert
+            return
+        endif
+        "call SetIndentTabForCfiletype()
+    endfunction
+
     "" Easier and better than plugin 'autotag'
     "let s:retag_time = localtime()
     "function! RetagFile()
@@ -1603,7 +1627,7 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         " current position in jumplist
         autocmd CursorHold * normal! m'
 
-        "autocmd BufEnter * call SetIndentTabForCfiletype()
+        autocmd BufEnter * call OnEventBufEnter()
 
         " Always show sign column
         autocmd BufEnter * sign define dummy
