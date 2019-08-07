@@ -324,7 +324,8 @@ call plug#begin('~/.vim/bundle')
 " Facade {{{2
     Plug 'Raimondi/delimitMate'
     Plug 'millermedeiros/vim-statline'
-    Plug 'thaerkh/vim-workspace'           | " vim session management
+    Plug 'tpope/vim-obsession'
+    "Plug 'thaerkh/vim-workspace'           | " vim session management
     "Plug 'vivien/vim-linux-coding-style'
     "Plug 'MattesGroeger/vim-bookmarks'
     "Plug 'hecal3/vim-leader-guide'
@@ -567,6 +568,7 @@ call plug#begin('~/.vim/bundle')
 
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
         Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
+        Plug 'paroxayte/vwm.vim'                        | " A layout manager for vim and nvim
 
         "Plug 'webdevel/tabulous'
         Plug 'huawenyu/taboo.vim'
@@ -586,9 +588,8 @@ call plug#begin('~/.vim/bundle')
 
 " Integration {{{2
     Plug 'idanarye/vim-vebugger'
-    "Plug 'huawenyu/neogdb.vim', {'on': ['Nbgdbattach', 'Nbgdb']}  |", Cond(has('nvim'))
-    "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
-    Plug 'huawenyu/neogdb2.vim', Cond(has('nvim'))
+    Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
+    "Plug 'huawenyu/neogdb2.vim', Cond(has('nvim')) | Plug 'kassio/neoterm' | Plug 'paroxayte/vwm.vim'
     "Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
     " NVIM_LISTEN_ADDRESS=/tmp/nvim.gdb vi
 
@@ -612,7 +613,7 @@ call plug#begin('~/.vim/bundle')
       "   :GV?        fills the location list with the revisions of the current file
       "      o/<cr>   on a commit to display the content/diff on the new open side window.
 
-    "Plug 'junegunn/fzf.vim'      | " base-on: https://github.com/junegunn/fzf
+    "Plug 'junegunn/fzf.vim'      | " base-on: https://github.com/junegunn/fzf, create float-windows: https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html
     Plug 'codeindulgence/vim-tig' | " Using tig in neovim
     "Plug 'juneedahamed/svnj.vim'
     Plug 'juneedahamed/vc.vim'| " Support git, svn, ...
@@ -917,11 +918,6 @@ else
   let g:neogdb_attach_remote_str = 'sysinit/init dut:444 -u admin -p "" -t "gdb:wad"'
 endif
 
-" neogdb.vim: Get more detail variable data
-let g:neogdb_vars = {
-      \ 'struct my_str *' : ['{}->val', '{}->len'],
-      \ }
-
 " tabman: disable old config {{{2
     let g:tabman_toggle = '<leader>xt'
     let g:tabman_focus  = '<leader>xf'
@@ -1131,13 +1127,14 @@ let g:startify_session_before_save = [
 	  \ 'silent! NERDTreeTabsClose'
 	  \ ]
 
-" vim workspace
-let g:workspace_session_name = '.Session.vim'
-let g:workspace_autosave_always = 0
-let g:workspace_persist_undo_history = 0
-" disable auto trim the trail-spaces
-let g:workspace_autosave_untrailspaces = 0
-let g:workspace_session_disable_on_args = 1
+" vim workspace {{{2
+    let g:workspace_session_name = '.Session.vim'
+    let g:workspace_autosave_always = 0
+    let g:workspace_persist_undo_history = 0
+    " disable auto trim the trail-spaces
+    let g:workspace_autosave_untrailspaces = 0
+    let g:workspace_session_disable_on_args = 1
+"}}}
 
 " Deoplete {{{2}}}
 let g:deoplete#enable_at_startup = 1
@@ -1367,6 +1364,9 @@ let g:vimwiki_conceallevel = 0 | "Default=2, -1 Disable conceal
     endif
 "}}}
 
+" Disable warning: Clipboard error : Target STRING not available when running
+let g:yankring_clipboard_monitor=0
+
 " vim-yoink: yank/paste {{{2
     let g:yoinkIncludeDeleteOperations=1
     let g:yoinkSavePersistently=1
@@ -1573,8 +1573,10 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         " auto into terminal-mode
         if &buftype == 'terminal'
             startinsert
-            return
+        else
+            stopinsert
         endif
+
         "call SetIndentTabForCfiletype()
     endfunction
 
@@ -1681,7 +1683,9 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
   nnoremap <C-c> <silent> <C-c>
   nnoremap <buffer> <Enter> <C-W><Enter>
   nnoremap <C-q> :<c-u>qa!<cr>
-  nnoremap <C-s> :ToggleWorkspace<cr>
+  "nnoremap <C-s> :ToggleWorkspace<cr>
+  " restore-session: vim -S
+  nnoremap <C-s> :Obsess
   inoremap <S-Tab> <C-V><Tab>
 
 if exists('g:loaded_accelerated')
@@ -1718,6 +1722,11 @@ endif
     " i: enter interact-mode, 'esc' exit interact-mode and enter vi-mode
     " But so far conflict with gdb mode
     "tnoremap <Esc> <C-\><C-n>
+    tnoremap <leader>h <C-\><C-n><c-w>h
+    tnoremap <leader>j <C-\><C-n><c-w>j
+    tnoremap <leader>k <C-\><C-n><c-w>k
+    tnoremap <leader>l <C-\><C-n><c-w>l
+
     tnoremap <c-h> <C-\><C-n><C-w>h
     tnoremap <c-j> <C-\><C-n><C-w>j
     tnoremap <c-k> <C-\><C-n><C-w>k
@@ -2253,6 +2262,39 @@ endif
     call quickmenu#append("Turn paste %{&paste? 'off':'on'}", "set paste!", "enable/disable paste mode (:set paste!)")
     call quickmenu#append("Turn spell %{&spell? 'off':'on'}", "set spell!", "enable/disable spell check (:set spell!)")
     call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
+"}}}
+
+" vwm.vim: vim window layout manager {{{1
+    " Base on plugin kassio/neoterm
+    let g:vwm#eager_render = 1
+    let g:vwm#layouts = []
+
+    " Layout define sample
+    " 'init': ['term bash']
+    "
+    let s:def_layt1 = {
+          \  'name': 'gdb',
+          \  'set_all': ['nonu', 'nornu'],
+          \  'right': {
+          \    'h_sz': "%50",
+          \    'init': ["silent! 2Topen", "2T gdb -ex -q -f sysinit/init"],
+          \    'bot': {
+          \      'init': ["silent! 1Topen", "1T dut.py -h dut -u admin -p '' -t 'gdb:wad'"]
+          \    }
+          \  }
+          \}
+
+    let s:def_layt2 = {
+          \  'name': 'code',
+          \  'set_all': ['nonu', 'nornu'],
+          \  'bot': {
+          \    'h_sz': "%12",
+          \    'init': ["vsplit"],
+          \  }
+          \}
+
+    call add(g:vwm#layouts, s:def_layt1)
+    call add(g:vwm#layouts, s:def_layt2)
 "}}}
 
 " VimL Debug{{{1

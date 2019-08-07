@@ -214,7 +214,7 @@ def format_address(address):
     return ('0x{{:0{}x}}').format(pointer_size * 2).format(address)
 
 # Cooperate with neovim-msgpack
-def request_cb(name, args):
+def vim_rpc_request_cb(name, args):
     global g_rpc_notify_Q
 
     g_rpc_notify_Q.put(name)
@@ -225,7 +225,7 @@ class Executor:
         self.__cmd = cmd
 
     def __call__(self):
-        logger.info('nvim notify_cb: {}'.format(self.__cmd))
+        logger.info('gdb handle: postevent(nvim notify_cb: {})'.format(self.__cmd))
         gdb.execute(self.__cmd)
 
 class ExecutorUpdate:
@@ -233,11 +233,12 @@ class ExecutorUpdate:
         self.__cmd = cmd
 
     def __call__(self):
-        logger.info('pseudo notify_cb event triggered by {}'.format(self.__cmd))
+        global g_vim_state
+        global g_vim
         global g_vim_source_fname
         global g_vim_source_fname_line
 
-        logger.debug("gdb-event-type: before_prompt")
+        logger.info('gdb handle: postevent(notify_cb pseudo-event triggered by {})'.format(self.__cmd))
         try:
             frame = gdb.selected_frame()
         except gdb.error:
@@ -250,12 +251,13 @@ class ExecutorUpdate:
         g_vim_source_fname = sal.symtab.fullname()
         g_vim_source_fname_line = str(sal.line)
 
-        logger.debug("call GdbUpdate")
-        g_vim.async_call(g_vim.command, "GdbUpdate " \
-                            + g_vim_source_fname + " " \
-                            + g_vim_source_fname_line)
+        if g_vim_state > 0:
+            logger.debug("vim async_call: GdbUpdate")
+            #g_vim.async_call(g_vim.command, "GdbUpdate " \
+            #                 + g_vim_source_fname + " " \
+            #                 + g_vim_source_fname_line)
 
-def notify_cb(name, args):
+def vim_rpc_notify_cb(name, args):
     global g_rpc_notify_Q
 
     #g_rpc_notify_Q.put(name)
@@ -263,10 +265,11 @@ def notify_cb(name, args):
     if name in g_listPseudoUpdate:
         gdb.post_event(ExecutorUpdate(name)) # fake event to trigger frame changed
 
-def run_loop():
+def vim_rpc_run_loop():
     global g_vim
 
-    g_vim.run_loop(request_cb, notify_cb)
+    logger.debug("start-thread: vim_rpc_run_loop()")
+    g_vim.run_loop(vim_rpc_request_cb, vim_rpc_notify_cb)
 
 def next_message():
     global g_rpc_notify_Q
@@ -323,23 +326,30 @@ class Dashboard(gdb.Command):
         #gdb.events.new_inferior.connect(lambda _: self.on_new_inferior())
 
     def on_continue(self):
+        global g_vim_state
+
         # try to contain the GDB messages in a specified area unless the
         # dashboard is printed to a separate file
         logger.debug("gdb-event-type: continue")
         if self.enabled and self.is_running() and not self.output:
             Dashboard.update_term_width()
 
-            if g_vim_state == 0:
+            if g_vim_state > 0:
+                logger.debug("vim async_call: GdbEvent on_continue")
+                g_vim.async_call(g_vim.command, "GdbEvent on_continue")
+            else:
                 gdb.write(Dashboard.clear_screen())
                 gdb.write(divider('Output/messages', True))
                 gdb.write('\n')
                 gdb.flush()
 
     def on_stop(self):
+        global g_vim_state
+
         # redisplay the dashboard when the target program stops (the screen is
         # cleared by on_continue when the dashboard is printed to a separate
         # file)
-        logger.debug("gdb-event-type: stop")
+        logger.debug("gdb-event-type: on_stop with state={}".format(g_vim_state))
         if self.enabled and self.is_running():
             clear = Dashboard.clear_screen() if self.output else ''
             self.display(clear, self.build(), '\n')
@@ -451,23 +461,22 @@ class Dashboard(gdb.Command):
             """
 
             if g_vim and g_vim.channel_id:
-                g_vim_state = 1
                 return g_vim_state
             else:
                 logger.info("gdb connect to neovim at {}".format(os.getenv('NVIM_LISTEN_ADDRESS', g_vim_servername)))
                 g_vim = neovim.attach('socket', path=os.getenv('NVIM_LISTEN_ADDRESS', g_vim_servername))
                 g_vim_state = 1
+
                 g_vim.vars['gdb_channel_id'] = g_vim.channel_id
-
-                logger.info("trigger GdbStart /tmp/nvim.gdb")
-                g_vim.command('GdbStart /tmp/nvim.gdb')
-
-                logger.info("trigger GdbEvent on_init")
-                g_vim.command('GdbEvent on_init')
-
                 logger.info("neovim gdb_channel_id={}".format(g_vim.channel_id))
 
-                t_rpc = threading.Thread(target=run_loop, args=())
+                logger.info("vim command: GdbStart /tmp/nvim.gdb")
+                g_vim.command('GdbStart /tmp/nvim.gdb')
+
+                logger.info("vim command: GdbEvent on_init")
+                g_vim.command('GdbEvent on_init')
+
+                t_rpc = threading.Thread(target=vim_rpc_run_loop, args=())
                 t_rpc.setDaemon(True)
                 t_rpc.start()
         except:
@@ -489,6 +498,10 @@ class Dashboard(gdb.Command):
             # fall back to the main terminal
             Dashboard.update_term_width()
 
+        need_update = False
+        if g_vim_state > 0:
+            need_update = True
+
         self.vim_is_running()
 
         # fetch lines
@@ -509,6 +522,7 @@ class Dashboard(gdb.Command):
                     the_file.write(output_lines)
                     the_file.close()
 
+                logger.info("vim async_call: GdbEvent view_{}".format(module.label().lower()))
                 g_vim.async_call(g_vim.command,
                                  "GdbEvent view_{}".format(module.label().lower()))
                 continue;
@@ -519,7 +533,7 @@ class Dashboard(gdb.Command):
                     lines.append(divider(module.label(), True, module_lines))
                     lines.extend(module_lines)
 
-        if g_vim_state > 0:
+        if need_update:
             #g_vim.command("GdbRefresh " \
             #    + g_vim_source_fname + " " \
             #    + g_vim_source_fname_line)
@@ -532,12 +546,10 @@ class Dashboard(gdb.Command):
             │ This function is thread-safe, and is the only way code not
             │ on the main thread could interact with nvim api objects.
             """
-            logger.debug("call GdbUpdate")
+            logger.info("vim async_call (state={}): GdbUpdate <source>".format(g_vim_state))
             g_vim.async_call(g_vim.command, "GdbUpdate " \
                              + g_vim_source_fname + " " \
                              + g_vim_source_fname_line)
-
-            return ""
         else:
             if len(lines) == 0:
                 lines.append(divider('Error', True))
@@ -550,6 +562,7 @@ class Dashboard(gdb.Command):
             # print the dashboard output_lines = '\n'.join(lines) return output_lines
 
     def display(self, *data):
+        return
         # gdb module has both write() and flush()
         try:
             output = self.output or gdb
@@ -557,7 +570,8 @@ class Dashboard(gdb.Command):
                 output.write(string)
             output.flush()
         except:
-            Dashboard.err('Cannot write the dashboard')
+            #Dashboard.err('Cannot write the dashboard')
+            pass
 
 # Utility methods --------------------------------------------------------------
 
@@ -1665,14 +1679,19 @@ end
 set history filename ~/.gdb_history
 set history save
 set history expansion on
+
 set complaints 0
 set width 0
 set confirm off
 set verbose off
+set pagination off
+set logging off
+
 set print elements 2048
 set print pretty on
 set print array off
 set print array-indexes on
+
 set python print-stack full
 set filename-display absolute
 
@@ -1689,6 +1708,20 @@ handle SIGUSR2 noprint nostop
 #set logging overwrite on
 #set logging redirect on
 #set logging on
+
+
+define silent_on
+    set logging off
+    set logging file /dev/null
+    set logging overwrite off
+    set logging redirect on
+    set logging on
+end
+
+define silent_off
+    set logging off
+end
+
 
 #if os.path.isfile('/tmp/gdb/breakpoints.raw'):
 ignore-errors source /tmp/gdb/breakpoints.raw
