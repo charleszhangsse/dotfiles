@@ -494,8 +494,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'romainl/vim-qf'              | " Tame the quickfix window
 
     " Gen menu
-    Plug 'Timoses/vim-venu'            | " :VenuPrint
-    Plug 'skywind3000/quickmenu.vim'   | "
+    Plug 'Timoses/vim-venu'            | " :VenuPrint, customize menu from command-line
+    Plug 'skywind3000/quickmenu.vim'   | " customize menu from size pane
 
     " File/Explore {{{3
         " Plugin 'defx'
@@ -568,7 +568,7 @@ call plug#begin('~/.vim/bundle')
 
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
         Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
-        Plug 'paroxayte/vwm.vim'                        | " A layout manager for vim and nvim
+        Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
 
         "Plug 'webdevel/tabulous'
         Plug 'huawenyu/taboo.vim'
@@ -2237,12 +2237,13 @@ endif
 "}}}
 
 " Quickmenu{{{1
-    noremap <silent> <leader>mh :call quickmenu#toggle(0)<cr>
+    noremap <silent><F12> :call quickmenu#toggle(0)<cr>
+
+    " enable cursorline (L) and cmdline help (H)
+    let g:quickmenu_options = "H"
 
     " clear all the items
     call quickmenu#reset()
-    " enable cursorline (L) and cmdline help (H)
-    let g:quickmenu_options = "HL"
 
     " new section: empty action with text starts with "#" represent a new section
     call quickmenu#append("# Debug", '')
@@ -2252,17 +2253,32 @@ endif
 
     " new section
     call quickmenu#append("# Git", '')
-
-    " use fugitive to show diff
-    call quickmenu#append("git diff", 'Gvdiff', "use fugitive's Gvdiff on current document")
+    call quickmenu#append("git diff",   'Gvdiff',  "use fugitive's Gvdiff on current document")
     call quickmenu#append("git status", 'Gstatus', "use fugitive's Gstatus on current document")
+    call quickmenu#append("git blame",  'Gblame',  "use fugitive's Gblame on current document")
 
-    " new section
+    " section 'Make'
+    call quickmenu#append("# Make", '')
+    call quickmenu#append("make init", "Make init -i -s -j6", "")
+    call quickmenu#append("make wad", "Make -C daemon/wad -i -s -j6", "")
+    call quickmenu#append("make all", "Make all", "")
+
+    " section 'String'
+    call quickmenu#append("# String", '')
+    call quickmenu#append("Occurrences of selected", "g Ctrl-G", "Show the number of lines, words and bytes selected")
+    call quickmenu#append("Occurrences `%{expand('<cword>')}`", "%s/%{expand('<cword>')}//gn", "count the number of occurrences of a word")
+    call quickmenu#append("Remove dup empty lines", "%s/\n\{3,}/\r\r/e", "replace three or more consecutive line endings with two line endings (a single blank line)")
+    call quickmenu#append("Delete empty lines", "g/^$/d", "delete blank lines, remove multi blank line")
+    call quickmenu#append("Remove ending space", "%s/\s\+$//e", "remove unwanted whitespace from line end")
+
+    " section 'Misc'
     call quickmenu#append("# Misc", '')
+    call quickmenu#append("Update TAGs", "NeomakeSh! tagme", "")
     call quickmenu#append("Turn paste %{&paste? 'off':'on'}", "set paste!", "enable/disable paste mode (:set paste!)")
     call quickmenu#append("Turn spell %{&spell? 'off':'on'}", "set spell!", "enable/disable spell check (:set spell!)")
     call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 "}}}
+
 
 " vwm.vim: vim window layout manager {{{1
     " Base on plugin kassio/neoterm
@@ -2289,12 +2305,32 @@ endif
           \  'set_all': ['nonu', 'nornu'],
           \  'bot': {
           \    'h_sz': "%12",
-          \    'init': ["vsplit"],
+          \    'bname': "code_buf1",
+          \    'init': ['termopen', "zsh"],
+          \    'left': {
+          \      'bname': "code_buf2",
+          \      'init': ['termopen', "zsh"],
+          \    }
+          \  }
+          \}
+
+    let s:def_layt3 = {
+          \  'name': 'code2',
+          \  'set_all': ['nonu', 'nornu'],
+          \  'top': {
+          \    'h_sz': "%30",
+          \    'bname': "code_buf1",
+          \    'init': ['termopen', "zsh"],
+          \    'right': {
+          \      'bname': "code_buf2",
+          \      'init': ['termopen', "zsh"],
+          \    }
           \  }
           \}
 
     call add(g:vwm#layouts, s:def_layt1)
     call add(g:vwm#layouts, s:def_layt2)
+    call add(g:vwm#layouts, s:def_layt3)
 "}}}
 
 " VimL Debug{{{1
