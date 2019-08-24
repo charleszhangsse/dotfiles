@@ -319,13 +319,16 @@ call plug#begin('~/.vim/bundle')
     "Plug 'vim-scripts/tcl.vim'
     "Plug 'vim-syntastic/syntastic'
 
+    " Session management
+    "Plug 'xolox/vim-session'
+    "Plug 'tpope/vim-obsession'
+    Plug 'thaerkh/vim-workspace'
+
 "}}}
 
 " Facade {{{2
     Plug 'Raimondi/delimitMate'
     Plug 'millermedeiros/vim-statline'
-    Plug 'tpope/vim-obsession'
-    "Plug 'thaerkh/vim-workspace'           | " vim session management
     "Plug 'vivien/vim-linux-coding-style'
     "Plug 'MattesGroeger/vim-bookmarks'
     "Plug 'hecal3/vim-leader-guide'
@@ -481,8 +484,11 @@ call plug#begin('~/.vim/bundle')
     Plug 'terryma/vim-expand-region'   | "   W - select region expand; B - shrink
 
     Plug 'tpope/vim-surround'          | " ds - remove surround; cs - change surround; After Selected, S} - surround the selected; yss - surround the whole line; ysiw' - surround the current word;
-    Plug 'tpope/vim-sleuth'             | " Automatic set indent, shiftwidth, expandtab
-    "Plug 'huawenyu/vim-indentwise'
+
+    "Plug 'huawenyu/vim-indentwise'    | " Automatic set indent, shiftwidth, expandtab
+    Plug 'ciaranm/detectindent'
+    "Plug 'tpope/vim-sleuth'
+
     Plug 'szw/vim-maximizer'
     Plug 'huawenyu/vim-mark'
     "Plug 'tomtom/tmarks_vim'
@@ -595,6 +601,7 @@ call plug#begin('~/.vim/bundle')
 
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
+    Plug 'junkblocker/patchreview-vim'          | " :PatchReview some.patch
     Plug 'cohama/agit.vim'    | " :Agit show git log like gitk
     Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'  | " Awesome git wrapper
       " vim-fugitive: git-base
@@ -902,8 +909,8 @@ let g:vimfiler_as_default_explorer = 1
 "let g:signify_vcs_list = [ 'git', 'svn' ]
 
 " indentwise: 'T@ 193-'
-let g:indentwise_skip_prefix = 7
-let g:indentwise_preserve_col_pos = 1
+"let g:indentwise_skip_prefix = 7
+"let g:indentwise_preserve_col_pos = 1
 
 " vebugger {{{2}}}
 "let g:vebugger_leader = ';'
@@ -1109,23 +1116,20 @@ let g:gist_get_multiplefile = 1
 let g:tlTokenList = ["FIXME @wilson", "TODO @wilson", "XXX @wilson"]
 let g:ctrlsf_mapping = { "next": "n", "prev": "N", }
 
-" startify&Session {{{2}}}
-"let g:session_autoload = 'no'
-"let g:session_autosave = 'no'
-"let g:session_directory = getcwd()
-"let g:reload_on_write = 0
-let g:startify_list_order = ['sessions', 'bookmarks', 'files', 'dir', 'commands']
-let g:startify_relative_path = 1
-let g:startify_change_to_dir = 0
-let g:startify_session_autoload = 1
-let g:startify_session_dir = './.vim'
-let g:startify_session_persistence = 1
-let g:startify_session_delete_buffers = 1
-let g:startify_session_before_save = [
-	  \ 'echo "Cleaning up before saving.."',
-	  \ 'silent! cclose',
-	  \ 'silent! NERDTreeTabsClose'
-	  \ ]
+" startify&Session {{{2
+    let g:startify_list_order = ['sessions', 'bookmarks', 'files', 'dir', 'commands']
+    let g:startify_relative_path = 1
+    let g:startify_change_to_dir = 0
+    let g:startify_session_autoload = 1
+    let g:startify_session_dir = './.vim'
+    let g:startify_session_persistence = 1
+    let g:startify_session_delete_buffers = 1
+    let g:startify_session_before_save = [
+    	  \ 'echo "Cleaning up before saving.."',
+    	  \ 'silent! cclose',
+    	  \ 'silent! NERDTreeTabsClose'
+    	  \ ]
+"}}}
 
 " vim workspace {{{2
     let g:workspace_session_name = '.Session.vim'
@@ -1134,6 +1138,16 @@ let g:startify_session_before_save = [
     " disable auto trim the trail-spaces
     let g:workspace_autosave_untrailspaces = 0
     let g:workspace_session_disable_on_args = 1
+"}}}
+
+" vim-session {{{2
+    let g:session_directory = getcwd()
+    let g:session_default_name = ".Session"
+    let g:session_default_overwrite = 1
+    let g:session_autoload = 'yes'
+    let g:session_autosave = 'yes'
+    let g:session_autosave_periodic = 1
+    let g:session_autosave_silent = 1
 "}}}
 
 " Deoplete {{{2}}}
@@ -1387,6 +1401,7 @@ let g:yankring_clipboard_monitor=0
     vmap y <plug>(YoinkYankPreserveCursorPosition)
     xmap y <plug>(YoinkYankPreserveCursorPosition)
 "}}}
+
 " Commands {{{1
 
 command! -nargs=* Wrap set wrap linebreak nolist
@@ -1475,7 +1490,7 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
             " if logfile, skip non-log lines
             if is_log == 1
                 let cur_str = getline(line)
-                if (! cur_str =~? '^T@')
+                if cur_str !~? '^T@'
                     continue
                 endif
             endif
@@ -1683,9 +1698,12 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
   nnoremap <C-c> <silent> <C-c>
   nnoremap <buffer> <Enter> <C-W><Enter>
   nnoremap <C-q> :<c-u>qa!<cr>
-  "nnoremap <C-s> :ToggleWorkspace<cr>
+
+  nnoremap <C-s> :ToggleWorkspace<cr>
   " restore-session: vim -S
-  nnoremap <C-s> :Obsess
+  "nnoremap <C-s> :Obsess
+  "nnoremap <C-s> :Savews<cr>
+
   inoremap <S-Tab> <C-V><Tab>
 
 if exists('g:loaded_accelerated')
