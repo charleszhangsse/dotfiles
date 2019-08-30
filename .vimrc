@@ -632,7 +632,7 @@ call plug#begin('~/.vim/bundle')
     " share copy/paste between vim(""p)/tmux
     "Plug 'svermeulen/vim-easyclip'  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
     "Plug 'bfredl/nvim-miniyank'
-    Plug 'svermeulen/vim-yoink', Cond(has('nvim')) | " Not support colomn copy/paste
+    Plug 'svermeulen/vim-yoink', Cond(has('nvim')) | " sometimes delete not copyinto paste's buffer
     Plug 'huawenyu/vimux-script'
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
@@ -1382,7 +1382,7 @@ let g:vimwiki_conceallevel = 0 | "Default=2, -1 Disable conceal
 let g:yankring_clipboard_monitor=0
 
 " vim-yoink: yank/paste {{{2
-    let g:yoinkIncludeDeleteOperations=1
+    let g:yoinkIncludeDeleteOperations=0
     let g:yoinkSavePersistently=1
     let g:yoinkMoveCursorToEndOfPaste=1
     let g:yoinkIncludeNamedRegisters=1
