@@ -1682,7 +1682,9 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
 
 
 " Key maps {{{1}}}
-  let mapleader = "\<Space>"
+  "let mapleader = "\<Space>"
+  let mapleader = ","
+  map <space> <leader>
   " diable Ex mode
   map Q <Nop>
 
@@ -2301,54 +2303,6 @@ endif
 " vwm.vim: vim window layout manager {{{1
     " Base on plugin kassio/neoterm
     let g:vwm#eager_render = 1
-    let g:vwm#layouts = []
-
-    " Layout define sample
-    " 'init': ['term bash']
-    "
-    let s:def_layt1 = {
-          \  'name': 'gdb',
-          \  'set_all': ['nonu', 'nornu'],
-          \  'right': {
-          \    'h_sz': "%50",
-          \    'init': ["silent! 2Topen", "2T gdb -ex -q -f sysinit/init"],
-          \    'bot': {
-          \      'init': ["silent! 1Topen", "1T dut.py -h dut -u admin -p '' -t 'gdb:wad'"]
-          \    }
-          \  }
-          \}
-
-    let s:def_layt2 = {
-          \  'name': 'code',
-          \  'set_all': ['nonu', 'nornu'],
-          \  'bot': {
-          \    'h_sz': "%12",
-          \    'bname': "code_buf1",
-          \    'init': ['termopen', "zsh"],
-          \    'left': {
-          \      'bname': "code_buf2",
-          \      'init': ['termopen', "zsh"],
-          \    }
-          \  }
-          \}
-
-    let s:def_layt3 = {
-          \  'name': 'code2',
-          \  'set_all': ['nonu', 'nornu'],
-          \  'top': {
-          \    'h_sz': "%30",
-          \    'bname': "code_buf1",
-          \    'init': ['termopen', "zsh"],
-          \    'right': {
-          \      'bname': "code_buf2",
-          \      'init': ['termopen', "zsh"],
-          \    }
-          \  }
-          \}
-
-    call add(g:vwm#layouts, s:def_layt1)
-    call add(g:vwm#layouts, s:def_layt2)
-    call add(g:vwm#layouts, s:def_layt3)
 "}}}
 
 " VimL Debug{{{1
