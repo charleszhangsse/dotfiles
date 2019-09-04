@@ -54,7 +54,7 @@
 "   - gn                        ' re-select the next match.
 "   - gv                        ' re-select the last match.
 "   - search/replace:
-"   -     :%s///gc              ' replaces occurrences of the last search pattern with confirmation
+"   -     :%s///gc              ' replace occurrences of the last search pattern with confirmation
 "   -     :%s/pattern//gn       ' count the number of occurrences of a word
 "   -     :%s/\n\{3,}/\r\r/e    ' replace three or more consecutive line endings with two line endings (a single blank line)
 "   -     :g/^$/d               ' delete blank lines, remove multi blank line
@@ -1682,9 +1682,13 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
 
 
 " Key maps {{{1}}}
+  " Bother when termopen and input space cause a little pause-stop-wait
   "let mapleader = "\<Space>"
+  " Bother when in select-mode and use the leader not works, so also provide another leader
+  " Space can be a bit tricky. Why not just map space to <leader>
   let mapleader = ","
-  map <space> <leader>
+  nmap <space> <leader>
+
   " diable Ex mode
   map Q <Nop>
 
@@ -1693,10 +1697,10 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
   nmap ql :ls<cr>
   nmap qw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
 
-  " Disable F1 built-in help key
-  map <F1> <Esc>
+  " Disable F1 built-in help key by: re-replace last search
+  map <F1> :<c-u>%s///gc<cr>
+  imap <F1> :<c-u>%s//<C-R>0/gc<cr>
   " map <leader><Esc> :AnsiEsc<cr>
-  imap <F1> <Esc>
   nnoremap <C-c> <silent> <C-c>
   nnoremap <buffer> <Enter> <C-W><Enter>
   nnoremap <C-q> :<c-u>qa!<cr>
