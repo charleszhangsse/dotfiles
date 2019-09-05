@@ -574,7 +574,7 @@ call plug#begin('~/.vim/bundle')
 
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
         Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
-        Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
+        "Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
 
         "Plug 'webdevel/tabulous'
         Plug 'huawenyu/taboo.vim'
@@ -594,7 +594,9 @@ call plug#begin('~/.vim/bundle')
 
 " Integration {{{2
     Plug 'idanarye/vim-vebugger'
-    Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
+
+    "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
+    Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
     "Plug 'huawenyu/neogdb2.vim', Cond(has('nvim')) | Plug 'kassio/neoterm' | Plug 'paroxayte/vwm.vim'
     "Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
     " NVIM_LISTEN_ADDRESS=/tmp/nvim.gdb vi
@@ -919,6 +921,7 @@ let g:vimfiler_as_default_explorer = 1
 "let g:neogdb_window = ['backtrace', 'breakpoint']
 let g:gdb_require_enter_after_toggling_breakpoint = 0
 
+let g:neogdb_gdbserver = 'dut.py'
 if exists("$NBG_ATTACH_REMOTE_STR")
   let g:neogdb_attach_remote_str = $NBG_ATTACH_REMOTE_STR
 else
