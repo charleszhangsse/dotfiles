@@ -132,6 +132,12 @@
 "       ctrl-u          delete to begin
 "       ctrl-w          delete one word
 "
+"   Maps:
+"      :map <some-keys> check the map valid or not
+"      howto map Shift+F#:
+"        - Goto insert mode and hit Ctrl-V Shift-F#, which gotted we can use that to map.
+"        - For example: We get "<F15>" when input Shift+F5, so ':nmap <F15> echo "HELLO"<cr>' should be work.
+"
 "   Registers:
 "       \"ry            add the selected text to the register r.
 "       \"rp            paste the content of this register r.
@@ -272,7 +278,7 @@ call plug#begin('~/.vim/bundle')
     "}}}
     "
     " LaTeX {{{3
-        Plug 'lervag/vimtex'  | " A modern vim plugin for editing LaTeX files
+        "Plug 'lervag/vimtex'  | " A modern vim plugin for editing LaTeX files
     "}}}
 
     " Perl {{{3
