@@ -600,6 +600,7 @@ call plug#begin('~/.vim/bundle')
 
 " Integration {{{2
     Plug 'idanarye/vim-vebugger'
+    Plug 'LucHermitte/lh-vim-lib'
 
     "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
     Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
@@ -2321,6 +2322,7 @@ endif
 " VimL Debug{{{1
   silent! call logger#init('ALL', ['/tmp/vim.log'])
   "silent! call logger#init('ERROR', ['/tmp/vim.log'])
+  "silent! let s:log = logger#getLogger(expand('<sfile>:t'))
 
   "   " in .vimrc
   "   call logger#init('ALL', ['/dev/stdout', '~/.vim/log.txt'])
