@@ -2272,6 +2272,7 @@ endif
 
 " Quickmenu{{{1
     noremap <silent><F12> :call quickmenu#toggle(0)<cr>
+    "noremap <silent><F12> :echomsg vwm#util#get_curr_expression()<cr>
 
     " enable cursorline (L) and cmdline help (H)
     let g:quickmenu_options = "H"
