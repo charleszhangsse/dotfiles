@@ -598,11 +598,8 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Integration {{{2
-    Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'  | " Awesome git wrapper
-
     Plug 'huawenyu/new.vim', Cond(has('nvim')) | Plug 'huawenyu/new-gdb.vim', Cond(has('nvim'))  | " New GUI gdb-frontend
     "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
-    "Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
     "Plug 'huawenyu/neogdb2.vim', Cond(has('nvim')) | Plug 'kassio/neoterm' | Plug 'paroxayte/vwm.vim'
     "Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
     "Plug 'idanarye/vim-vebugger'
@@ -2273,7 +2270,7 @@ endif
 
 " Quickmenu{{{1
     noremap <silent><F12> :call quickmenu#toggle(0)<cr>
-    "noremap <silent><F12> :echomsg vwm#util#get_curr_expression()<cr>
+    "noremap <silent><F12> :echomsg new#util#get_curr_expression()<cr>
 
     " enable cursorline (L) and cmdline help (H)
     let g:quickmenu_options = "H"
@@ -2316,9 +2313,8 @@ endif
 "}}}
 
 
-" vwm.vim: vim window layout manager {{{1
-    " Base on plugin kassio/neoterm
-    let g:vwm#eager_render = 1
+" new.vim: neovim expect window {{{1
+    let g:new#eager_render = 1
 "}}}
 
 " VimL Debug{{{1
