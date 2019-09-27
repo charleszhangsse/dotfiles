@@ -580,7 +580,6 @@ call plug#begin('~/.vim/bundle')
 
         Plug 'tpope/vim-eunuch'  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
         Plug 'kassio/neoterm', Cond(has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
-        "Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
 
         "Plug 'webdevel/tabulous'
         Plug 'huawenyu/taboo.vim'
@@ -599,13 +598,15 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Integration {{{2
-    Plug 'idanarye/vim-vebugger'
-    Plug 'LucHermitte/lh-vim-lib'
+    Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'  | " Awesome git wrapper
 
+    Plug 'huawenyu/new.vim', Cond(has('nvim')) | Plug 'huawenyu/new-gdb.vim', Cond(has('nvim'))  | " New GUI gdb-frontend
     "Plug 'huawenyu/neogdb.vim', Cond(has('nvim'))
-    Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
+    "Plug 'huawenyu/vwm.vim'                         | " A layout manager for vim and nvim
     "Plug 'huawenyu/neogdb2.vim', Cond(has('nvim')) | Plug 'kassio/neoterm' | Plug 'paroxayte/vwm.vim'
     "Plug 'cpiger/NeoDebug', {'on': 'NeoDebug'}  |" Cond(has('nvim'))
+    "Plug 'idanarye/vim-vebugger'
+    "Plug 'LucHermitte/lh-vim-lib'
     " NVIM_LISTEN_ADDRESS=/tmp/nvim.gdb vi
 
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
