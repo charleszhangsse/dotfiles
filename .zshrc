@@ -255,6 +255,7 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
 export PATH="/opt/ActiveTcl-8.6/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 export USESUDO=$(which sudo)
 export FORTIPKG=$HOME/fortipkg

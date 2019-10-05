@@ -319,6 +319,10 @@ call plug#begin('~/.vim/bundle')
         Plug 'neovimhaskell/haskell-vim'
     "}}}
 
+    " Rust {{{3
+        Plug 'rust-lang/rust.vim'
+    "}}}
+
     Plug 'vim-scripts/iptables'
     Plug 'jceb/vim-orgmode'
     Plug 'tpope/vim-speeddating'
