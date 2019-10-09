@@ -13,6 +13,7 @@ tagx
 GTAGS
 GPATH
 GRTAGS
+rusty-tags.vi
 *.tage
 *.tags
 *.tagx
@@ -22,3 +23,4 @@ GRTAGS
 *.ccls-cache
 fgtcoveragebuild.tar.xz
 migadmin/node_modules/grunt-jscs/*
+target/rls/*

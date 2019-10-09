@@ -266,6 +266,7 @@ call plug#begin('~/.vim/bundle')
         " Please install yarn (-- a node package manger) first.
         Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometimes find references fail
         "Plug 'neoclide/coc.nvim', {'on': ['<Plug>(coc-definition)', '<Plug>(coc-references)'], 'do': 'yarn install --frozen-lockfile'}  | " Increase stable by only load the plugin after the 1st command call.
+        Plug 'neoclide/coc-rls'
     "}}}
 
     " Python {{{3
@@ -1080,6 +1081,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
     let NERDTreeRespectWildIgnore = 1
     "let NERDTreeShowBookmarks = 1
     let NERDTreeWinSize = 25
+    let g:NERDTreeIgnore = ['^build$', 'rusty-tags.vi', '^target$', 'tags']
 
     " Add spaces after comment delimiters by default
     let g:NERDSpaceDelims = 1
@@ -1662,6 +1664,7 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
         autocmd BufEnter * sign define dummy
         autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 
+        autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
         autocmd BufNewFile,BufRead *.c.rej,*.c.orig,h.rej,*.h.orig,patch.*,*.diff,*.patch set ft=diff
         autocmd BufNewFile,BufRead *.c,*.c,*.h,*.cpp,*.C,*.CXX,*.CPP set ft=c
         autocmd BufNewFile,BufRead *.wiki set syntax=markdown
