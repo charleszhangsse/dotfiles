@@ -374,6 +374,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'WolfgangMehner/bash-support'
     "Plug 'vim-scripts/DirDiff.vim'
     Plug 'rickhowe/diffchar.vim'
+    Plug 'chrisbra/vim-diff-enhanced'
     Plug 'huawenyu/vim-log-syntax'
     Plug 'Shougo/vinarise.vim' | " Hex viewer
     "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  | " brew install prettier
