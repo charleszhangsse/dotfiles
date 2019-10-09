@@ -58,6 +58,7 @@
 "   -     :%s/pattern//gn       ' count the number of occurrences of a word
 "   -     :%s/\n\{3,}/\r\r/e    ' replace three or more consecutive line endings with two line endings (a single blank line)
 "   -     :g/^$/d               ' delete blank lines, remove multi blank line
+"   -     :%s/\s\+$//g          ' remove the tail spaces
 "   -     :%s/\s\+$//e          ' remove unwanted whitespace from line end
 "   -     :%s/^\s\+//e          '   remove from begin
 "   -     :%s/^M//g             ' remove windows's CTRL-M characters: type CTRL-V, then CTRL-M
