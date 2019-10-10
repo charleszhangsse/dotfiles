@@ -616,7 +616,9 @@ call plug#begin('~/.vim/bundle')
     Plug 'rhysd/conflict-marker.vim'            | " [x and ]x jump conflict, `ct` for themselves, `co` for ourselves, `cn` for none and `cb` for both.
     Plug 'ericcurtin/CurtineIncSw.vim'          | " Toggle source/header
     Plug 'junkblocker/patchreview-vim'          | " :PatchReview some.patch
-    Plug 'cohama/agit.vim'    | " :Agit show git log like gitk
+    "Plug 'cohama/agit.vim'    | " :Agit show git log like gitk
+    "Plug 'codeindulgence/vim-tig' | " Using tig in neovim
+    Plug 'iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'        | " tig for vim (https://github.com/jonas/tig): should install tig first.
     Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim'  | " Awesome git wrapper
       " vim-fugitive: git-base
       "   :Gblame     Show help in blame window and input 'g?'
@@ -635,7 +637,6 @@ call plug#begin('~/.vim/bundle')
       "      o/<cr>   on a commit to display the content/diff on the new open side window.
 
     "Plug 'junegunn/fzf.vim'      | " base-on: https://github.com/junegunn/fzf, create float-windows: https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html
-    Plug 'codeindulgence/vim-tig' | " Using tig in neovim
     "Plug 'juneedahamed/svnj.vim'
     Plug 'juneedahamed/vc.vim'| " Support git, svn, ...
     Plug 'vim-scripts/vcscommand.vim' | " CVS, SVN, SVK, git, bzr, and hg within VIM
