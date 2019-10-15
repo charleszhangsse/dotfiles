@@ -232,6 +232,12 @@ endif
 
 " Plugins {{{1}}}
 call plug#begin('~/.vim/bundle')
+
+" Help {{{2
+    " On-demand lazy load
+    "Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+"}}}2
+
 " ColorTheme {{{2
     Plug 'vim-scripts/holokai'
     Plug 'NLKNguyen/papercolor-theme'      | " set background=light;colorscheme PaperColor
@@ -514,7 +520,8 @@ call plug#begin('~/.vim/bundle')
 
     " Gen menu
     Plug 'Timoses/vim-venu'            | " :VenuPrint, customize menu from command-line
-    Plug 'skywind3000/quickmenu.vim'   | " customize menu from size pane
+    "Plug 'skywind3000/quickmenu.vim'   | " customize menu from size pane
+    Plug 'daniel-samson/quickmenu.vim'
 
     " File/Explore {{{3
         " Plugin 'defx'
@@ -541,6 +548,10 @@ call plug#begin('~/.vim/bundle')
         "Plug 'dbakker/vim-paragraph-motion' | " treat whitespace only lines as paragraph breaks so { and } will jump to them
         "Plug 'vim-scripts/Improved-paragraph-motion'
         Plug 'christoomey/vim-tmux-navigator'
+
+        " gA                   shows the four representations of the number under the cursor.
+        " crd, crx, cro, crb   convert the number under the cursor to decimal, hex, octal, binary, respectively.
+        Plug 'glts/vim-radical' |  Plug 'glts/vim-magnum'  | Plug 'tpope/vim-repeat'
     "}}}
 
     " Search {{{3
@@ -1073,6 +1084,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
     "let g:netrw_browse_split = 4
     "let g:netrw_altv = 1
     "let g:netrw_winsize = 16
+    "let g:netrw_list_hide='.*\.png$,.*\.pdf,.*\.mp4,.*\.tga,.*\.mp3,.*\.jpg,.*\.svg,/*\.stl,.*\.mtl,.*\.ply' 
 "}}}
 
 " NerdTree/NerdComment {{{2
@@ -1592,7 +1604,7 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
             execute ':C8'
 
             " If logfile reset NonText bright, this will override it.
-            "" The 'NonText' highlighting will be used for 'eol', 'extends' and 'precedes'  
+            "" The 'NonText' highlighting will be used for 'eol', 'extends' and 'precedes'
             "" The 'SpecialKey' for 'nbsp', 'tab' and 'trail'.
             "hi NonText          ctermfg=238
             "hi SpecialKey       ctermfg=238
@@ -1715,9 +1727,10 @@ command! -nargs=* C8  setlocal autoindent cindent noexpandtab tabstop=8 shiftwid
   nmap ql :ls<cr>
   nmap qw :R! ~/tools/dict <C-R>=expand('<cword>') <cr>
 
-  " Disable F1 built-in help key by: re-replace last search
-  map <F1> :<c-u>%s///gc<cr>
-  imap <F1> :<c-u>%s//<C-R>0/gc<cr>
+  "" Disable F1 built-in help key by: re-replace last search
+  "map <F1> :<c-u>%s///gc<cr>
+  "imap <F1> :<c-u>%s//<C-R>0/gc<cr>
+
   " map <leader><Esc> :AnsiEsc<cr>
   nnoremap <C-c> <silent> <C-c>
   nnoremap <buffer> <Enter> <C-W><Enter>
@@ -1891,9 +1904,6 @@ endif
   "nnoremap <silent> <leader>ll :<c-u>call log#log(expand('%'))<CR>
   "vnoremap <silent> <leader>ll :<c-u>call log#log(expand('%'))<CR>
   " Lint: -i ignore-error and continue, -s --silent --quiet
-  nnoremap <leader>mk :Make -C daemon/wad -i -s -j6<CR>
-  nnoremap <leader>mi :Make init -i -s -j6<CR>
-  nnoremap <leader>ma :Make all<CR>
 
   "bookmark
   nnoremap <silent> <leader>mm :silent! call mark#MarkCurrentWord(expand('cword'))<CR>
@@ -1905,10 +1915,6 @@ endif
   "
   map W <Plug>(expand_region_expand)
   map B <Plug>(expand_region_shrink)
-
-  "nnoremap         <leader>bb :VCBlame<cr>
-  nnoremap         <leader>bb :Gblame<cr>
-  nnoremap         <leader>bl :GV
 
   nnoremap <silent> <leader>v] :NeomakeSh! tagme<cr>
   nnoremap <silent> <leader>vi :call utils#VoomInsert(0) <CR>
@@ -1931,26 +1937,6 @@ endif
           return "'a,'bs/\\<". sel_str. '\>/'. sel_str. '/gI'
       endif
   endfunction
-
-  " For local replace
-  "nnoremap <leader>vm [[ma%mb:call signature#sign#Refresh(1) <CR>
-  nnoremap <leader>vr :<C-\>e SelectedReplace()<CR><left><left><left>
-  vnoremap <leader>vr :<C-\>e SelectedReplace()<CR><left><left><left>
-  " remove space from emptyline
-  nnoremap <leader>v<space> :%s/^\s\s*$//<CR>
-  vnoremap <leader>v<space> :s/^\s\s*$//<cr>
-
-  " count the number of occurrences of a word
-  nnoremap <leader>vc :%s/<C-R>=expand('<cword>')<cr>//gn<cr>
-
-  " For global replace
-  nnoremap <leader>vR gD:%s/<C-R>///g<left><left>
-  "
-  "nnoremap <leader>vr :Replace <C-R>=expand('<cword>') <CR> <C-R>=expand('<cword>') <cr>
-  "vnoremap <leader>vr ""y:%s/<C-R>=escape(@", '/\')<CR>/<C-R>=escape(@", '/\')<CR>/g<Left><Left>
-  "
-  "vnoremap <leader>vr :<C-\>e tmp#CurrentReplace() <CR>
-  "nnoremap <leader>vr :Replace <C-R>=expand('<cword>') <CR> <C-R>=expand('<cword>') <cr>
 
   " script-eval
   "vnoremap <silent> <leader>ee :<c-u>call vimuxscript#ExecuteSelection(1)<CR>
@@ -2005,12 +1991,6 @@ endif
 
   nnoremap gf :<c-u>call utils#GotoFileWithLineNum()<CR>
   nnoremap <silent> <leader>gf :<c-u>call utils#GotoFileWithPreview()<CR>
-
-  "map <leader>ds :call Asm() <CR>
-  nnoremap <leader>df :%s/\s\+$//g
-  nnoremap <leader>dd :g/<C-R><C-w>/ norm dd
-  vnoremap <leader>dd :<c-u>g/<C-R>*/ norm dd
-  nnoremap <leader>de :g/.\{200,\}/d
 
   "autocmd WinEnter * if !utils#IsLeftMostWindow() | let g:tagbar_left = 0 | else | let g:tagbar_left = 1 | endif
   function! s:ToggleTagbar()
@@ -2221,19 +2201,19 @@ endif
     let g:qf_max_height = 4
 
     "nnoremap <leader>mn :QFAddNote note:
-    nnoremap <leader>ms :SaveList 
-    nnoremap <leader>mS :SaveListAdd 
-    nnoremap <leader>ml :LoadList 
-    nnoremap <leader>mL :LoadListAdd 
+    nnoremap <leader>ms :SaveList
+    nnoremap <leader>mS :SaveListAdd
+    nnoremap <leader>ml :LoadList
+    nnoremap <leader>mL :LoadListAdd
     nnoremap <leader>mo :copen<cr>
     nnoremap <leader>mn :cnewer<cr>
     nnoremap <leader>mp :colder<cr>
 
-    nnoremap <leader>md :Doline 
-    nnoremap <leader>mx :RemoveList 
+    nnoremap <leader>md :Doline
+    nnoremap <leader>mx :RemoveList
     nnoremap <leader>mh :ListLists<cr>
-    "nnoremap <leader>mk :Keep 
-    nnoremap <leader>mF :Reject 
+    "nnoremap <leader>mk :Keep
+    nnoremap <leader>mF :Reject
     nnoremap <leader>mf :call utilquickfix#QuickFixFilter() <CR>
     nnoremap <leader>mc :call utilquickfix#QuickFixFunction() <CR>
 "}}}
@@ -2279,49 +2259,100 @@ endif
 "}}}
 
 " Quickmenu{{{1
-    noremap <silent><F12> :call quickmenu#toggle(0)<cr>
-    "noremap <silent><F12> :echomsg new#util#get_curr_expression()<cr>
+    "noremap <silent><F1> :call quickmenu#toggle(0)<cr>
+    noremap <silent><F1> :call quickmenu#bottom(0)<cr>
+
+    noremap <silent> <leader><space> :call quickmenu#bottom(0)<cr>
+    noremap <silent> <leader>1 :call quickmenu#bottom(1)<cr>
+
+    function MyMenuExec(...)
+        let strCmd = join(a:000, '')
+        silent! call s:log.info('MyExecArgs: "', strCmd, '"')
+        exec strCmd
+    endfunc
 
     " enable cursorline (L) and cmdline help (H)
-    let g:quickmenu_options = "H"
+    let g:quickmenu_options = ""
+    "call quickmenu#header("Helper")
 
     " clear all the items
     call quickmenu#reset()
 
-    " new section: empty action with text starts with "#" represent a new section
-    call quickmenu#append("# Debug", '')
+    " Sample
+    "call quickmenu#append(text="Run %{expand('%:t')}", action='!./%', help="Run current file", ft="c,cpp,objc,objcpp")
 
-    " script between %{ and } will be evaluated before menu open
+    " new section: empty action with text starts with "#" represent a new section
+    call quickmenu#append("# Execute", '')
+    call quickmenu#append("Update TAGs",          "NeomakeSh! tagme", "")
     call quickmenu#append("Run %{expand('%:t')}", '!./%', "Run current file")
 
-    " new section
+    call quickmenu#append("# View", '')
+    call quickmenu#append("Outline",   'VoomToggle markdown',  "use fugitive's Gvdiff on current document")
+    call quickmenu#append("Maximizer",   'MaximizerToggle',  "use fugitive's Gvdiff on current document")
+    call quickmenu#append("NERDTree",   'NERDTreeTabsToggle',  "use fugitive's Gvdiff on current document")
+
+    " Git
+    "nnoremap <leader>bb :VCBlame<cr>
+    nnoremap <leader>bb :Gblame<cr>
+    nnoremap <leader>bl :GV
+
     call quickmenu#append("# Git", '')
     call quickmenu#append("git diff",   'Gvdiff',  "use fugitive's Gvdiff on current document")
     call quickmenu#append("git status", 'Gstatus', "use fugitive's Gstatus on current document")
     call quickmenu#append("git blame",  'Gblame',  "use fugitive's Gblame on current document")
 
     " section 'Make'
+    nnoremap <leader>mk :Make -i -s -j6 -C daemon/wad <CR>
+    nnoremap <leader>ma :Make -i -s -j6 -C sysinit <CR>
+
     call quickmenu#append("# Make", '')
-    call quickmenu#append("make init", "Make init -i -s -j6", "")
-    call quickmenu#append("make wad", "Make -C daemon/wad -i -s -j6", "")
-    call quickmenu#append("make all", "Make all", "")
+    call quickmenu#append("(ma) make init", "Make -j6 -i -s  -C sysinit", "")
+    call quickmenu#append("(mk) make wad",  "Make -i -s -j6 -C daemon/wad", "")
 
     " section 'String'
+    "map <leader>ds :call Asm() <CR>
+    nnoremap <leader>df :%s/\s\+$//g
+    nnoremap <leader>dd :g/<C-R><C-w>/ norm dd
+    vnoremap <leader>dd :<c-u>g/<C-R>*/ norm dd
+    " For local replace
+    "nnoremap <leader>vm [[ma%mb:call signature#sign#Refresh(1) <CR>
+    nnoremap <leader>vr :<C-\>e SelectedReplace()<CR><left><left><left>
+    vnoremap <leader>vr :<C-\>e SelectedReplace()<CR><left><left><left>
+    " remove space from emptyline
+    "nnoremap <leader>v<space> :%s/^\s\s*$//<CR>
+    "vnoremap <leader>v<space> :s/^\s\s*$//<cr>
+
+    " count the number of occurrences of a word
+    "nnoremap <leader>vc :%s/<C-R>=expand('<cword>')<cr>//gn<cr>
+
+    " For global replace
+    nnoremap <leader>vR gD:%s/<C-R>///g<left><left>
+    "
+    "nnoremap <leader>vr :Replace <C-R>=expand('<cword>') <CR> <C-R>=expand('<cword>') <cr>
+    "vnoremap <leader>vr ""y:%s/<C-R>=escape(@", '/\')<CR>/<C-R>=escape(@", '/\')<CR>/g<Left><Left>
+    "
+    "vnoremap <leader>vr :<C-\>e tmp#CurrentReplace() <CR>
+    "nnoremap <leader>vr :Replace <C-R>=expand('<cword>') <CR> <C-R>=expand('<cword>') <cr>
+
     call quickmenu#append("# String", '')
-    call quickmenu#append("Occurrences of selected", "g Ctrl-G", "Show the number of lines, words and bytes selected")
-    call quickmenu#append("Occurrences `%{expand('<cword>')}`", "%s/%{expand('<cword>')}//gn", "count the number of occurrences of a word")
-    call quickmenu#append("Remove dup empty lines", "%s/\n\{3,}/\r\r/e", "replace three or more consecutive line endings with two line endings (a single blank line)")
-    call quickmenu#append("Delete empty lines", "g/^$/d", "delete blank lines, remove multi blank line")
-    call quickmenu#append("Remove ending space", "%s/\s\+$//e", "remove unwanted whitespace from line end")
+    call quickmenu#append("Count of selected",            "g Ctrl-G", "Show the number of lines, words and bytes selected")
+    call quickmenu#append("Count `%{expand('<cword>')}`", 'call MyMenuExec("%s/", expand("<cword>"), "//gn")', '')
+    call quickmenu#append("Remove empty lines",                 "g/^$/d", "delete blank lines, remove multi blank line")
+    call quickmenu#append("Remove extra empty lines",             "%s/\\n\\{3,}/\\r\\r/e", "replace three or more consecutive line endings with two line endings (a single blank line)")
+    call quickmenu#append("(df) Remove ending space",                "%s/\\s\\+$//g", "remove unwanted whitespace from line end")
+    call quickmenu#append("(dd) Remove lines of last search",        "g//norm dd", '')
+    call quickmenu#append("Replace last search",                     "execute '%s///gc'", "")
+    call quickmenu#append("Replace search with `%{expand('<cword>')}`", 'call MyMenuExec("%s//", expand("<cword>"), "/gc")', "")
+    call quickmenu#append("Replace last search",                     "execute '%s///gc'", "")
 
     " section 'Misc'
+    "call quickmenu#append("Turn paste %{&paste? 'off':'on'}",           "set paste!", "enable/disable paste mode (:set paste!)")
+    "call quickmenu#append("Turn spell %{&spell? 'off':'on'}",           "set spell!", "enable/disable spell check (:set spell!)")
     call quickmenu#append("# Misc", '')
-    call quickmenu#append("Update TAGs", "NeomakeSh! tagme", "")
-    call quickmenu#append("Turn paste %{&paste? 'off':'on'}", "set paste!", "enable/disable paste mode (:set paste!)")
-    call quickmenu#append("Turn spell %{&spell? 'off':'on'}", "set spell!", "enable/disable spell check (:set spell!)")
-    call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
-"}}}
+    call quickmenu#append("Function List",  "TagbarToggle", "Switch Tagbar on/off")
+    call quickmenu#append("Convert number", "normal gA", "")
 
+"}}}
 
 " new.vim: neovim expect window {{{1
     let g:new#eager_render = 1
@@ -2330,7 +2361,7 @@ endif
 " VimL Debug{{{1
   silent! call logger#init('ALL', ['/tmp/vim.log'])
   "silent! call logger#init('ERROR', ['/tmp/vim.log'])
-  "silent! let s:log = logger#getLogger(expand('<sfile>:t'))
+  silent! let s:log = logger#getLogger(expand('<sfile>:t'))
 
   "   " in .vimrc
   "   call logger#init('ALL', ['/dev/stdout', '~/.vim/log.txt'])
