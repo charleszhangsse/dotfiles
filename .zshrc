@@ -141,10 +141,13 @@ function _mytail()
 };
 alias tail='_mytail'
 
-#export LFTP_CMD='lftp -u test,test ftpsvr -e '
-#export LFTP_DIR=upload/$USER
-export LFTP_CMD='lftp -u hyu, sftp://172.16.101.145 -e '
-export LFTP_DIR=$USER
+# ftpserver
+export LFTP_CMD='lftp -u test,test ftpsvr -e '
+export LFTP_DIR=upload/$USER
+#
+# sftpserver
+#export LFTP_CMD='lftp -u hyu, sftp://172.16.101.145 -e '
+#export LFTP_DIR=$USER
 
 function _myftpls()
 {

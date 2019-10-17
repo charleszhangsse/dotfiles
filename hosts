@@ -11,8 +11,8 @@
 172.16.80.139	server2
 ## the hyperviser server, here is virsh-manage
 172.16.80.130	kvm
-#172.18.2.169	ftpsvr
-172.16.101.145  ftpsvr
+172.18.2.169	ftpsvr
+#172.16.101.145  ftpsvr
 
 # My gdb remote
 #10.1.1.125		dut
