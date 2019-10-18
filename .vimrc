@@ -1441,3 +1441,5 @@ endif
   "   $ tail -f /tmp/vim.log
 "}}}
 
+let g:tracelog_default_dir = $HOME . "/script/trace-wad/"
+
