@@ -236,6 +236,7 @@ call plug#begin('~/.vim/bundle')
 " Plug setup: Basic Config, order-sensible {{{2
     Plug 'tpope/vim-sensible'
     Plug 'huawenyu/vim-basic'
+    Plug 'huawenyu/vim-conf-plugs'
 "}}}2
 
 " Help {{{2
@@ -731,7 +732,6 @@ call plug#begin('~/.vim/bundle')
 
 " Plug-end setup: customize the plugs, must put at the end of plugs {{{2
     Plug 'huawenyu/vim-menu1'
-    Plug 'huawenyu/vim-conf-plugs'
 "}}}2
 call plug#end()
 
