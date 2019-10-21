@@ -1,4 +1,7 @@
-" Hi, the <leader> is <space> :)
+" Hi, the <leader> is <space> and , :)
+"
+"    let mapleader = ","
+"    nmap <space> <leader>
 "
 " Doc {{{1
 "   Install neovim {{{2
