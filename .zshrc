@@ -131,6 +131,19 @@ zman() {
 unsetopt correct_all
 unsetopt nomatch
 
+
+function Run()
+{
+    if [ "$dryrun" == "off" ]; then
+        echo "Executing $*"
+        eval "$@"
+    else
+        echo "Executing $*"
+        return 0
+    fi
+}
+
+
 function _mytail()
 {
   if [ -t 0 ]; then
@@ -225,6 +238,24 @@ function _myftp()
   fi
 };
 alias ftpme='_myftp'
+
+# used to generate the c/c++ ccls indexer db: ccls clang makefile
+function _bear()
+{
+
+    if [ -f compile_commands.json ]; then
+        ;
+    else
+        branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+        cp ~/workref/compile_commands.json-${branch} compile_commands.json || { echo 'The file ~/workref/compile_commands.json-${branch} not exist!' ; exit 1; }
+    fi
+    sample_dir=$(awk 'match($0, /-I(.*)\/fortiweb\/packages\/ext/, arr) {print arr[1]; exit}' compile_commands.json)
+    #echo $sample_dir
+    cur_dir=$(realpath .)
+    #sed -i "s;$sample_dir;$cur_dir;g" compile_commands.json
+    Run "sed -i 's;$sample_dir;$cur_dir;g' compile_commands.json"
+};
+alias bearme='_bear'
 
 # Customize to your needs...
 export TERM=screen-256color

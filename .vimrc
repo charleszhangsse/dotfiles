@@ -233,15 +233,10 @@ endif
 " Plugins {{{1}}}
 call plug#begin('~/.vim/bundle')
 
-" Plug setup: Basic Config, order-sensible {{{2
+" Plug setup: Basic-config/Plugs-customize, order-sensible {{{2
     Plug 'tpope/vim-sensible'
     Plug 'huawenyu/vim-basic'
     Plug 'huawenyu/vim-conf-plugs'
-"}}}2
-
-" Help {{{2
-    " On-demand lazy load
-    "Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 "}}}2
 
 " ColorTheme {{{2
@@ -379,9 +374,9 @@ call plug#begin('~/.vim/bundle')
     " http://www.thegeekstuff.com/2009/02/make-vim-as-your-bash-ide-using-bash-support-plugin/
     " Must config to avoid annoy popup message:
     "   $ cat ~/.vim/templates/bash.templates
-    "       SetMacro( 'AUTHOR',      'Huawen Yu' )
-    "       SetMacro( 'AUTHORREF',   'hyu' )
-    "       SetMacro( 'EMAIL',       'wilson.yuu@gmail.com' )
+    "       SetMacro( 'AUTHOR',      'name' )
+    "       SetMacro( 'AUTHORREF',   'name' )
+    "       SetMacro( 'EMAIL',       'name@mail.com' )
     "       SetMacro( 'COPYRIGHT',   'Copyright (c) |YEAR|, |AUTHOR|' )
     "Plug 'WolfgangMehner/bash-support'
     "Plug 'vim-scripts/DirDiff.vim'
@@ -504,6 +499,9 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Improve {{{2
+    " On-demand lazy load
+    "Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+
     "Plug 'derekwyatt/vim-fswitch'
     Plug 'kopischke/vim-fetch'
     Plug 'terryma/vim-expand-region'   | "   W - select region expand; B - shrink
@@ -730,7 +728,7 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 
-" Plug-end setup: customize the plugs, must put at the end of plugs {{{2
+" Plug-end setup: depend on plugins, should put at the end of plugs {{{2
     Plug 'huawenyu/vim-menu1'
 "}}}2
 call plug#end()
