@@ -351,7 +351,7 @@ call plug#begin('~/.vim/bundle')
 " Facade {{{2
     Plug 'Raimondi/delimitMate'
     Plug 'millermedeiros/vim-statline'
-    Plug 'vivien/vim-linux-coding-style'
+    Plug 'huawenyu/vim-linux-coding-style'
     "Plug 'MattesGroeger/vim-bookmarks'
     "Plug 'hecal3/vim-leader-guide'
     "Plug 'megaannum/self'
