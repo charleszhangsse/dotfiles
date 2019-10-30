@@ -84,7 +84,7 @@
 "       :setfiletype ip<Tab>    ' Search the syntax begin with `ip`
 "   Plug:
 "       vip             select the same indent block
-"       ]l, [l          jump next/prev same indent line
+"       a+p/n           jump next/prev same indent line
 "   Runtime:
 "       :set all              ' Check all options values
 "       :set filetype?        ' Check this option value
@@ -372,6 +372,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'dhruvasagar/vim-table-mode'
     Plug 'godlygeek/tabular'   | " require by vim-markdown
     Plug 'plasticboy/vim-markdown'
+    Plug 'tmux-plugins/vim-tmux'  | " The syntax of .tmux.conf
 
     "
     " http://www.thegeekstuff.com/2009/02/make-vim-as-your-bash-ide-using-bash-support-plugin/
@@ -720,6 +721,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'fboender/bexec'                           | " :Bexec
     Plug 'huawenyu/SingleCompile'                     | " :SingleCompile, SingleCompileRun
     Plug 'amiorin/vim-eval'
+    Plug 'huawenyu/vim-tmux-runner'                  | " Send command to tmux's marked pane
+    Plug 'WolfgangMehner/vim-support'
 
     Plug 'gu-fan/doctest.vim'     | " doctest for language vimscript, :DocTest
     Plug 'tpope/vim-scriptease'   | " A Vim plugin for Vim plugins
