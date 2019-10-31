@@ -136,7 +136,8 @@
 "       ctrl-u          delete to begin
 "       ctrl-w          delete one word
 "
-"   Maps:
+"   Maps check:
+"      :verbose map <C-j>          check who map this
 "      :map <some-keys> check the map valid or not
 "      howto map Shift+F#:
 "        - Goto insert mode and hit Ctrl-V Shift-F#, which gotted we can use that to map.
@@ -372,7 +373,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'dhruvasagar/vim-table-mode'
     Plug 'godlygeek/tabular'   | " require by vim-markdown
     Plug 'plasticboy/vim-markdown'
-    Plug 'tmux-plugins/vim-tmux'  | " The syntax of .tmux.conf
+    Plug 'tmux-plugins/vim-tmux'        | " The syntax of .tmux.conf
+    "Plug 'WolfgangMehner/vim-support'   | " The syntax of vimscript, but too many keymap
 
     "
     " http://www.thegeekstuff.com/2009/02/make-vim-as-your-bash-ide-using-bash-support-plugin/
@@ -667,7 +669,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'svermeulen/vim-easyclip'  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
     "Plug 'bfredl/nvim-miniyank'
     Plug 'svermeulen/vim-yoink', Cond(has('nvim')) | " sometimes delete not copyinto paste's buffer
-    Plug 'huawenyu/vimux-script'
+    "Plug 'huawenyu/vimux-script'
+    Plug 'huawenyu/vim-tmux-runner'                  | " Send command to tmux's marked pane
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
     Plug 'szw/vim-dict'
@@ -721,8 +724,6 @@ call plug#begin('~/.vim/bundle')
     "Plug 'fboender/bexec'                           | " :Bexec
     Plug 'huawenyu/SingleCompile'                     | " :SingleCompile, SingleCompileRun
     Plug 'amiorin/vim-eval'
-    Plug 'huawenyu/vim-tmux-runner'                  | " Send command to tmux's marked pane
-    Plug 'WolfgangMehner/vim-support'
 
     Plug 'gu-fan/doctest.vim'     | " doctest for language vimscript, :DocTest
     Plug 'tpope/vim-scriptease'   | " A Vim plugin for Vim plugins
