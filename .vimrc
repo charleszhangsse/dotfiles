@@ -782,7 +782,7 @@ call plug#end()
   "   " in every script
   "   silent! let s:log = logger#getLogger(expand('<sfile>:t'))
   "
-  "   " start logger
+  "   " start logger: trace,debug,info,warn,error,fatal
   "   silent! call s:log.info('hello world')
   "   " Check log
   "   $ tail -f /tmp/vim.log

@@ -66,3 +66,5 @@ ff02::2 ip6-allrouters
 # Blocksite:
 0.0.0.0   detectportal.firefox.com
 ::0       detectportal.firefox.com
+#0.0.0.0   www.learncertification.com
+#::0       www.learncertification.com
