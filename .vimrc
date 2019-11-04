@@ -278,7 +278,7 @@ call plug#begin('~/.vim/bundle')
         " Please install yarn (-- a node package manger) first.
         Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}  | " sometimes find references fail
         "Plug 'neoclide/coc.nvim', {'on': ['<Plug>(coc-definition)', '<Plug>(coc-references)'], 'do': 'yarn install --frozen-lockfile'}  | " Increase stable by only load the plugin after the 1st command call.
-        Plug 'neoclide/coc-rls'
+        "Plug 'neoclide/coc-rls'
     "}}}
 
     " Python {{{3
@@ -374,7 +374,10 @@ call plug#begin('~/.vim/bundle')
     Plug 'godlygeek/tabular'   | " require by vim-markdown
     Plug 'plasticboy/vim-markdown'
     Plug 'tmux-plugins/vim-tmux'        | " The syntax of .tmux.conf
+
+    Plug 'vim-scripts/awk.vim'
     "Plug 'WolfgangMehner/vim-support'   | " The syntax of vimscript, but too many keymap
+    "Plug 'WolfgangMehner/awk-support'
 
     "
     " http://www.thegeekstuff.com/2009/02/make-vim-as-your-bash-ide-using-bash-support-plugin/
@@ -670,10 +673,12 @@ call plug#begin('~/.vim/bundle')
     "Plug 'bfredl/nvim-miniyank'
     Plug 'svermeulen/vim-yoink', Cond(has('nvim')) | " sometimes delete not copyinto paste's buffer
     "Plug 'huawenyu/vimux-script'
-    Plug 'huawenyu/vim-tmux-runner'                  | " Send command to tmux's marked pane
+    "Plug 'huawenyu/vim-tmux-runner'
+    Plug 'huawenyu/vim-tmux-runner', { 'on':  ['VtrLoad', 'VtrSendCommandToRunner', 'VtrSendLinesToRunner', 'VtrSendFile', 'VtrOpenRunner'] }   | " Send command to tmux's marked pane
     Plug 'yuratomo/w3m.vim'
     Plug 'nhooyr/neoman.vim', Cond(has('nvim'))    | " :Nman printf, :Nman printf(3)
     Plug 'szw/vim-dict'
+    "Plug 'tyru/current-func-info.vim'           | "[Too slow] Show current function name in statusline
 "}}}
 
 " AutoComplete {{{2
