@@ -672,7 +672,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'svermeulen/vim-easyclip'  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
     "Plug 'bfredl/nvim-miniyank'
     Plug 'svermeulen/vim-yoink', Cond(has('nvim')) | " sometimes delete not copyinto paste's buffer
-    "Plug 'huawenyu/vimux-script'
+    Plug 'huawenyu/vimux-script'
     "Plug 'huawenyu/vim-tmux-runner'
     Plug 'huawenyu/vim-tmux-runner', { 'on':  ['VtrLoad', 'VtrSendCommandToRunner', 'VtrSendLinesToRunner', 'VtrSendFile', 'VtrOpenRunner'] }   | " Send command to tmux's marked pane
     Plug 'yuratomo/w3m.vim'
