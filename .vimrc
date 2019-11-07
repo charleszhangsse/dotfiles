@@ -263,7 +263,13 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Mode {{{2
-    " Tags/cscope {{{3
+    " REPL (Read, Eval, Print, Loop) {{{3
+    "  - Command Line Tool: https://github.com/BenBrock/reple
+        "Plug 'sillybun/vim-repl'
+        Plug 'rhysd/reply.vim'
+    "}}}
+
+    " Indexer/Tags/cscope {{{3
         " [Tags](https://zhuanlan.zhihu.com/p/36279445)
         " [C++](https://www.zhihu.com/question/47691414/answer/373700711)
         "
@@ -768,7 +774,9 @@ call plug#end()
     set tags=./tags,tags,./.tags,.tags;$HOME
 "}}}
 
-
+" Plugs Global {{{1
+    " Disable all plugins's auto-maps
+    "let g:no_plugin_maps = 1
 "}}}
 
 " VimL Debug{{{1
@@ -787,4 +795,5 @@ call plug#end()
   "   " Check log
   "   $ tail -f /tmp/vim.log
 "}}}
+
 
