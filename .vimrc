@@ -269,6 +269,11 @@ call plug#begin('~/.vim/bundle')
         Plug 'rhysd/reply.vim'
     "}}}
 
+    " Script {{{3
+    " Take current text file as script
+        "
+    "}}}
+
     " Indexer/Tags/cscope {{{3
         " [Tags](https://zhuanlan.zhihu.com/p/36279445)
         " [C++](https://www.zhihu.com/question/47691414/answer/373700711)
@@ -586,6 +591,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'Shougo/vimproc.vim', {'do' : 'make'}
         Plug 'skywind3000/asyncrun.vim'
         Plug 'huawenyu/neomake', Cond(has('nvim'))
+        "Plug 'neomake/neomake', Cond(has('nvim'))
     "}}}
 
     " View/Outline {{{3
