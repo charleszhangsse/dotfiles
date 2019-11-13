@@ -266,7 +266,11 @@ call plug#begin('~/.vim/bundle')
     " REPL (Read, Eval, Print, Loop) {{{3
     "  - Command Line Tool: https://github.com/BenBrock/reple
         "Plug 'sillybun/vim-repl'
-        Plug 'rhysd/reply.vim'
+        "Plug 'rhysd/reply.vim'
+    "}}}
+
+    " Format {{{3
+        Plug 'Chiel92/vim-autoformat'
     "}}}
 
     " Script {{{3
@@ -312,6 +316,7 @@ call plug#begin('~/.vim/bundle')
 
     " Javascript {{{3
         Plug 'pangloss/vim-javascript'
+        Plug 'maksimr/vim-jsbeautify'
         Plug 'elzr/vim-json'
 
         " https://hackernoon.com/using-neovim-for-javascript-development-4f07c289d862
@@ -595,9 +600,10 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " View/Outline {{{3
-        Plug 'scrooloose/nerdcommenter'
-        Plug 'scrooloose/nerdtree', { 'on':  ['NERDTreeToggle', 'NERDTreeTabsToggle'] }   | " :NERDTreeToggle; <Enter> open-file; '?' Help
-        Plug 'jistr/vim-nerdtree-tabs', { 'on':  'NERDTreeTabsToggle' }   | " :NERDTreeTabsToggle, Just one NERDTree, always and ever. It will always look the same in all tabs, including expanded/collapsed nodes, scroll position etc.
+        Plug 'scrooloose/nerdtree',         { 'on':  ['NERDTreeToggle', 'NERDTreeTabsToggle'] }   | " :NERDTreeToggle; <Enter> open-file; '?' Help
+        Plug 'scrooloose/nerdcommenter',    { 'on':  ['NERDTreeToggle', 'NERDTreeTabsToggle'] }
+        Plug 'Xuyuanp/nerdtree-git-plugin', { 'on':  ['NERDTreeToggle', 'NERDTreeTabsToggle'] }
+        Plug 'jistr/vim-nerdtree-tabs',     { 'on':  'NERDTreeTabsToggle' }   | " :NERDTreeTabsToggle, Just one NERDTree, always and ever. It will always look the same in all tabs, including expanded/collapsed nodes, scroll position etc.
         Plug 'kien/tabman.vim'         | " Tab management for Vim
         Plug 'jeetsukumaran/vim-buffergator'
         Plug 'huawenyu/vim-rooter'  | " Get or change current dir
