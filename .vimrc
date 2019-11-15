@@ -1,8 +1,20 @@
+"***************************************************************************************
 " Hi, the <leader> is <space> and , :)
 "
 "    let mapleader = ","
 "    nmap <space> <leader>
 "
+
+" =============================================================
+"@mode: ['all', 'basic', 'myself', 'editor', 'coder', 'c', 'python']
+"
+let g:layout = {
+      \ 'mode': ['all', ],
+      \ 'theme': 1,
+      \ 'conf': 1,
+      \}
+" =============================================================
+
 " Doc {{{1
 "   Install neovim {{{2
 "   -------------------
@@ -13,15 +25,16 @@
 "   [code](https://github.com/junegunn/vim-plug)
 "
 "   :help nvim-from-vim
+"      $ mkdir ~/.vim
 "      $ mkdir ~/.config
 "      $ ln -s ~/.vim ~/.config/nvim
 "      $ ln -s ~/.vimrc ~/.config/nvim/init.vim
 "
-"      ### Make neovim work with plugs
+"      ### Make **neovim** work with plugs
 "      $ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 "         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
-"      ### Make vim work with plugs
+"      ### Make **vim** work with plugs
 "      $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 "         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
@@ -156,7 +169,42 @@
 "       :setfiletype ip<Tab>    ' Search the syntax begin with `ip`
 "
 " }}}
-"
+"***************************************************************************************
+
+" Helper {{{1
+    function! Cond(cond, ...)
+        let opts = get(a:000, 0, {})
+        return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+    endfunction
+
+    function! HasIntersect(list1, list2) abort
+        let result = copy(a:list1)
+        call filter(result, 'index(a:list2, v:val) >= 0')
+        return !empty(result)
+    endfunction
+
+    function! Mode(mode) abort
+      if index(g:layout.mode, 'all')
+          return 1
+      else
+          return HasIntersect(add(a:mode, 'all'), g:layout.mode)
+      endif
+    endfunction
+
+    " @Note only work with 'vim-plug'
+    " @param type  0, Enable the plug
+    "              1, Runtime Loaded/Active the plug
+    function! CheckPlug(name, type)
+      if (exists("g:plugs") && has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir))
+          if a:type == 1
+              return stridx(&rtp, g:plugs[a:name].dir) >= 0
+          endif
+          return 1;
+      endif
+      return 0
+    endfunction
+" }}}
+
 " VimL Debug{{{1
 
   set verbose=0
@@ -196,12 +244,7 @@
 
   " Old echo type, abandon
   function! Decho(...)
-    return
-  endfunction
-
-  function! Cond(cond, ...)
-    let opts = get(a:000, 0, {})
-    return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+      return
   endfunction
 " }}}
 
@@ -238,9 +281,9 @@ endif
 call plug#begin('~/.vim/bundle')
 
 " Plug setup: Basic-config/Plugs-customize, order-sensible {{{2
-    Plug 'tpope/vim-sensible'
-    Plug 'huawenyu/vim-basic'
-    Plug 'huawenyu/vim-conf-plugs'
+    Plug 'tpope/vim-sensible', Cond(Mode(['basic',]))
+    Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]))
+    Plug 'huawenyu/vim-myself.before', Cond(Mode(['basic', 'myself']))  | " config the plugs
 "}}}2
 
 " ColorTheme {{{2
@@ -380,7 +423,7 @@ call plug#begin('~/.vim/bundle')
 " Syntax/Language {{{2
     Plug 'octol/vim-cpp-enhanced-highlight'
     Plug 'justinmk/vim-syntax-extra'
-    "Plug 'justinmk/vim-dirvish'
+    "Plug 'justinmk/vim-dirvish'   | " ?
     "Plug 'kovisoft/slimv'
     "Plug 'AnsiEsc.vim'
     Plug 'powerman/vim-plugin-AnsiEsc'
@@ -524,14 +567,16 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Improve {{{2
-    " On-demand lazy load
-    "Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+    "Plug 'liuchengxu/vim-which-key'    | " How to use?
+    "Plug 'markonm/traces.vim'         | " Range, pattern and substitute preview for Vim [Just worry about performance]
+    "Plug 'lambdalisue/lista.nvim'     | " Cannot work
 
     "Plug 'derekwyatt/vim-fswitch'
     Plug 'kopischke/vim-fetch'
     Plug 'terryma/vim-expand-region'   | "   W - select region expand; B - shrink
 
     Plug 'tpope/vim-surround'          | " ds - remove surround; cs - change surround; After Selected, S} - surround the selected; yss - surround the whole line; ysiw' - surround the current word;
+    Plug 'tpope/vim-rsi'               | " Readline shortcut for vim
 
     "Plug 'huawenyu/vim-indentwise'    | " Automatic set indent, shiftwidth, expandtab
     Plug 'ciaranm/detectindent'
@@ -577,10 +622,12 @@ call plug#begin('~/.vim/bundle')
         "Plug 'dbakker/vim-paragraph-motion' | " treat whitespace only lines as paragraph breaks so { and } will jump to them
         "Plug 'vim-scripts/Improved-paragraph-motion'
         Plug 'christoomey/vim-tmux-navigator'
+        Plug 'rhysd/clever-f.vim'
 
         " gA                   shows the four representations of the number under the cursor.
         " crd, crx, cro, crb   convert the number under the cursor to decimal, hex, octal, binary, respectively.
         Plug 'glts/vim-radical' |  Plug 'glts/vim-magnum'  | Plug 'tpope/vim-repeat'
+        Plug 'huawenyu/vim-motion'  | " Jump according indent
     "}}}
 
     " Search {{{3
@@ -759,7 +806,7 @@ call plug#begin('~/.vim/bundle')
 
 
 " Plug-end setup: depend on plugins, should put at the end of plugs {{{2
-    Plug 'huawenyu/vim-menu1'
+    Plug 'huawenyu/vim-myself.after' | " Use plugs config our self IDE
 "}}}2
 call plug#end()
 
@@ -807,5 +854,4 @@ call plug#end()
   "   " Check log
   "   $ tail -f /tmp/vim.log
 "}}}
-
 
