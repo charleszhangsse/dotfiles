@@ -199,7 +199,7 @@ let g:layout = {
           if a:type == 1
               return stridx(&rtp, g:plugs[a:name].dir) >= 0
           endif
-          return 1;
+          return 1
       endif
       return 0
     endfunction
@@ -634,6 +634,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'huawenyu/neovim-fuzzy', Cond(has('nvim'))
         "Plug 'Dkendal/fzy-vim'
         Plug 'mhinz/vim-grepper'    | " :Grepper text
+        "Plug 'kien/ctrlp.vim'      | " Bad performance
     "}}}
 
     " Async {{{3
