@@ -4,9 +4,8 @@
 "    let mapleader = ","
 "    nmap <space> <leader>
 "
-
 " =============================================================
-"@mode: ['all', 'basic', 'myself', 'editor', 'coder', 'c', 'python']
+"@mode: ['all', 'basic', 'theme', 'myself', 'editor', 'coder', 'c', 'python', 'latex']
 "
 let g:layout = {
       \ 'mode': ['all', ],
@@ -203,6 +202,13 @@ let g:layout = {
       endif
       return 0
     endfunction
+
+    function! GetPlugDir(name)
+      if (exists("g:plugs") && has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir))
+          return g:plugs[a:name].dir
+      endif
+      return ''
+    endfunction
 " }}}
 
 " VimL Debug{{{1
@@ -287,33 +293,33 @@ call plug#begin('~/.vim/bundle')
 "}}}2
 
 " ColorTheme {{{2
-    Plug 'vim-scripts/holokai'
-    Plug 'NLKNguyen/papercolor-theme'      | " set background=light;colorscheme PaperColor
-    Plug 'junegunn/seoul256.vim'
-    "Plug 'tomasr/molokai'
-    "Plug 'darkspectrum'
-    "Plug 'dracula/vim'
-    "Plug 'morhetz/gruvbox'
-    "Plug 'sjl/badwolf'
-    "Plug 'jnurmine/Zenburn'
-    "Plug 'joshdick/onedark.vim'
-    "Plug 'ryu-blacknd/vim-nucolors'
-    "Plug 'chriskempson/base16-vim'
-    "Plug 'Lokaltog/vim-distinguished'
-    "Plug 'flazz/vim-colorschemes'
-    "Plug 'nanotech/jellybeans.vim'
-    "Plug 'huawenyu/color-scheme-holokai-for-vim'
+    Plug 'vim-scripts/holokai', Cond(Mode(['theme',]))
+    Plug 'NLKNguyen/papercolor-theme', Cond(Mode(['theme',]))  | " set background=light;colorscheme PaperColor
+    Plug 'junegunn/seoul256.vim', Cond(Mode(['theme',]))
+    "Plug 'tomasr/molokai', Cond(Mode(['theme',]))
+    "Plug 'darkspectrum', Cond(Mode(['theme',]))
+    "Plug 'dracula/vim', Cond(Mode(['theme',]))
+    "Plug 'morhetz/gruvbox', Cond(Mode(['theme',]))
+    "Plug 'sjl/badwolf', Cond(Mode(['theme',]))
+    "Plug 'jnurmine/Zenburn', Cond(Mode(['theme',]))
+    "Plug 'joshdick/onedark.vim', Cond(Mode(['theme',]))
+    "Plug 'ryu-blacknd/vim-nucolors', Cond(Mode(['theme',]))
+    "Plug 'chriskempson/base16-vim', Cond(Mode(['theme',]))
+    "Plug 'Lokaltog/vim-distinguished', Cond(Mode(['theme',]))
+    "Plug 'flazz/vim-colorschemes', Cond(Mode(['theme',]))
+    "Plug 'nanotech/jellybeans.vim', Cond(Mode(['theme',]))
+    "Plug 'huawenyu/color-scheme-holokai-for-vim', Cond(Mode(['theme',]))
 "}}}
 
 " Mode {{{2
     " REPL (Read, Eval, Print, Loop) {{{3
     "  - Command Line Tool: https://github.com/BenBrock/reple
-        "Plug 'sillybun/vim-repl'
-        "Plug 'rhysd/reply.vim'
+        "Plug 'sillybun/vim-repl', Cond(Mode(['coder',]))  | " Not work
+        "Plug 'rhysd/reply.vim', Cond(Mode(['coder',]))
     "}}}
 
     " Format {{{3
-        Plug 'Chiel92/vim-autoformat'
+        Plug 'Chiel92/vim-autoformat', Cond(Mode(['coder',]))
     "}}}
 
     " Script {{{3
@@ -325,12 +331,12 @@ call plug#begin('~/.vim/bundle')
         " [Tags](https://zhuanlan.zhihu.com/p/36279445)
         " [C++](https://www.zhihu.com/question/47691414/answer/373700711)
         "
-        "Plug 'ludovicchabant/vim-gutentags'        | " autogen tags
+        "Plug 'ludovicchabant/vim-gutentags'        | " autogen tags, bad performance
         "Plug 'skywind3000/gutentags_plus'
         "Plug 'skywind3000/vim-preview'
         "Plug 'whatot/gtags-cscope.vim'
 
-        "Plug 'lyuts/vim-rtags'
+        "Plug 'lyuts/vim-rtags'         | " Bad performance
         "Plug 'w0rp/ale'   | " 1. Not using clang's lint, 2. find references look not work
 
         " Please install yarn (-- a node package manger) first.
@@ -340,35 +346,34 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " Python {{{3
-        " auto-complete
         " https://github.com/neovim/python-client
         " Install https://github.com/davidhalter/jedi
         " https://github.com/zchee/deoplete-jedi
-        Plug 'python-mode/python-mode'
-        Plug 'davidhalter/jedi-vim'
+        Plug 'python-mode/python-mode', Cond(Mode(['coder',]) && Mode(['python',]))
+        Plug 'davidhalter/jedi-vim', Cond(Mode(['coder',]) && Mode(['python',]))
     "}}}
     "
     " LaTeX {{{3
-        "Plug 'lervag/vimtex'  | " A modern vim plugin for editing LaTeX files
+        "Plug 'lervag/vimtex', Cond(Mode(['editor',]) && Mode(['latex',]))  | " A modern vim plugin for editing LaTeX files
     "}}}
 
     " Perl {{{3
-        Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
-        Plug 'tpope/vim-cucumber'       | " Auto test framework base on Behaviour Drive Development(BDD)
+        Plug 'vim-perl/vim-perl', Cond(Mode(['coder',]) && Mode(['perl',]), { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' })
+        Plug 'tpope/vim-cucumber', Cond(Mode(['coder',]) && Mode(['perl',]))  | " Auto test framework base on Behaviour Drive Development(BDD)
     "}}}
 
     " Javascript {{{3
-        Plug 'pangloss/vim-javascript'
-        Plug 'maksimr/vim-jsbeautify'
-        Plug 'elzr/vim-json'
+        Plug 'pangloss/vim-javascript', Cond(Mode(['coder',]) && Mode(['javascript',]))
+        Plug 'maksimr/vim-jsbeautify', Cond(Mode(['coder',]) && Mode(['javascript',]))
+        Plug 'elzr/vim-json', Cond(Mode(['coder',]) && Mode(['javascript',]))
 
         " https://hackernoon.com/using-neovim-for-javascript-development-4f07c289d862
-        Plug 'ternjs/tern_for_vim'      | " Tern-based JavaScript editing support.
-        Plug 'carlitux/deoplete-ternjs'
+        Plug 'ternjs/tern_for_vim', Cond(Mode(['coder',]) && Mode(['javascript',]))      | " Tern-based JavaScript editing support.
+        Plug 'carlitux/deoplete-ternjs', Cond(Mode(['coder',]) && Mode(['javascript',]))
     "}}}
 
     " Clojure {{{3
-        Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+        Plug 'tpope/vim-fireplace', , Cond(Mode(['coder',]) && Mode(['clojure',]), { 'for': 'clojure' })
     "}}}
 
     " Database {{{3
@@ -563,7 +568,7 @@ call plug#begin('~/.vim/bundle')
                   "| bm burndown monthly | e  edit           | i  (or <CR>) info  | t  tags     |
                   "| cp choose project   | g  grid           | l  back-link       | +  start    |
                   "| ct choose tag       | Gm ghistory month | m  modify          | -  stop     |
-
+    Plug 'xolox/vim-notes'  | Plug 'xolox/vim-misc'    | " Use as our plugins help
 "}}}
 
 " Improve {{{2
@@ -593,7 +598,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'romainl/vim-qf'              | " Tame the quickfix window
 
     " Gen menu
-    Plug 'Timoses/vim-venu'            | " :VenuPrint, customize menu from command-line
+    "Plug 'Timoses/vim-venu'            | " :VenuPrint, customize menu from command-line
     "Plug 'skywind3000/quickmenu.vim'   | " customize menu from size pane
     Plug 'daniel-samson/quickmenu.vim'
 
@@ -807,7 +812,7 @@ call plug#begin('~/.vim/bundle')
 
 
 " Plug-end setup: depend on plugins, should put at the end of plugs {{{2
-    Plug 'huawenyu/vim-myself.after' | " Use plugs config our self IDE
+    Plug 'huawenyu/vim-myself.after', Cond(Mode(['basic', 'myself'])) | " Use plugs config our self IDE
 "}}}2
 call plug#end()
 
