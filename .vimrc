@@ -5,7 +5,13 @@
 "    nmap <space> <leader>
 "
 " =============================================================
-"@mode: ['all', 'basic', 'theme', 'myself', 'editor', 'coder', 'c', 'python', 'latex']
+"@mode: ['all', 'basic', 'theme', 'myself',
+"      \   'editor', 'admin', 'coder', 'QA',
+"      \
+"      \   'vimscript', 'c', 'python', 'latex', 'perl', 'javascript', 'clojure', 'database',
+"      \   'golang', 'tcl', 'haskell', 'rust',
+"      \   'note', 'script',
+"      \]
 "
 let g:layout = {
       \ 'mode': ['all', ],
@@ -318,10 +324,6 @@ call plug#begin('~/.vim/bundle')
         "Plug 'rhysd/reply.vim', Cond(Mode(['coder',]))
     "}}}
 
-    " Format {{{3
-        Plug 'Chiel92/vim-autoformat', Cond(Mode(['coder',]))
-    "}}}
-
     " Script {{{3
     " Take current text file as script
         "
@@ -377,39 +379,38 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " Database {{{3
-        Plug 'tpope/vim-dadbod'       | " :DB mongodb:///test < big_query.js
+        Plug 'tpope/vim-dadbod', Cond(Mode(['coder',]) && Mode(['database',]))       | " :DB mongodb:///test < big_query.js
     "}}}
 
     " Golang {{{3
-        Plug 'fatih/vim-go'
+        Plug 'fatih/vim-go', Cond(Mode(['coder',]) && Mode(['golang',]))
         Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
     "}}}
 
     " Tcl {{{3
-        "Plug 'LStinson/TclShell-Vim'
+        "Plug 'LStinson/TclShell-Vim', Cond(Mode(['coder',]) && Mode(['tcl',]))
+        "Plug 'vim-scripts/tcl.vim', Cond(Mode(['coder',]) && Mode(['tcl',]))
     "}}}
 
     " Haskell {{{3
-        Plug 'lukerandall/haskellmode-vim'
-        Plug 'eagletmt/ghcmod-vim'
-        Plug 'ujihisa/neco-ghc'
-        Plug 'neovimhaskell/haskell-vim'
+        Plug 'lukerandall/haskellmode-vim', Cond(Mode(['coder',]) && Mode(['haskell',]))
+        Plug 'eagletmt/ghcmod-vim', Cond(Mode(['coder',]) && Mode(['haskell',]))
+        Plug 'ujihisa/neco-ghc', Cond(Mode(['coder',]) && Mode(['haskell',]))
+        Plug 'neovimhaskell/haskell-vim', Cond(Mode(['coder',]) && Mode(['haskell',]))
     "}}}
 
     " Rust {{{3
-        Plug 'rust-lang/rust.vim'
+        Plug 'rust-lang/rust.vim', Cond(Mode(['coder',]) && Mode(['rust',]))
     "}}}
 
-    Plug 'vim-scripts/iptables'
-    Plug 'jceb/vim-orgmode'
-    Plug 'tpope/vim-speeddating'
-    "Plug 'vim-scripts/tcl.vim'
-    "Plug 'vim-syntastic/syntastic'
+    Plug 'vim-scripts/iptables', Cond(Mode(['admin',]))
+    Plug 'jceb/vim-orgmode', Cond(Mode(['editor',]) && Mode(['note',]))
+    Plug 'tpope/vim-speeddating', Cond(Mode(['editor',]) && Mode(['note',]))
 
     " Session management
     "Plug 'xolox/vim-session'
     "Plug 'tpope/vim-obsession'
-    Plug 'thaerkh/vim-workspace'
+    Plug 'thaerkh/vim-workspace', Cond(Mode(['editor',]))
 
 "}}}
 
@@ -426,22 +427,24 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Syntax/Language {{{2
-    Plug 'octol/vim-cpp-enhanced-highlight'
-    Plug 'justinmk/vim-syntax-extra'
-    "Plug 'justinmk/vim-dirvish'   | " ?
-    "Plug 'kovisoft/slimv'
-    "Plug 'AnsiEsc.vim'
-    Plug 'powerman/vim-plugin-AnsiEsc'
-    Plug 'huawenyu/robotframework-vim'
-    "Plug 'bpstahlman/txtfmt'
-    "Plug 'dhruvasagar/vim-table-mode'
-    Plug 'godlygeek/tabular'   | " require by vim-markdown
-    Plug 'plasticboy/vim-markdown'
-    Plug 'tmux-plugins/vim-tmux'        | " The syntax of .tmux.conf
+    "Plug 'vim-syntastic/syntastic', Cond(Mode(['coder',]))
+    Plug 'Chiel92/vim-autoformat', Cond(Mode(['coder',]))
+    Plug 'octol/vim-cpp-enhanced-highlight', Cond(Mode(['coder',]) && Mode(['c',]))
+    Plug 'justinmk/vim-syntax-extra', Cond(Mode(['coder',]) && Mode(['vimscript',]))
+    "Plug 'justinmk/vim-dirvish', Cond(Mode(['editor',]))   | " ?
+    "Plug 'kovisoft/slimv', Cond(Mode(['editor',]))
+    "Plug 'AnsiEsc.vim', Cond(Mode(['editor',]))
+    Plug 'powerman/vim-plugin-AnsiEsc', Cond(Mode(['editor',]))
+    "Plug 'huawenyu/robotframework-vim', Cond(Mode(['QA',]))
+    "Plug 'bpstahlman/txtfmt', Cond(Mode(['editor',]))
+    "Plug 'dhruvasagar/vim-table-mode', Cond(Mode(['editor',]))
+    Plug 'godlygeek/tabular', Cond(Mode(['editor',]))   | " require by vim-markdown
+    Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
+    Plug 'tmux-plugins/vim-tmux', Cond(Mode(['editor',]))  | " The syntax of .tmux.conf
 
-    Plug 'vim-scripts/awk.vim'
-    "Plug 'WolfgangMehner/vim-support'   | " The syntax of vimscript, but too many keymap
-    "Plug 'WolfgangMehner/awk-support'
+    Plug 'vim-scripts/awk.vim', Cond(Mode(['admin',]) && Mode(['script',]))
+    "Plug 'WolfgangMehner/vim-support', Cond(Mode(['admin',]) && Mode(['vimscript',]))   | " The syntax of vimscript, but too many keymap
+    "Plug 'WolfgangMehner/awk-support', Cond(Mode(['admin',]) && Mode(['script',]))
 
     "
     " http://www.thegeekstuff.com/2009/02/make-vim-as-your-bash-ide-using-bash-support-plugin/
@@ -451,116 +454,29 @@ call plug#begin('~/.vim/bundle')
     "       SetMacro( 'AUTHORREF',   'name' )
     "       SetMacro( 'EMAIL',       'name@mail.com' )
     "       SetMacro( 'COPYRIGHT',   'Copyright (c) |YEAR|, |AUTHOR|' )
-    "Plug 'WolfgangMehner/bash-support'
-    "Plug 'vim-scripts/DirDiff.vim'
-    Plug 'rickhowe/diffchar.vim'
-    Plug 'chrisbra/vim-diff-enhanced'
-    Plug 'huawenyu/vim-log-syntax'
-    Plug 'Shougo/vinarise.vim' | " Hex viewer
-    "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  | " brew install prettier
+    "Plug 'WolfgangMehner/bash-support', Cond(Mode(['admin',]) && Mode(['script',]))
+    "Plug 'vim-scripts/DirDiff.vim', Cond(Mode(['editor',]))
+    Plug 'rickhowe/diffchar.vim', Cond(Mode(['editor',]))
+    Plug 'chrisbra/vim-diff-enhanced', Cond(Mode(['editor',]))
+    Plug 'huawenyu/vim-log-syntax', Cond(Mode(['editor',]))
+    Plug 'Shougo/vinarise.vim', Cond(Mode(['editor',])) | " Hex viewer
+    "Plug 'prettier/vim-prettier', Cond(Mode(['editor',]), { 'do': 'yarn install' })  | " brew install prettier
 "}}}
 
 " Vimwiki {{{2
-    " Install:
-    "   sudo apt-get install uuid-dev
-    "   sudo apt-get install libgnutls-dev
-    "   ## Download v2.5 version, not current v2.6 which require the newer g++ compiler.
-    "   cd taskwarrior; cmake -DCMAKE_BUILD_TYPE=release .; make; sudo make install
-    "   sudo pip3 install --upgrade git+git://github.com/tbabej/tasklib@develop
-    " Conf:
-    "   <Path>: g:vimwiki_list
-    " [Usage:](http://thedarnedestthing.com/vimwiki%20cheatsheet)
-    "   ==Wiki==
-    "   <leader> ws                     List all wikis
-    "   <leader>ww                      Create a new wiki
-    "   [number]<leader>ww              Choose a existed defined wiki
-    "   <leader> wd                     delete wiki page
-    "   <leader> wr                     rename wiki page
-    "   :VimwikiTOC                     Insert contents index at wiki's top
-    "
-    "   ==Search==
-    "   :VWS /blog/
-    "   :lopen
-    "
-    "   ==List & Task: todo lists==
-    "   <C-Space>                       toggle list item on/off
-    "
-    "   ==editing==
-    "   =                               add header level
-    "   -                               remove header level
-    "   +                               create/decorate links
-    "   glm                             increase indent of list item
-    "   gll                             decrease indent of list item
-    "   gl* or gl8                      switch or insert '*' symbol
-    "   gl# or gl3                      switch or insert '#' symbol
-    "   gl-                             switch or insert '-' symbol
-    "   gl1                             switch or insert '1.' symbol
-    "
-    "   ==Diary==
-    "   <leader>w<leader>w              open diary index file for wiki
-    "   [number]<leader>wi              open diary index file for wiki
-    "   <leader>w<leader>i              update current diary index
-    "   [number]<leader>w<leader>w      open today’s diary file for wiki
-    "   [number]<leader>w<leader>t      open today’s diary file for wiki in new tab
-    "   <C-Up>                          open previous day’s diary
-    "   <C-Down>                        open next day’s diary
-    "
-    "   ==navigation==
-    "   <Enter>                         follow/create wiki link
-    "   <Backspace>                     go back to previous wiki page
-    "   <C-S-CR>                        follow/create wiki link in new tab
-    "   <Tab>                           go to next link on current page
-    "   <S-Tab>                         go to previous link on current page
-    "
-    "   ==Anchor navigation== :help vimwiki-anchors
-    "   Every header, tag, and bold text can be used as an anchor.
-    "   To jump to it, use a wikilink: [[file#anchor]], [[#pay rise]]
-    "
-    "             = My tasks =
-    "             :todo-lists:
-    "             == Home ==
-    "               - [ ] bathe my dog
-    "             == Work ==
-    "               - [ ] beg for *pay rise*
-    "             == Knitting club ==
-    "             === Knitting projects ===
-    "               - [ ] a *funny pig*
-    "               - [ ] a *scary dog*
-    "
-    "
-    "   ==Table==
-    "   :VimwikiTable                   create table
-    "   gqq                             reformat t able
-    "
-    "   <A-Left>                        move column left
-    "   <A-right>                       move column right
-    "   <CR>                            (insert mode) go down/create cell
-    "   <Tab>                           (insert mode) go next/create cell
-    "   gqq or gww                      reformat table
-    "
-    "   ==text objects==
-    "   ah                              section between 2 headings including empty trailing lines
-    "   ih                              section between 2 headings excluding empty trailing lines
-    "   a\                              table cell
-    "   i\                              inner table cell
-    "   ac                              table column
-    "   ic                              inner table column
-    "
+    Plug 'vimwiki/vimwiki', Cond(Mode(['editor',]), { 'branch': 'dev' })  | " Another choice is [Gollum](https://github.com/gollum/gollum)
+    "Plug 'tomtom/vikibase_vim', Cond(Mode(['editor',]))
+    Plug 'mattn/calendar-vim', Cond(Mode(['editor',])) | " :Calendar
 
-    Plug 'vimwiki/vimwiki', { 'branch': 'dev' }  | " Another choice is [Gollum](https://github.com/gollum/gollum)
-    "Plug 'tomtom/vikibase_vim'
-    Plug 'mattn/calendar-vim' | " :Calendar
-
-    "Plug 'freitass/todo.txt-vim'     | " Like todo.txt-cli command-line, but here really needed is the wrap of Todo.txt-cli.
-    "Plug 'elentok/todo.vim'
+    "Plug 'freitass/todo.txt-vim', Cond(Mode(['editor',]))     | " Like todo.txt-cli command-line, but here really needed is the wrap of Todo.txt-cli.
+    "Plug 'elentok/todo.vim', Cond(Mode(['editor',]))
     "
     " Require vimwiki, tasklib, [taskwarrior](https://taskwarrior.org/download/)
     " taskwarrior: a command line task management tool, config by ~/.taskrc
-    "Plug 'blindFS/vim-taskwarrior'
-    Plug 'powerman/vim-plugin-AnsiEsc'
+    "Plug 'blindFS/vim-taskwarrior', Cond(Mode(['editor',]))
 
     " Prerequirement: brew install task; sudo pip3 install tasklib; ln -s ~/.task, ~/.taskrc;
-    Plug 'tbabej/taskwiki'  | " Only handles *.wiki file contain check lists which beginwith asterisk '*'
+    Plug 'tbabej/taskwiki', Cond(Mode(['editor',]))  | " Only handles *.wiki file contain check lists which beginwith asterisk '*'
                   " <leader>t + <option>
                   "| a  annotate         | C  calendar       | Ga ghistory annual | p  projects |
                   "| bd burndown daily   | d  done           | hm history month   | s  summary  |
@@ -568,7 +484,7 @@ call plug#begin('~/.vim/bundle')
                   "| bm burndown monthly | e  edit           | i  (or <CR>) info  | t  tags     |
                   "| cp choose project   | g  grid           | l  back-link       | +  start    |
                   "| ct choose tag       | Gm ghistory month | m  modify          | -  stop     |
-    Plug 'xolox/vim-notes'  | Plug 'xolox/vim-misc'    | " Use as our plugins help
+    Plug 'xolox/vim-notes', Cond(Mode(['editor',]))  | Plug 'xolox/vim-misc', Cond(Mode(['editor',]))    | " Use as our plugins help
 "}}}
 
 " Improve {{{2
