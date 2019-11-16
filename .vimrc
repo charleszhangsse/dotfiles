@@ -13,7 +13,7 @@
 "      \   'note', 'script',
 "      \]
 "
-let g:layout = {
+let g:vim_layout_load = {
       \ 'mode': ['all', ],
       \ 'theme': 1,
       \ 'conf': 1,
@@ -189,10 +189,10 @@ let g:layout = {
     endfunction
 
     function! Mode(mode) abort
-      if index(g:layout.mode, 'all')
+      if index(g:vim_layout_load.mode, 'all')
           return 1
       else
-          return HasIntersect(add(a:mode, 'all'), g:layout.mode)
+          return HasIntersect(add(a:mode, 'all'), g:vim_layout_load.mode)
       endif
     endfunction
 
