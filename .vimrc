@@ -373,7 +373,7 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " Clojure {{{3
-        Plug 'tpope/vim-fireplace', , Cond(Mode(['coder',]) && Mode(['clojure',]), { 'for': 'clojure' })
+        Plug 'tpope/vim-fireplace', Cond(Mode(['coder',]) && Mode(['clojure',]), { 'for': 'clojure' })
     "}}}
 
     " Database {{{3
