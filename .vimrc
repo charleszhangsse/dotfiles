@@ -4,8 +4,10 @@
 "    let mapleader = ","
 "    nmap <space> <leader>
 "
+" Help: press 'K':  Note 'docs/readme'
+"
 " =============================================================
-"@mode: ['all', 'basic', 'theme', 'myself',
+"@mode: ['all', 'basic', 'theme', 'local',
 "      \   'editor', 'admin', 'QA', 'coder',
 "      \
 "      \   'vimscript', 'c', 'python', 'latex', 'perl', 'javascript', 'clojure', 'database',
@@ -15,12 +17,23 @@
 "
 "  Sample:
 "     'mode': ['all', ],
-"     'mode': ['basic', 'theme', 'myself', 'editor', ],
-"     'mode': ['basic', 'theme', 'myself', 'editor', ],
-let g:vim_layout_load = {
+"     'mode': ['basic', 'theme', 'local 'editor', ],
+"     'mode': ['basic', 'theme', 'local', 'editor', ],
+let g:vim_confi_option = {
       \ 'mode': ['all', ],
       \ 'theme': 1,
       \ 'conf': 1,
+      \ 'upper_keyfixes': 1,
+      \ 'auto_install_vimplug': 1,
+      \ 'auto_install_plugs': 1,
+      \ 'plug_note': 'vim.before',
+      \ 'plug_patch': 'vim.after',
+      \
+      \ 'auto_chdir': 0,
+      \ 'auto_restore_cursor': 1,
+      \ 'auto_qf_height': 1,
+      \
+      \ 'keywordprg_filetype': 1,
       \}
 " =============================================================
 
@@ -64,123 +77,8 @@ let g:vim_layout_load = {
 "            $ sudo pip2 install --upgrade neovim
 "            $ sudo pip3 install --upgrade neovim
 "
-"   Documentation {{{2
-"   -------------------
-"   [vimscript-functions](https://devhints.io/vimscript-functions)
-"   [vim regex](http://vimregex.com/)
-"   [Writing Plugin](http://stevelosh.com/blog/2011/09/writing-vim-plugins/)
-"   [Scripting the Vim editor](https://www.ibm.com/developerworks/library/l-vim-script-4/index.html)
-"
-"   Usage {{{2
-"   ----------
-"   - 'K' on c-function         ' open man document
-"   - :man key-word             ' Open man document of `find`
-"   - Vselect then 'g Ctrl-G'   ' Show the number of lines, words and bytes selected.
-"   - gn                        ' re-select the next match.
-"   - gv                        ' re-select the last match.
-"   - search/replace:
-"   -     :%s///gc              ' replace occurrences of the last search pattern with confirmation
-"   -     :%s/pattern//gn       ' count the number of occurrences of a word
-"   -     :%s/\n\{3,}/\r\r/e    ' replace three or more consecutive line endings with two line endings (a single blank line)
-"   -     :g/^$/d               ' delete blank lines, remove multi blank line
-"   -     :%s/\s\+$//g          ' remove the tail spaces
-"   -     :%s/\s\+$//e          ' remove unwanted whitespace from line end
-"   -     :%s/^\s\+//e          '   remove from begin
-"   -     :%s/^M//g             ' remove windows's CTRL-M characters: type CTRL-V, then CTRL-M
-"   -     :s/x/X/g 5            ' substitute 'x' by 'X' in the current line and four following lines
-"   -     :23d 4                ' delete lines 23, 24, 25 and 26
-"
-"   - :VoomToggle markdown      ' outline as markdown
-"   - :VoomToggle markdown      ' outline as markdown
-"   - <l>ec                     ' eval viml selected
-"   - folding:
-"   -     'zc' (close), 'zo' (open), and 'za' (toggle) operate on one level of folding
-"   -     'zC',  'zO' and 'zA' are similar, but operate on all folding levels
-"   -     'zr' reduces folding by one more level of folds, 'zR' to open all folds.
-"   -     'zm' gives more folding by closing one more level, 'zM' to close all folds.
-"   - Search:
-"         /patt1\|patt2
-"         /some_\(hold\|put\), <or>  /\vsome(hold|put)
-"   Filetype:
-"       :setfiletype <Ctrl-D>   ' list all available syntax
-"       :setfiletype ip<Tab>    ' Search the syntax begin with `ip`
-"   Plug:
-"       vip             select the same indent block
-"       a+p/n           jump next/prev same indent line
-"   Runtime:
-"       :set all              ' Check all options values
-"       :set filetype?        ' Check this option value
-"   Motions, Operators, and Text Objects: Operator-pending mode
-"       Ref:  http://codyveal.com/posts/vim-killer-features-part-1-text-objects/
-"             https://www.tandrewnichols.me/motions-operators-text-objects-introduction/
-"       {operator}[{motion}]{*wise-specifier}
-"     -Operators:  :h operator
-"       - d:   delete
-"       - v:   select
-"       - c:   change
-"       - y:   yank
-"       - >:   indent
-"       - <:   outdent
-"       - =:   fix indenting
-"     -motions:
-"       - f/F:  forward/backward find and stop on the char
-"       - t/T:  forward/backward find and stop before the char
-"       - /:    search ?
-"     -wise specifier:
-"       - characterwise: vjjjj
-"       - wordwise:      vwwww  <or> veee
-"       - linewise:      Vjjjjj
-"       - blockwise:     <C-v>hhjjjj
-"       - Objectwise:  Built-in Text obj, or customize added obj base on Plug 'kana/vim-textobj-user'
-"           All text objects come in two forms
-"             - a    around, normal(prefixed by 'a')
-"             - i    innner, inner (prefixed by 'i')
-"
-"           Built-in Text Objects:
-"             - w       Word by punctuation
-"             - W       Word by whitespace
-"             - s       Sentence
-"             - p       Paragraph
-"             - ',`     Quotes
-"             - (,),b   Parentheses
-"             - [,]     Brackets
-"             - {,},B   Braces
-"             - <,>     Angle Brackets
-"             - t       Tags (e.g. <html>inner</html>)
-"
-"   Command line move:
-"       ctrl-c          quit command mode
-"       ctrl-r          paste from vim register
-"       ctrl-d          command-line completion
-"       ctrl-b          move to the begin
-"       ctrl-e          move to the end
-"       ctrl-h          delete one letter
-"       ctrl-u          delete to begin
-"       ctrl-w          delete one word
-"
-"   Maps check:
-"      :verbose map <C-j>          check who map this
-"      :map <some-keys> check the map valid or not
-"      howto map Shift+F#:
-"        - Goto insert mode and hit Ctrl-V Shift-F#, which gotted we can use that to map.
-"        - For example: We get "<F15>" when input Shift+F5, so ':nmap <F15> echo "HELLO"<cr>' should be work.
-"
-"   Registers:
-"       \"ry            add the selected text to the register r.
-"       \"rp            paste the content of this register r.
-"       Ctrl-r r        access the registers in insert/command mode with Ctrl-r + register name.
-"   Terminal-mode:
-"       - enter terminal mode   i
-"       - exit terminal mode    <C-\><C-n>
-"       - :help terminal-emulator
-"   howto:
-"       :bufdo e                ' reload all buffers at once
-"       :setfiletype ip<Tab>    ' Search the syntax begin with `ip`
-"
-" }}}
-"***************************************************************************************
 
-" Helper {{{1
+" Environment {{{1
     function! Cond(cond, ...)
         let opts = get(a:000, 0, {})
         return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
@@ -193,10 +91,10 @@ let g:vim_layout_load = {
     endfunction
 
     function! Mode(mode) abort
-        if index(g:vim_layout_load.mode, 'all') >= 0
+        if index(g:vim_confi_option.mode, 'all') >= 0
             return 1
         endif
-        return HasIntersect(a:mode, g:vim_layout_load.mode)
+        return HasIntersect(a:mode, g:vim_confi_option.mode)
     endfunction
 
     " @Note only work with 'vim-plug'
@@ -218,6 +116,53 @@ let g:vim_layout_load = {
       endif
       return ''
     endfunction
+
+    function! PlugPatch(info)
+        if empty(g:vim_confi_option.plug_patch) | return | endif
+
+        " info is a dictionary with 3 fields
+        " - name:   name of the plugin
+        " - status: 'installed', 'updated', or 'unchanged'
+        " - force:  set on PlugInstall! or PlugUpdate!
+        if a:info.status == 'installed' || a:info.force
+            !./install.py
+        endif
+    endfunction
+
+    " From 'spf13/spf13-vim'
+    " Identify platform {
+        silent function! OSX()
+            return has('macunix')
+        endfunction
+        silent function! LINUX()
+            return has('unix') && !has('macunix') && !has('win32unix')
+        endfunction
+        silent function! WINDOWS()
+            return  (has('win32') || has('win64'))
+        endfunction
+    " }
+
+    " Basics {
+        set nocompatible        " Must be first line
+        if !WINDOWS()
+            set shell=/bin/sh
+        endif
+    " }
+
+    " Windows Compatible {
+        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
+        " across (heterogeneous) systems easier.
+        if WINDOWS()
+            set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+        endif
+    " }
+
+    " Arrow Key Fix {
+        " https://github.com/spf13/spf13-vim/issues/780
+        if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
+            inoremap <silent> <C-[>OC <RIGHT>
+        endif
+    " }
 " }}}
 
 " VimL Debug{{{1
@@ -225,7 +170,6 @@ let g:vim_layout_load = {
   set verbose=0
   "set verbose=8
   "set verbosefile=/tmp/vim.log
-  set shell=/bin/sh
 
   let g:decho_enable = 0
   let g:bg_color = 233 | " current background's color value, used by mylog.syntax
@@ -263,6 +207,9 @@ let g:vim_layout_load = {
   endfunction
 " }}}
 
+
+
+
 if has("unix")
     let s:uname = system("uname")
     let g:python_host_prog='/usr/bin/python'
@@ -281,25 +228,44 @@ if has("unix")
     endif
 endif
 
+
+
+" Use before config if available {
+    if filereadable(expand("~/.vimrc.before"))
+        source ~/.vimrc.before
+    endif
+" }
+
+
 " Auto download the plug
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if g:vim_confi_option.auto_install_vimplug
+    if LINUX()
+      if empty(glob('~/.vim/autoload/plug.vim'))
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    silent curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        silent curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        system("touch ~/.vimrc; mkdir ~/.vim; mkdir ~/.config")
+        system("ln -s ~/.vim ~/.config/nvim")
+        system("ln -s ~/.vimrc ~/.config/nvim/init.vim")
+
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+      endif
+    endif
 endif
+
 
 " Plugins {{{1}}}
 call plug#begin('~/.vim/bundle')
 
 " Plug setup: Basic-config/Plugs-customize, order-sensible {{{2
     Plug 'tpope/vim-sensible', Cond(Mode(['basic',]))
+    "Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]), { 'do': function('PlugPatch')})
     Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]))
-    Plug 'huawenyu/vim-myself.before', Cond(Mode(['basic', 'myself']))  | " config the plugs
-"}}}2
+    Plug 'huawenyu/vim.before', Cond(Mode(['basic', 'local']))  | " config the plugs
+"}}}
 
 " ColorTheme {{{2
     Plug 'vim-scripts/holokai', Cond(Mode(['theme',]))
@@ -426,6 +392,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'xolox/vim-session'
     "Plug 'tpope/vim-obsession'
     Plug 'thaerkh/vim-workspace', Cond(Mode(['editor',]))
+    "Plug 'vim-ctrlspace/vim-ctrlspace', Cond(Mode(['editor',]))    | " Too heavy, confuse
 
 "}}}
 
@@ -495,9 +462,9 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Improve {{{2
-    "Plug 'liuchengxu/vim-which-key', Cond(Mode(['editor',]))  | " How to use?
-    "Plug 'markonm/traces.vim', Cond(Mode(['editor',]))         | " Range, pattern and substitute preview for Vim [Just worry about performance]
+    "Plug 'liuchengxu/vim-which-key', Cond(Mode(['editor',]))   | " Cannot work
     "Plug 'lambdalisue/lista.nvim', Cond(Mode(['editor',]))     | " Cannot work
+    "Plug 'markonm/traces.vim', Cond(Mode(['editor',]))         | " Range, pattern and substitute preview for Vim [Just worry about performance]
 
     "Plug 'derekwyatt/vim-fswitch', Cond(Mode(['editor',]))
     Plug 'kopischke/vim-fetch', Cond(Mode(['editor',]))
@@ -510,7 +477,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'ciaranm/detectindent', Cond(Mode(['editor',]))
     "Plug 'tpope/vim-sleuth', Cond(Mode(['editor',]))
 
-    Plug 'szw/vim-maximizer', Cond(Mode(['editor',]))
+    "Plug 'szw/vim-maximizer', Cond(Mode(['editor',]))
+    Plug 'ervandew/maximize', Cond(Mode(['editor',]))
     Plug 'huawenyu/vim-mark', Cond(Mode(['editor',]))
     "Plug 'tomtom/tmarks_vim', Cond(Mode(['editor',]))
     "Plug 'tomtom/quickfixsigns_vim', Cond(Mode(['editor',]))
@@ -521,9 +489,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'romainl/vim-qf', Cond(Mode(['editor',]))              | " Tame the quickfix window
 
     " Gen menu
-    "Plug 'Timoses/vim-venu', Cond(Mode(['editor',]))            | " :VenuPrint, customize menu from command-line
-    "Plug 'skywind3000/quickmenu.vim', Cond(Mode(['editor',]))   | " customize menu from size pane
-    Plug 'daniel-samson/quickmenu.vim', Cond(Mode(['editor',]))
+    Plug 'Timoses/vim-venu', Cond(Mode(['editor',]))            | " :VenuPrint, customize menu from command-line
+    Plug 'skywind3000/quickmenu.vim', Cond(Mode(['editor',]))   | " customize menu from size pane
 
     " File/Explore {{{3
         " Plugin 'defx'
@@ -600,6 +567,7 @@ call plug#begin('~/.vim/bundle')
 
     " Tools {{{3
         Plug 'tpope/vim-eunuch', Cond(Mode(['admin',]))  | " Support unix shell cmd: Delete,Unlink,Move,Rename,Chmod,Mkdir,Cfind,Clocate,Lfind,Wall,SudoWrite,SudoEdit
+        Plug 'tpope/vim-dotenv', Cond(Mode(['admin',]))  | " Basic support for .env and Procfile
         Plug 'kassio/neoterm', Cond(Mode(['admin',]) && has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
 
         "Plug 'webdevel/tabulous', Cond(Mode(['editor',]))
@@ -612,6 +580,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'junegunn/vim-easy-align', Cond(Mode(['editor',]))                  | " selected and ga=
         Plug 'junegunn/goyo.vim', Cond(Mode(['editor',]))                        | " :Goyo 80
         "Plug 'junegunn/limelight.vim', Cond(Mode(['editor',]))                  | " Unsupport colorscheme
+        Plug 'jamessan/vim-gnupg', Cond(Mode(['admin',]))                        | " implements transparent editing of gpg encrypted files.
     "}}}
 "}}}
 
@@ -642,12 +611,11 @@ call plug#begin('~/.vim/bundle')
     " share copy/paste between vim(""p)/tmux
     "Plug 'svermeulen/vim-easyclip', Cond(Mode(['editor',]))  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
     "Plug 'bfredl/nvim-miniyank', Cond(Mode(['editor',]))
-    Plug 'svermeulen/vim-yoink', Cond(Mode(['editor',]) && has('nvim')) | " sometimes delete not copyinto paste's buffer
+    "Plug 'svermeulen/vim-yoink', Cond(Mode(['editor',]) && has('nvim')) | " sometimes delete not copyinto paste's buffer
     Plug 'huawenyu/vimux-script', Cond(Mode(['admin',]) && has('nvim'))
     "Plug 'huawenyu/vim-tmux-runner', Cond(Mode(['admin',]) && has('nvim'))
     Plug 'huawenyu/vim-tmux-runner', Cond(Mode(['admin',]) && has('nvim'), { 'on':  ['VtrLoad', 'VtrSendCommandToRunner', 'VtrSendLinesToRunner', 'VtrSendFile', 'VtrOpenRunner'] })   | " Send command to tmux's marked pane
     Plug 'yuratomo/w3m.vim', Cond(Mode(['admin',]))
-    Plug 'nhooyr/neoman.vim', Cond(Mode(['admin',]) && has('nvim'))    | " :Nman printf, :Nman printf(3)
     Plug 'szw/vim-dict', Cond(Mode(['editor',]))
 "}}}
 
@@ -710,7 +678,7 @@ call plug#begin('~/.vim/bundle')
 
 
 " Plug-end setup: depend on plugins, should put at the end of plugs {{{2
-    Plug 'huawenyu/vim-myself.after', Cond(Mode(['basic', 'myself'])) | " Use plugs config our self IDE
+    Plug 'huawenyu/vim.after', Cond(Mode(['basic', 'local'])) | " Use plugs config our self IDE
 "}}}2
 call plug#end()
 
@@ -759,3 +727,9 @@ call plug#end()
   "   $ tail -f /tmp/vim.log
 "}}}
 
+
+" Use after config if available {
+    if filereadable(expand("~/.vimrc.after"))
+        source ~/.vimrc.after
+    endif
+" }
