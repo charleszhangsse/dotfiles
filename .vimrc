@@ -7,8 +7,8 @@
 " Help: press 'K':  Note 'docs/readme'
 "
 " =============================================================
-"@mode: ['all', 'basic', 'theme', 'local',
-"      \   'editor', 'admin', 'QA', 'coder',
+"@mode: ['all', 'basic', 'theme', 'local', 'editor',
+"      \   'admin', 'QA', 'coder',
 "      \
 "      \   'vimscript', 'c', 'python', 'latex', 'perl', 'javascript', 'clojure', 'database',
 "      \   'golang', 'tcl', 'haskell', 'rust',
@@ -17,10 +17,10 @@
 "
 "  Sample:
 "     'mode': ['all', ],
-"     'mode': ['basic', 'theme', 'local 'editor', ],
 "     'mode': ['basic', 'theme', 'local', 'editor', ],
+"     'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
 let g:vim_confi_option = {
-      \ 'mode': ['all', ],
+      \ 'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
       \ 'theme': 1,
       \ 'conf': 1,
       \ 'upper_keyfixes': 1,
@@ -489,7 +489,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'romainl/vim-qf', Cond(Mode(['editor',]))              | " Tame the quickfix window
 
     " Gen menu
-    Plug 'Timoses/vim-venu', Cond(Mode(['editor',]))            | " :VenuPrint, customize menu from command-line
+    "Plug 'Timoses/vim-venu', Cond(Mode(['editor',]))            | " :VenuPrint, customize menu from command-line
     Plug 'skywind3000/quickmenu.vim', Cond(Mode(['editor',]))   | " customize menu from size pane
 
     " File/Explore {{{3
@@ -512,7 +512,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'tpope/vim-abolish', Cond(Mode(['editor',]))      | " :Subvert/child{,ren}/adult{,s}/g
         "Plug 'tpope/vim-repeat', Cond(Mode(['editor',]))
         "Plug 'vim-utils/vim-vertical-move', Cond(Mode(['editor',]))
-        Plug 'rhysd/accelerated-jk', Cond(Mode(['editor',]))
+        "Plug 'rhysd/accelerated-jk', Cond(Mode(['editor',]))
         "Plug 'unblevable/quick-scope', Cond(Mode(['editor',]))
         "Plug 'dbakker/vim-paragraph-motion', Cond(Mode(['editor',])) | " treat whitespace only lines as paragraph breaks so { and } will jump to them
         "Plug 'vim-scripts/Improved-paragraph-motion', Cond(Mode(['editor',]))
