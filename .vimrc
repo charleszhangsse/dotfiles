@@ -160,10 +160,10 @@ let g:vim_confi_option = {
                 execute 'PlugInstall!' join(keys(dirties))
 
                 " patch backto plugs
-                "call map(dirties,
-                "      \ {name, v -> system(printf("cd %s && patch -p1 < %s/%s.patch",
-                "      \                         shellescape(v.dir),
-                "      \                         dir_patch_tmp, name))})
+                call map(dirties,
+                      \ {name, v -> system(printf("cd %s && patch -p1 < %s/%s.patch",
+                      \                         shellescape(v.dir),
+                      \                         dir_patch_tmp, name))})
                 "call system(printf("rm -fr %s", dir_patch_tmp))
                 return
             endif
