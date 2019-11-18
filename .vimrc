@@ -210,7 +210,7 @@ let g:vim_confi_option = {
 
 
 
-if has("unix")
+if LINUX()
     let s:uname = system("uname")
     let g:python_host_prog='/usr/bin/python'
     if s:uname == "Darwin\n"
