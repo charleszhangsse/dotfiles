@@ -4,7 +4,7 @@
 "    let mapleader = ","
 "    nmap <space> <leader>
 "
-" Help: press 'K':  Note 'docs/readme'
+" Help: press 'K':  Note docs/readme'
 "
 " =============================================================
 "@mode: ['all', 'basic', 'theme', 'local', 'editor',
@@ -27,7 +27,7 @@ let g:vim_confi_option = {
       \ 'auto_install_vimplug': 1,
       \ 'auto_install_plugs': 1,
       \ 'plug_note': 'vim.before',
-      \ 'plug_patch': 'vim.after',
+      \ 'plug_patch': 'vim.before',
       \
       \ 'auto_chdir': 0,
       \ 'auto_restore_cursor': 1,
@@ -110,13 +110,15 @@ let g:vim_confi_option = {
         return 0
     endfunction
 
-    function! GetPlugDir(name)
+    function! PlugGetDir(name)
       if (exists("g:plugs") && has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir))
           return g:plugs[a:name].dir
       endif
       return ''
     endfunction
 
+
+    " @see PlugForce
     function! PlugPatch(info)
         if empty(g:vim_confi_option.plug_patch) | return | endif
 
@@ -128,6 +130,49 @@ let g:vim_confi_option = {
             !./install.py
         endif
     endfunction
+
+
+    " Plug Force update with discard local change:
+    "   1. git stash after save patch
+    "   2. update
+    "   3. patch again
+    function! PlugForce()
+        if !empty(g:vim_confi_option.plug_patch) && CheckPlug(g:vim_confi_option.plug_patch, 0)
+            let dir_patch_repo = PlugGetDir(g:vim_confi_option.plug_patch)
+            let dir_patch_tmp = dir_patch_repo. "../patch"
+            call system(printf("rm -fr %s && mkdir -p %s", dir_patch_tmp, dir_patch_tmp))
+            let dirties = filter(copy(g:plugs),
+                  \ {_, v -> len(system(printf("cd %s && git diff --no-ext-diff --name-only", shellescape(v.dir))))})
+            if len(dirties)
+                call map(copy(dirties),
+                      \ {name, v -> system(printf("cd %s && git diff HEAD > %s/%s.patch",
+                      \                         shellescape(v.dir),
+                      \                         dir_patch_tmp, name))})
+
+                " Add patch to git-repo
+                call system(printf("cd %s && rm -fr ./patch && cp -fr %s ./patch && git add ./patch",
+                      \         dir_patch_repo, dir_patch_tmp))
+
+                " Discard all local change & update
+                call map(values(copy(dirties)),
+                      \ {_, v -> system(printf("cd %s && git checkout -f", shellescape(v.dir)))})
+                PlugUpdate --sync
+                execute 'PlugInstall!' join(keys(dirties))
+
+                " patch backto plugs
+                "call map(dirties,
+                "      \ {name, v -> system(printf("cd %s && patch -p1 < %s/%s.patch",
+                "      \                         shellescape(v.dir),
+                "      \                         dir_patch_tmp, name))})
+                "call system(printf("rm -fr %s", dir_patch_tmp))
+                return
+            endif
+        endif
+
+        PlugUpdate
+    endfunction
+    command! PlugForce call PlugForce()
+
 
     " From 'spf13/spf13-vim'
     " Identify platform {
@@ -512,7 +557,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'tpope/vim-abolish', Cond(Mode(['editor',]))      | " :Subvert/child{,ren}/adult{,s}/g
         "Plug 'tpope/vim-repeat', Cond(Mode(['editor',]))
         "Plug 'vim-utils/vim-vertical-move', Cond(Mode(['editor',]))
-        "Plug 'rhysd/accelerated-jk', Cond(Mode(['editor',]))
+        "Plug 'rhysd/accelerated-jk', Cond(Mode(['editor',]))   | " Cause h/j cannot move If sometimes disable the plug
         "Plug 'unblevable/quick-scope', Cond(Mode(['editor',]))
         "Plug 'dbakker/vim-paragraph-motion', Cond(Mode(['editor',])) | " treat whitespace only lines as paragraph breaks so { and } will jump to them
         "Plug 'vim-scripts/Improved-paragraph-motion', Cond(Mode(['editor',]))
