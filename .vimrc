@@ -139,7 +139,7 @@ let g:vim_confi_option = {
     function! PlugForce()
         if !empty(g:vim_confi_option.plug_patch) && CheckPlug(g:vim_confi_option.plug_patch, 0)
             let dir_patch_repo = PlugGetDir(g:vim_confi_option.plug_patch)
-            let dir_patch_tmp = dir_patch_repo. "../patch"
+            let dir_patch_tmp = dir_patch_repo. "../patch_tmp"
             call system(printf("rm -fr %s && mkdir -p %s", dir_patch_tmp, dir_patch_tmp))
             let dirties = filter(copy(g:plugs),
                   \ {_, v -> len(system(printf("cd %s && git diff --no-ext-diff --name-only", shellescape(v.dir))))})
