@@ -4,7 +4,7 @@
 "    let mapleader = ","
 "    nmap <space> <leader>
 "
-" Help: press 'K':  Note docs/readme'
+" Help: press 'K':  Note 'docs/readme'
 "
 " =============================================================
 "@mode: ['all', 'basic', 'theme', 'local', 'editor',
