@@ -52,7 +52,7 @@ COMPLETION_WAITING_DOTS="true"
 # git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
 # git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 #plugins=(lighthouse history-search-multi-word zsh-directory-history history-substring-search zsh-completions zsh-autosuggestions)
-plugins=(history-substring-search zsh-completions)
+plugins=(history-substring-search zsh-directory-history zsh-completions zsh-autosuggestions)
 autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
