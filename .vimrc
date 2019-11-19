@@ -1,4 +1,6 @@
 "***************************************************************************************
+" 0. Download this vimrc:
+"       wget -O ~/.vimrc https://raw.githubusercontent.com/huawenyu/dotfiles/master/.vimrc
 " 1. Auto-Setup-IDE-with-Plugs:
 "       nvim -u ~/.vimrc
 " 2. Hi, the <leader> is <space> and ',' :)
@@ -71,13 +73,14 @@ let g:vim_confi_option = {
 "            $ brew list python
 "            $ brew unlink python@2
 "            $ brew unlink python@3
+"
 "            $ sudo apt install python-pip
 "            $ sudo apt install python3-pip
 "
-"            $ sudo pip2 install neovim
-"            $ sudo pip3 install neovim
-"            $ sudo pip2 install --upgrade neovim
-"            $ sudo pip3 install --upgrade neovim
+"            $ pip2 install --user neovim
+"            $ pip3 install --user neovim
+"            $ pip2 install --user --upgrade neovim
+"            $ pip3 install --user --upgrade neovim
 "
 
 " Environment {{{1
@@ -301,6 +304,13 @@ if g:vim_confi_option.auto_install_vimplug
             call system("ln -s ~/.vimrc ~/.config/nvim/init.vim")
 
             autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        endif
+
+        if !has('python3')
+            echomsg "AutoInstall: pynvim"
+            call system("pip3 install --user pynvim")
+        else
+            call system("pip3 install --user --upgrade pynvim")
         endif
     endif
 endif
