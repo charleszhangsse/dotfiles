@@ -613,7 +613,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'huawenyu/vimux-script', Cond(Mode(['admin',]) && has('nvim'))
     "Plug 'huawenyu/vim-tmux-runner', Cond(Mode(['admin',]) && has('nvim'))
     Plug 'huawenyu/vim-tmux-runner', Cond(Mode(['admin',]) && has('nvim'), { 'on':  ['VtrLoad', 'VtrSendCommandToRunner', 'VtrSendLinesToRunner', 'VtrSendFile', 'VtrOpenRunner'] })   | " Send command to tmux's marked pane
-    Plug 'yuratomo/w3m.vim', Cond(Mode(['admin',]))
+    Plug 'yuratomo/w3m.vim', Cond(executable('w3m') && Mode(['admin',]))
     Plug 'szw/vim-dict', Cond(Mode(['editor',]))
 "}}}
 
