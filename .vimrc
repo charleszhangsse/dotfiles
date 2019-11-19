@@ -1,6 +1,6 @@
 "***************************************************************************************
 " 0. Download this vimrc:
-"       wget -O ~/.vimrc https://raw.githubusercontent.com/huawenyu/dotfiles/master/.vimrc
+"       wget --no-check-certificate -O ~/.vimrc https://raw.githubusercontent.com/huawenyu/dotfiles/master/.vimrc
 " 1. Auto-Setup-IDE-with-Plugs:
 "       nvim -u ~/.vimrc
 " 2. Hi, the <leader> is <space> and ',' :)
@@ -239,11 +239,8 @@ if g:vim_confi_option.auto_install_vimplug
         if empty(glob('~/.vim/autoload/plug.vim'))
             echomsg "AutoInstall: download vim-plug; mkdir .vim,.config/nvim; softlink .vimrc to init.vim"
 
-            silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-            silent curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-                  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            call system("curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
+            call system("curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
 
             call system("touch ~/.vimrc; mkdir ~/.vim; mkdir ~/.config")
             call system("ln -s ~/.vim ~/.config/nvim")
