@@ -419,7 +419,6 @@ call plug#begin('~/.vim/bundle')
     "Plug 'bpstahlman/txtfmt', Cond(Mode(['editor',]))
     "Plug 'dhruvasagar/vim-table-mode', Cond(Mode(['editor',]))
     Plug 'godlygeek/tabular', Cond(Mode(['editor',]))   | " require by vim-markdown
-    Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
     Plug 'tmux-plugins/vim-tmux', Cond(Mode(['editor',]))  | " The syntax of .tmux.conf
 
     Plug 'vim-scripts/awk.vim', Cond(Mode(['admin',]) && Mode(['script',]))
@@ -444,6 +443,8 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Vimwiki {{{2
+    Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
+    "Plug 'tpope/vim-markdown', Cond(Mode(['editor',]))     | " Look no pretty code-fence
     Plug 'vimwiki/vimwiki', Cond(Mode(['editor',]), { 'branch': 'dev' })  | " Another choice is [Gollum](https://github.com/gollum/gollum)
     "Plug 'tomtom/vikibase_vim', Cond(Mode(['editor',]))
     Plug 'mattn/calendar-vim', Cond(Mode(['editor',])) | " :Calendar
@@ -457,7 +458,8 @@ call plug#begin('~/.vim/bundle')
 
     " Prerequirement: brew install task; sudo pip3 install tasklib; ln -s ~/.task, ~/.taskrc;
     Plug 'tbabej/taskwiki', Cond(Mode(['editor',]))  | " Only handles *.wiki file contain check lists which beginwith asterisk '*'
-    Plug 'xolox/vim-notes', Cond(Mode(['editor',]))  | Plug 'xolox/vim-misc', Cond(Mode(['editor',]))    | " Use as our plugins help
+    Plug 'huawenyu/vim-notes', Cond(Mode(['editor',]))  | Plug 'xolox/vim-misc', Cond(Mode(['editor',]))    | " Use as our plugins help
+    Plug 'pbrisbin/vim-mkdir', Cond(Mode(['editor',]))
 "}}}
 
 " Improve {{{2
