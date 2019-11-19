@@ -8,7 +8,7 @@
 "       nmap <space> <leader>
 " 3. Help: press 'K'
 "    When focus a plug's name, for example, please move cursor to following line, then press 'K':
-"       Note 'docs/readme'
+"       @note:readme
 "
 " =============================================================
 "@mode: ['all', 'basic', 'theme', 'local', 'editor',
@@ -40,48 +40,6 @@ let g:vim_confi_option = {
       \ 'keywordprg_filetype': 1,
       \}
 " =============================================================
-
-" Doc {{{1
-"   Install neovim {{{2
-"   -------------------
-"   [doc]("https://github.com/neovim/neovim/wiki/Installing-Neovim)
-"
-"   Using Plugin-Manage {{{2
-"   ------------------------
-"   [code](https://github.com/junegunn/vim-plug)
-"
-"   :help nvim-from-vim
-"      $ mkdir ~/.vim
-"      $ mkdir ~/.config
-"      $ ln -s ~/.vim ~/.config/nvim
-"      $ ln -s ~/.vimrc ~/.config/nvim/init.vim
-"
-"      ### Make **neovim** work with plugs
-"      $ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-"         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-"
-"      ### Make **vim** work with plugs
-"      $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-"         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-"
-"      $ vi .vimrc
-"        :PlugInstall
-"        :checkhealth   ### check deplete's health
-"
-"            ### After pip install neovim, keep health warning, maybe we're using brew's python.
-"            ### Please remove brew's python first:
-"            $ brew list python
-"            $ brew unlink python@2
-"            $ brew unlink python@3
-"
-"            $ sudo apt install python-pip
-"            $ sudo apt install python3-pip
-"
-"            $ pip2 install --user neovim
-"            $ pip3 install --user neovim
-"            $ pip2 install --user --upgrade neovim
-"            $ pip3 install --user --upgrade neovim
-"
 
 " Environment {{{1
     function! Cond(cond, ...)
@@ -224,40 +182,11 @@ let g:vim_confi_option = {
   let g:decho_enable = 0
   let g:bg_color = 233 | " current background's color value, used by mylog.syntax
 
-  "=====================================================================
-  "   " in .vimrc
-  "       silent! call logger#init('ALL', ['/dev/stdout', '/tmp/vim.log'])
-  "
-  "   " At begin of every our vimscript file
-  "       silent! let s:log = logger#getLogger(expand('<sfile>:t'))
-  "   " Or guard avoid multi-load
-  "       if !exists("s:init")
-  "           let s:init = 1
-  "           silent! let s:log = logger#getLogger(expand('<sfile>:t'))
-  "       endif
-  "     "
-  "
-  "   " Use it
-  "       silent! call s:log.info('hello world')
-  "
-  "   " Support current function-name like C's __FUNCTION__
-  "       function! ourfile#foobar()
-  "           let l:__func__ = substitute(expand('<sfile>'), '.*\(\.\.\|\s\)', '', '')
-  "           silent! call s:log.info(l:__func__, " args=", string(g:gdb.args))
-  "       endfunction
-  "
-  "   " Check log
-  "       $ tail -f /tmp/vim.log
-  "=====================================================================
-
-
   " Old echo type, abandon
   function! Decho(...)
       return
   endfunction
 " }}}
-
-
 
 
 if LINUX()
@@ -302,16 +231,20 @@ if g:vim_confi_option.auto_install_vimplug
             call system("touch ~/.vimrc; mkdir ~/.vim; mkdir ~/.config")
             call system("ln -s ~/.vim ~/.config/nvim")
             call system("ln -s ~/.vimrc ~/.config/nvim/init.vim")
+            call system("pip3 install --user pynvim")
 
             autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
         endif
 
-        if !has('python3')
-            echomsg "AutoInstall: pynvim"
-            call system("pip3 install --user pynvim")
-        else
-            call system("pip3 install --user --upgrade pynvim")
-        endif
+        " https://github.com/neovim/neovim/issues/2094
+        " Test this cause start slow 1~2secs, reproduce by:
+        "       $ vi --startuptime /tmp/log.1
+        "if !has('python3')
+        "    echomsg "AutoInstall: pynvim"
+        "    call system("pip3 install --user pynvim")
+        "else
+        "    call system("pip3 install --user --upgrade pynvim")
+        "endif
     endif
 endif
 
@@ -661,11 +594,11 @@ call plug#begin('~/.vim/bundle')
     Plug 'tpope/vim-fugitive', Cond(Mode(['editor',])) | Plug 'junegunn/gv.vim', Cond(Mode(['editor',]))  | " Awesome git wrapper
     "Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]))          | " base-on: https://github.com/junegunn/fzf, create float-windows: https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html
     "Plug 'juneedahamed/svnj.vim', Cond(Mode(['editor',]))
-    Plug 'juneedahamed/vc.vim', Cond(Mode(['editor',]))        | " Support git, svn, ...
-    Plug 'vim-scripts/vcscommand.vim', Cond(Mode(['editor',])) | " CVS, SVN, SVK, git, bzr, and hg within VIM
-    Plug 'sjl/gundo.vim', Cond(Mode(['editor',]))
-    Plug 'mattn/webapi-vim', Cond(Mode(['editor',]))
-    Plug 'mattn/gist-vim', Cond(Mode(['editor',]))             | " :'<,'>Gist -e 'list-sample'
+    "Plug 'juneedahamed/vc.vim', Cond(Mode(['editor',]))        | " Bad performance: Support git, svn, ...
+    "Plug 'vim-scripts/vcscommand.vim', Cond(Mode(['editor',])) | " Bad performance: CVS, SVN, SVK, git, bzr, and hg within VIM
+    "Plug 'sjl/gundo.vim', Cond(Mode(['editor',]))              | " Looks no use
+    Plug 'mattn/webapi-vim', Cond(Mode(['editor',]))            | " Looks no use
+    Plug 'mattn/gist-vim', Cond(Mode(['editor',]))              | " :'<,'>Gist -e 'list-sample'
 
     " share copy/paste between vim(""p)/tmux
     "Plug 'svermeulen/vim-easyclip', Cond(Mode(['editor',]))  | " change to vim-yoink, similiar: nvim-miniyank, YankRing.vim, vim-yankstack
@@ -746,50 +679,10 @@ call plug#begin('~/.vim/bundle')
 call plug#end()
 
 
-" Configure {{{1
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-"}}}
-
-
-"set dictionary-=/usr/share/dict/words dictionary+=/usr/share/dict/words
-
-" tags {{{2
-
-    " # Issue using tags:
-    "   olddir/tags
-    "   newdir/tags
-    "   cd newdir; vi ../olddir/file1 and 'ptag func'		# which will open the file in olddir
-    " # If using 'set cscopetag', this issue not exist.
-    " But if auto-update the tags with current file, we must using tags not 'set cscopetag'.
-    " And the follow one-line can fix the issue.
-    set notagrelative
-
-    " http://arjanvandergaag.nl/blog/combining-vim-and-ctags.html
-    set tags=./tags,tags,./.tags,.tags;$HOME
-"}}}
-
 " Plugs Global {{{1
     " Disable all plugins's auto-maps
     "let g:no_plugin_maps = 1
 "}}}
-
-" VimL Debug{{{1
-  silent! call logger#init('ALL', ['/tmp/vim.log'])
-  "silent! call logger#init('ERROR', ['/tmp/vim.log'])
-  silent! let s:log = logger#getLogger(expand('<sfile>:t'))
-
-  "   " in .vimrc
-  "   call logger#init('ALL', ['/dev/stdout', '~/.vim/log.txt'])
-  "
-  "   " in every script
-  "   silent! let s:log = logger#getLogger(expand('<sfile>:t'))
-  "
-  "   " start logger: trace,debug,info,warn,error,fatal
-  "   silent! call s:log.info('hello world')
-  "   " Check log
-  "   $ tail -f /tmp/vim.log
-"}}}
-
 
 " Use after config if available {
     if filereadable(expand("~/.vimrc.after"))
