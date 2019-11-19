@@ -8,7 +8,7 @@
 "       nmap <space> <leader>
 " 3. Help: press 'K'
 "    When focus a plug's name, for example, please move cursor to following line, then press 'K':
-"       @note:readme
+"       @note:nvim
 "
 " =============================================================
 "@mode: ['all', 'basic', 'theme', 'local', 'editor',
@@ -174,7 +174,7 @@ let g:vim_confi_option = {
 " }}}
 
 " VimL Debug{{{1
-" This is old style, suggest using log style: @note:readme (~Press 'K'~)
+" This is old style, suggest using log style: @note:nvim (~Press 'K'~)
     set verbose=0
     "set verbose=8
     "set verbosefile=/tmp/vim.log
@@ -189,6 +189,7 @@ let g:vim_confi_option = {
 " }}}
 
 
+" Setup python
 if LINUX()
     let s:uname = system("uname")
 
@@ -209,6 +210,16 @@ if LINUX()
         let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
         let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
     endif
+
+    " https://github.com/neovim/neovim/issues/2094
+    " Test this cause start slow 1~2secs, reproduce by:
+    "       $ vi --startuptime /tmp/log.1
+    "if !has('python3')
+    "    echomsg "AutoInstall: pynvim"
+    "    call system("pip3 install --user pynvim")
+    "else
+    "    call system("pip3 install --user --upgrade pynvim")
+    "endif
 endif
 
 
@@ -239,16 +250,6 @@ if g:vim_confi_option.auto_install_vimplug
 
             autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
         endif
-
-        " https://github.com/neovim/neovim/issues/2094
-        " Test this cause start slow 1~2secs, reproduce by:
-        "       $ vi --startuptime /tmp/log.1
-        "if !has('python3')
-        "    echomsg "AutoInstall: pynvim"
-        "    call system("pip3 install --user pynvim")
-        "else
-        "    call system("pip3 install --user --upgrade pynvim")
-        "endif
     endif
 endif
 
