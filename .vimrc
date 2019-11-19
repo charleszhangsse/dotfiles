@@ -42,6 +42,93 @@ let g:vim_confi_option = {
 " =============================================================
 
 " Environment {{{1
+    " From 'spf13/spf13-vim'
+    " Identify platform {
+        silent function! OSX()
+            return has('macunix')
+        endfunction
+        silent function! LINUX()
+            return has('unix') && !has('macunix') && !has('win32unix')
+        endfunction
+        silent function! WINDOWS()
+            return  (has('win32') || has('win64'))
+        endfunction
+    " }
+
+    " Basics {
+        set nocompatible        " Must be first line
+        if !WINDOWS()
+            set shell=/bin/sh
+        endif
+    " }
+
+    " Windows Compatible {
+        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
+        " across (heterogeneous) systems easier.
+        if WINDOWS()
+            set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+        endif
+    " }
+
+    " Arrow Key Fix {
+        " https://github.com/spf13/spf13-vim/issues/780
+        if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
+            inoremap <silent> <C-[>OC <RIGHT>
+        endif
+    " }
+
+
+    " Debug {
+        " This is old style debug, suggest using log style: @note:nvim (~Press 'K'~)
+        set verbose=0
+        "set verbose=8
+        "set verbosefile=/tmp/vim.log
+
+        let g:decho_enable = 0
+        let g:bg_color = 233 | " current background's color value, used by mylog.syntax
+
+        " Old echo type, abandon
+        function! Decho(...)
+            return
+        endfunction
+    " }
+
+
+    " Setup python
+    if LINUX()
+        let s:uname = system("uname")
+
+        let g:python_host_prog = '/usr/bin/python'
+        let g:python3_host_prog = '/usr/bin/python3'
+
+        if s:uname == "Darwin\n"
+            let g:python_host_prog='/usr/bin/python'
+            let g:python3_host_prog='/usr/bin/python3'
+        endif
+
+        " [Using-pyenv](https://github.com/tweekmonster/nvim-python-doctor/wiki/Advanced:-Using-pyenv)
+        "   pyenv install 3.6.7
+        "   pyenv virtualenv 3.6.7 neovim3
+        "   pyenv activate neovim3
+        "   pip install neovim
+        if !empty(glob($HOME.'/.pyenv/versions/neovim2'))
+            let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
+            let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
+        endif
+
+        " https://github.com/neovim/neovim/issues/2094
+        " Test this cause start slow 1~2secs, reproduce by:
+        "       $ vi --startuptime /tmp/log.1
+        "if !has('python3')
+        "    echomsg "AutoInstall: pynvim"
+        "    call system("pip3 install --user pynvim")
+        "else
+        "    call system("pip3 install --user --upgrade pynvim")
+        "endif
+    endif
+
+
+    " Plug related:
     function! Cond(cond, ...)
         let opts = get(a:000, 0, {})
         return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
@@ -137,92 +224,7 @@ let g:vim_confi_option = {
     command! PlugForce call PlugForce()
 
 
-    " From 'spf13/spf13-vim'
-    " Identify platform {
-        silent function! OSX()
-            return has('macunix')
-        endfunction
-        silent function! LINUX()
-            return has('unix') && !has('macunix') && !has('win32unix')
-        endfunction
-        silent function! WINDOWS()
-            return  (has('win32') || has('win64'))
-        endfunction
-    " }
-
-    " Basics {
-        set nocompatible        " Must be first line
-        if !WINDOWS()
-            set shell=/bin/sh
-        endif
-    " }
-
-    " Windows Compatible {
-        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
-        " across (heterogeneous) systems easier.
-        if WINDOWS()
-            set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-        endif
-    " }
-
-    " Arrow Key Fix {
-        " https://github.com/spf13/spf13-vim/issues/780
-        if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
-            inoremap <silent> <C-[>OC <RIGHT>
-        endif
-    " }
 " }}}
-
-" VimL Debug{{{1
-" This is old style, suggest using log style: @note:nvim (~Press 'K'~)
-    set verbose=0
-    "set verbose=8
-    "set verbosefile=/tmp/vim.log
-
-    let g:decho_enable = 0
-    let g:bg_color = 233 | " current background's color value, used by mylog.syntax
-
-    " Old echo type, abandon
-    function! Decho(...)
-        return
-    endfunction
-" }}}
-
-
-" Setup python
-if LINUX()
-    let s:uname = system("uname")
-
-    let g:python_host_prog = '/usr/bin/python'
-    let g:python3_host_prog = '/usr/bin/python3'
-
-    if s:uname == "Darwin\n"
-        let g:python_host_prog='/usr/bin/python'
-        let g:python3_host_prog='/usr/bin/python3'
-    endif
-
-    " [Using-pyenv](https://github.com/tweekmonster/nvim-python-doctor/wiki/Advanced:-Using-pyenv)
-    "   pyenv install 3.6.7
-    "   pyenv virtualenv 3.6.7 neovim3
-    "   pyenv activate neovim3
-    "   pip install neovim
-    if !empty(glob($HOME.'/.pyenv/versions/neovim2'))
-        let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
-        let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
-    endif
-
-    " https://github.com/neovim/neovim/issues/2094
-    " Test this cause start slow 1~2secs, reproduce by:
-    "       $ vi --startuptime /tmp/log.1
-    "if !has('python3')
-    "    echomsg "AutoInstall: pynvim"
-    "    call system("pip3 install --user pynvim")
-    "else
-    "    call system("pip3 install --user --upgrade pynvim")
-    "endif
-endif
-
-
 
 " Use before config if available {
     if filereadable(expand("~/.vimrc.before"))
