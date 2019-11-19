@@ -191,9 +191,13 @@ let g:vim_confi_option = {
 
 if LINUX()
     let s:uname = system("uname")
-    let g:python_host_prog='/usr/bin/python'
+
+    let g:python_host_prog = '/usr/bin/python'
+    let g:python3_host_prog = '/usr/bin/python3'
+
     if s:uname == "Darwin\n"
         let g:python_host_prog='/usr/bin/python'
+        let g:python3_host_prog='/usr/bin/python3'
     endif
 
     " [Using-pyenv](https://github.com/tweekmonster/nvim-python-doctor/wiki/Advanced:-Using-pyenv)
