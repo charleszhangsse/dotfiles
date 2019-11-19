@@ -74,10 +74,10 @@ let g:vim_confi_option = {
     endfunction
 
     function! PlugGetDir(name)
-      if (exists("g:plugs") && has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir))
-          return g:plugs[a:name].dir
-      endif
-      return ''
+        if (exists("g:plugs") && has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir))
+            return g:plugs[a:name].dir
+        endif
+        return ''
     endfunction
 
 
@@ -174,18 +174,18 @@ let g:vim_confi_option = {
 " }}}
 
 " VimL Debug{{{1
+" This is old style, suggest using log style: @note:readme (~Press 'K'~)
+    set verbose=0
+    "set verbose=8
+    "set verbosefile=/tmp/vim.log
 
-  set verbose=0
-  "set verbose=8
-  "set verbosefile=/tmp/vim.log
+    let g:decho_enable = 0
+    let g:bg_color = 233 | " current background's color value, used by mylog.syntax
 
-  let g:decho_enable = 0
-  let g:bg_color = 233 | " current background's color value, used by mylog.syntax
-
-  " Old echo type, abandon
-  function! Decho(...)
-      return
-  endfunction
+    " Old echo type, abandon
+    function! Decho(...)
+        return
+    endfunction
 " }}}
 
 
