@@ -1,10 +1,12 @@
 "***************************************************************************************
-" Hi, the <leader> is <space> and , :)
-"
-"    let mapleader = ","
-"    nmap <space> <leader>
-"
-" Help: press 'K':  Note 'docs/readme'
+" 1. Auto-Setup-IDE-with-Plugs:
+"       nvim -u ~/.vimrc
+" 2. Hi, the <leader> is <space> and ',' :)
+"       let mapleader = ","
+"       nmap <space> <leader>
+" 3. Help: press 'K'
+"    When focus a plug's name, for example, please move cursor to following line, then press 'K':
+"       Note 'docs/readme'
 "
 " =============================================================
 "@mode: ['all', 'basic', 'theme', 'local', 'editor',
@@ -298,9 +300,8 @@ if g:vim_confi_option.auto_install_vimplug
             call system("ln -s ~/.vim ~/.config/nvim")
             call system("ln -s ~/.vimrc ~/.config/nvim/init.vim")
 
+            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
         endif
-
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 endif
 
@@ -670,9 +671,13 @@ call plug#begin('~/.vim/bundle')
 " AutoComplete {{{2
     "Plug 'ervandew/supertab', Cond(Mode(['editor',]))
     "Plug 'Shougo/denite.nvim', Cond(Mode(['editor',]))
+
+    "Plug 'ncm2/ncm2', Cond(Mode(['editor',]) && has('nvim'))                   | " Compare to deoplete, it's slower
     Plug 'Shougo/deoplete.nvim', Cond(Mode(['editor',]) && has('nvim'))         | "{ 'do': ':UpdateRemotePlugins' }
     Plug 'Shougo/neosnippet.vim', Cond(Mode(['editor',]) && has('nvim'))        | " c-k apply code, c-n next, c-p previous
     Plug 'Shougo/neosnippet-snippets', Cond(Mode(['editor',]) && has('nvim'))
+
+
     Plug 'honza/vim-snippets', Cond(Mode(['editor',]) && has('nvim'))
     Plug 'reedes/vim-wordy', Cond(Mode(['editor',]) && has('nvim'))
     "Plug 'vim-scripts/CmdlineComplete', Cond(Mode(['admin',]) && has('nvim'))
