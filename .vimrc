@@ -245,6 +245,11 @@ if g:vim_confi_option.auto_install_vimplug
             call system("touch ~/.vimrc; mkdir ~/.vim; mkdir ~/.config")
             call system("ln -s ~/.vim ~/.config/nvim")
             call system("ln -s ~/.vimrc ~/.config/nvim/init.vim")
+
+            call system("sudo apt install python3-pip"_
+            call system("sudo apt install python3-distutils")
+            call system("pip3 install --user setuptools")
+            call system("pip install --user pynvim")
             call system("pip3 install --user pynvim")
 
             autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
