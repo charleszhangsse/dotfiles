@@ -42,8 +42,7 @@ let g:vim_confi_option = {
 " =============================================================
 
 " Environment {{{1
-    " From 'spf13/spf13-vim'
-    " Identify platform {
+    " Platform identification {
         silent function! OSX()
             return has('macunix')
         endfunction
@@ -51,13 +50,42 @@ let g:vim_confi_option = {
             return has('unix') && !has('macunix') && !has('win32unix')
         endfunction
         silent function! WINDOWS()
-            return  (has('win32') || has('win64'))
+            return  (has('win16') || has('win32') || has('win64'))
+        endfunction
+        silent function! UNIXLIKE()
+            return !WINDOWS()
+        endfunction
+        silent function! FREEBSD()
+          let s:uname = system("uname -s")
+          return (match(s:uname, 'FreeBSD') >= 0)
+        endfunction
+
+        if LINUX()
+              let s:uname = system("uname -a")
+        else
+              let s:uname = ""
+        endif
+
+        silent function! UBUNTU()
+            return (match(s:uname, 'Ubuntu') >= 0)
+        endfunction
+        "Linux localhost.localdomain 3.10.0-957.el7.x86_64 #1 SMP Thu
+        "Linux .*.fc29.x86_64 #
+        "Linux .el7.x86_64 #
+        silent function! CENTOS()
+            " echo match("Linux localhost.localdomain 3.10.0-957.el7.x86_64 #1 SMP Thu", 'Linux .*\.el\d\+x86_64 #')
+            return (match(s:uname, 'Linux .*\.el\d\+\.') >= 0)
+        endfunction
+        silent function! FEDORA()
+            " echo match("Linux localhost.localdomain 3.10.0-957.el7.x86_64 #1 SMP Thu", 'Linux .*\.el\d\+x86_64 #')
+            return (match(s:uname, 'Linux .*\.fc\d\+\.') >= 0)
         endfunction
     " }
 
+
     " Basics {
         set nocompatible        " Must be first line
-        if !WINDOWS()
+        if UNIXLIKE()
             set shell=/bin/sh
         endif
     " }
@@ -246,8 +274,14 @@ if g:vim_confi_option.auto_install_vimplug
             call system("ln -s ~/.vim ~/.config/nvim")
             call system("ln -s ~/.vimrc ~/.config/nvim/init.vim")
 
-            call system("sudo apt install python3-pip")
-            call system("sudo apt install python3-distutils")
+            if UBUNTU()
+                call system("sudo apt install python3-pip")
+                call system("sudo apt install python3-distutils")
+            elseif CENTOS() || FEDORA()
+                call system("sudo yum install python3-pip")
+                call system("sudo yum install python3-distutils")
+            endif
+
             call system("pip3 install --user setuptools")
             call system("pip install --user pynvim")
             call system("pip3 install --user pynvim")
