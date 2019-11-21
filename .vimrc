@@ -486,7 +486,8 @@ call plug#begin('~/.vim/bundle')
 " Vimwiki {{{2
     "Plug 'tomtom/vikibase_vim', Cond(Mode(['editor',]))
     "Plug 'tpope/vim-markdown', Cond(Mode(['editor',]))     | " Look no pretty code-fence
-    Plug 'godlygeek/tabular', Cond(Mode(['editor',])) | Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
+    Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
+        Plug 'godlygeek/tabular', Cond(Mode(['editor',]))   | "[Look like 'vim-easy-align' is better and more powerful]
     Plug 'vimwiki/vimwiki', Cond(Mode(['editor',]), { 'branch': 'dev' })  | " Another choice is [Gollum](https://github.com/gollum/gollum)
     Plug 'mattn/calendar-vim', Cond(Mode(['editor',])) | " :Calendar
 
