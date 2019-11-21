@@ -1,15 +1,18 @@
 "***************************************************************************************
 " 0. Download this vimrc:
-"       wget --no-check-certificate -O ~/.vimrc https://raw.githubusercontent.com/huawenyu/dotfiles/master/.vimrc
+"       $ wget --no-check-certificate -O ~/.vimrc https://raw.githubusercontent.com/huawenyu/dotfiles/master/.vimrc
 " 1. Auto-Setup-IDE-with-Plugs:
-"       nvim -u ~/.vimrc
+"       $ nvim -u ~/.vimrc
 " 2. Hi, the <leader> is <space> and ',' :)
 "       let mapleader = ","
 "       nmap <space> <leader>
 " 3. Help: press 'K'
 "    When focus a plug's name, for example, please move cursor to following line, then press 'K':
 "       @note:nvim
-"
+" 4. Start slow troubleshooting:
+"       $ vi --startuptime /tmp/log.1
+" 5. Displaying the current Vim environment
+"       @note:vim_runtime
 " =============================================================
 "@mode: ['all', 'basic', 'theme', 'local', 'editor',
 "      \   'admin', 'QA', 'coder',
@@ -338,7 +341,8 @@ call plug#begin('~/.vim/bundle')
         Plug 'huawenyu/c-utils.vim', Cond(Mode(['coder',]) && Mode(['c',]))
         Plug 'octol/vim-cpp-enhanced-highlight', Cond(Mode(['coder',]) && Mode(['c',]))
         Plug 'tenfyzhong/CompleteParameter.vim', Cond(Mode(['coder',]) && Mode(['c',]))
-        "Plug 'tyru/current-func-info.vim', Cond(Mode(['coder',]) && Mode(['c',]))           | "[Too slow] Show current function name in statusline
+        "Plug 'WolfgangMehner/c-support', Cond(Mode(['coder',]) && Mode(['c',]))            | "[Start Slow]
+        "Plug 'tyru/current-func-info.vim', Cond(Mode(['coder',]) && Mode(['c',]))          | "[Bad performance] Show current function name in statusline
         "Plug 'bbchung/Clamp', Cond(Mode(['coder',]) && Mode(['c',]))   | " support C-family code powered by libclang
         "Plug 'apalmer1377/factorus', Cond(Mode(['coder',]) && Mode(['c',]))
         "Plug 'hari-rangarajan/CCTree', Cond(Mode(['coder',]) && Mode(['c',]))
@@ -425,9 +429,9 @@ call plug#begin('~/.vim/bundle')
 
     " Session management
     "Plug 'xolox/vim-session'
-    "Plug 'tpope/vim-obsession'
+    "Plug 'vim-ctrlspace/vim-ctrlspace', Cond(Mode(['editor',]))    | "[Bad performance], confuse
     Plug 'thaerkh/vim-workspace', Cond(Mode(['editor',]))
-    "Plug 'vim-ctrlspace/vim-ctrlspace', Cond(Mode(['editor',]))    | " Too heavy, confuse
+    "Plug 'tpope/vim-obsession' | Plug 'dhruvasagar/vim-prosession' | "[Conflict: cause 'vi -t tag' fail]
 
 "}}}
 
@@ -547,18 +551,17 @@ call plug#begin('~/.vim/bundle')
         "Plug 'justinmk/vim-sneak', Cond(Mode(['editor',]))    | " s + prefix-2-char to choose the words
         Plug 'easymotion/vim-easymotion', Cond(Mode(['editor',]))
         Plug 'tpope/vim-abolish', Cond(Mode(['editor',]))      | " :Subvert/child{,ren}/adult{,s}/g
-        "Plug 'tpope/vim-repeat', Cond(Mode(['editor',]))
+        " gA                   shows the four representations of the number under the cursor.
+        " crd, crx, cro, crb   convert the number under the cursor to decimal, hex, octal, binary, respectively.
+        Plug 'tpope/vim-repeat', Cond(Mode(['editor',])) | Plug 'glts/vim-radical', Cond(Mode(['editor',])) |  Plug 'glts/vim-magnum', Cond(Mode(['editor',]))
         "Plug 'vim-utils/vim-vertical-move', Cond(Mode(['editor',]))
-        "Plug 'rhysd/accelerated-jk', Cond(Mode(['editor',]))   | " Cause h/j cannot move If sometimes disable the plug
+        "Plug 'rhysd/accelerated-jk', Cond(Mode(['editor',]))   | " Cause h/j cannot move If sometimes not load the plug
         "Plug 'unblevable/quick-scope', Cond(Mode(['editor',]))
         "Plug 'dbakker/vim-paragraph-motion', Cond(Mode(['editor',])) | " treat whitespace only lines as paragraph breaks so { and } will jump to them
         "Plug 'vim-scripts/Improved-paragraph-motion', Cond(Mode(['editor',]))
         Plug 'christoomey/vim-tmux-navigator', Cond(Mode(['editor',]))
         Plug 'rhysd/clever-f.vim', Cond(Mode(['editor',]))
 
-        " gA                   shows the four representations of the number under the cursor.
-        " crd, crx, cro, crb   convert the number under the cursor to decimal, hex, octal, binary, respectively.
-        Plug 'glts/vim-radical', Cond(Mode(['editor',])) |  Plug 'glts/vim-magnum', Cond(Mode(['editor',]))  | Plug 'tpope/vim-repeat', Cond(Mode(['editor',]))
         Plug 'huawenyu/vim-motion', Cond(Mode(['editor',]))  | " Jump according indent
     "}}}
 
