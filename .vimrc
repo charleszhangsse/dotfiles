@@ -20,6 +20,8 @@
 "      \   'vimscript', 'c', 'python', 'latex', 'perl', 'javascript', 'clojure', 'database',
 "      \   'golang', 'tcl', 'haskell', 'rust',
 "      \   'note', 'script',
+"      \
+"      \   'morecool', 'todo', 'tool',
 "      \]
 "
 "  Sample:
@@ -27,7 +29,7 @@
 "     'mode': ['basic', 'theme', 'local', 'editor', ],
 "     'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
 let g:vim_confi_option = {
-      \ 'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
+      \ 'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script', 'tool'],
       \ 'theme': 1,
       \ 'conf': 1,
       \ 'upper_keyfixes': 1,
@@ -482,10 +484,10 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Vimwiki {{{2
-    "Plug 'godlygeek/tabular', Cond(Mode(['editor',])) | Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
-    "Plug 'tpope/vim-markdown', Cond(Mode(['editor',]))     | " Look no pretty code-fence
-    Plug 'vimwiki/vimwiki', Cond(Mode(['editor',]), { 'branch': 'dev' })  | " Another choice is [Gollum](https://github.com/gollum/gollum)
     "Plug 'tomtom/vikibase_vim', Cond(Mode(['editor',]))
+    "Plug 'tpope/vim-markdown', Cond(Mode(['editor',]))     | " Look no pretty code-fence
+    Plug 'godlygeek/tabular', Cond(Mode(['editor',])) | Plug 'plasticboy/vim-markdown', Cond(Mode(['editor',]))
+    Plug 'vimwiki/vimwiki', Cond(Mode(['editor',]), { 'branch': 'dev' })  | " Another choice is [Gollum](https://github.com/gollum/gollum)
     Plug 'mattn/calendar-vim', Cond(Mode(['editor',])) | " :Calendar
 
     "Plug 'freitass/todo.txt-vim', Cond(Mode(['editor',]))     | " Like todo.txt-cli command-line, but here really needed is the wrap of Todo.txt-cli.
@@ -493,10 +495,10 @@ call plug#begin('~/.vim/bundle')
     "
     " Require vimwiki, tasklib, [taskwarrior](https://taskwarrior.org/download/)
     " taskwarrior: a command line task management tool, config by ~/.taskrc
-    "Plug 'blindFS/vim-taskwarrior', Cond(Mode(['editor',]))
+    "Plug 'blindFS/vim-taskwarrior', Cond(executable('task') && Mode(['editor',]))
 
     " Prerequirement: brew install task; sudo pip3 install tasklib; ln -s ~/.task, ~/.taskrc;
-    Plug 'tbabej/taskwiki', Cond(Mode(['editor',]))  | " Only handles *.wiki file contain check lists which beginwith asterisk '*'
+    Plug 'tbabej/taskwiki', Cond(executable('task') && Mode(['editor',]))  | " Only handles *.wiki file contain check lists which beginwith asterisk '*'
     Plug 'huawenyu/vim-notes', Cond(Mode(['editor',])) | Plug 'xolox/vim-misc', Cond(Mode(['editor',]))    | " Use as our plugins help
     Plug 'pbrisbin/vim-mkdir', Cond(Mode(['editor',]))
 "}}}
@@ -523,7 +525,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tomtom/tmarks_vim', Cond(Mode(['editor',]))
     "Plug 'tomtom/quickfixsigns_vim', Cond(Mode(['editor',]))
     "Plug 'tomtom/vimform_vim', Cond(Mode(['editor',]))
-    "Plug 'jceb/vim-editqf', Cond(Mode(['editor',]))            | " notes when review source
+    "Plug 'jceb/vim-editqf', Cond(Mode(['editor',]))            | " when review source
     "Plug 'huawenyu/highlight.vim', Cond(Mode(['editor',]))
     Plug 'huawenyu/vim-signature', Cond(Mode(['editor',]))      | " place, toggle and display marks
     Plug 'romainl/vim-qf', Cond(Mode(['editor',]))              | " Tame the quickfix window
@@ -568,7 +570,11 @@ call plug#begin('~/.vim/bundle')
         Plug 'huawenyu/neovim-fuzzy', Cond(has('nvim') && Mode(['editor',]))
         "Plug 'Dkendal/fzy-vim', Cond(Mode(['editor',]))
         Plug 'mhinz/vim-grepper', Cond(Mode(['editor',]))    | " :Grepper text
-        "Plug 'kien/ctrlp.vim', Cond(Mode(['editor',]))      | " Bad performance
+
+        " http://blog.owen.cymru/fzf-ripgrep-navigate-with-bash-faster-than-ever-before
+        Plug 'ctrlpvim/ctrlp.vim', Cond(Mode(['editor',]) && Mode(['todo',]))
+            "Plug 'nixprime/cpsm', Cond(Mode(['editor',]), {'do': 'env PY3=ON ./install.sh'})
+            Plug 'ryanoasis/vim-devicons', Cond(Mode(['editor',]) && Mode(['morecool',]))
     "}}}
 
     " Async {{{3
@@ -654,8 +660,10 @@ call plug#begin('~/.vim/bundle')
     Plug 'huawenyu/vimux-script', Cond(Mode(['admin',]) && has('nvim'))
     "Plug 'huawenyu/vim-tmux-runner', Cond(Mode(['admin',]) && has('nvim'))
     Plug 'huawenyu/vim-tmux-runner', Cond(Mode(['admin',]) && has('nvim'), { 'on':  ['VtrLoad', 'VtrSendCommandToRunner', 'VtrSendLinesToRunner', 'VtrSendFile', 'VtrOpenRunner'] })   | " Send command to tmux's marked pane
-    Plug 'yuratomo/w3m.vim', Cond(executable('w3m') && Mode(['admin',]))
-    Plug 'szw/vim-dict', Cond(Mode(['editor',]))
+    Plug 'yuratomo/w3m.vim', Cond(executable('w3m') && Mode(['admin',]) && Mode(['tool',]))
+    Plug 'szw/vim-dict', Cond(Mode(['editor',]) && Mode(['tool',]))
+    Plug 'szw/vim-g', Cond(Mode(['editor',]) && Mode(['tool',]))
+    "Plug 'google/vim-searchindex', Cond(Mode(['editor',]) && Mode(['tool',]))
 "}}}
 
 " AutoComplete {{{2
