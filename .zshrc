@@ -308,23 +308,6 @@ alias t='$HOME/tools/todo.txt-cli-ex/todo.sh'
 # Disable warning messsage:
 #   WARNING: gnome-keyring:: couldn't connect to: /run/user/1000/keyring-s99rSr/pkcs11: Connection refused
 unset GNOME_KEYRING_CONTROL
-#export FZF_DEFAULT_COMMAND='rg --files --color never --no-ignore-vcs --hidden'
-#export FZF_DEFAULT_COMMAND='rg --line-number --color never --no-heading ""'
-#export FZF_DEFAULT_COMMAND='rg --files'
-#export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
-#--color=dark
-#--color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
-#--color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
-#'
-#
-#--color fg:252,bg:233,hl:67,fg+:252,bg+:235,hl+:81
-#--color info:144,prompt:161,spinner:135,pointer:135,marker:118
-#
-#--color dark,hl:33,hl+:37,fg+:235,bg+:136,fg+:254
-#--color info:254,prompt:37,spinner:108,pointer:235,marker:235
-#
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
---color dark,hl:33,hl+:37,fg+:235,bg+:136,fg+:254
---color info:254,prompt:37,spinner:108,pointer:235,marker:235
-'
+export FZF_DEFAULT_OPTS='--bind=ctrl-p:up,ctrl-n:down'
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
