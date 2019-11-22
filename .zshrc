@@ -1,3 +1,4 @@
+# @note:zshrc
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -308,6 +309,11 @@ alias t='$HOME/tools/todo.txt-cli-ex/todo.sh'
 # Disable warning messsage:
 #   WARNING: gnome-keyring:: couldn't connect to: /run/user/1000/keyring-s99rSr/pkcs11: Connection refused
 unset GNOME_KEYRING_CONTROL
-export FZF_DEFAULT_OPTS='--bind=ctrl-p:up,ctrl-n:down'
+
+export FZF_DEFAULT_OPTS='
+--bind=ctrl-p:up,ctrl-n:down
+--color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220
+--color info:150,prompt:110,spinner:150,pointer:167,marker:174
+'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

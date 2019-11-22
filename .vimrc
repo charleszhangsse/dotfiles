@@ -36,6 +36,7 @@ let g:vim_confi_option = {
       \ 'upper_keyfixes': 1,
       \ 'auto_install_vimplug': 1,
       \ 'auto_install_plugs': 1,
+      \ 'auto_install_tools': 1,
       \ 'plug_note': 'vim.before',
       \ 'plug_patch': 'vim.before',
       \
@@ -181,6 +182,13 @@ let g:vim_confi_option = {
         return HasIntersect(a:mode, g:vim_confi_option.mode)
     endfunction
 
+    function! CheckPythonModule(name)
+        if !executable('python') | return -1 | endif
+        let importStr = system("python -c 'import ". a:name. "'")
+        if stridx(importStr, 'No module named') >= 0 | return 0 | endif
+        return 1
+    endfunction
+
     " @Note only work with 'vim-plug'
     " @param type  0, Enable the plug
     "              1, Runtime Loaded/Active the plug
@@ -293,6 +301,19 @@ if g:vim_confi_option.auto_install_vimplug
             call system("pip3 install --user pynvim")
 
             autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        endif
+    endif
+endif
+
+
+if g:vim_confi_option.auto_install_tools
+    if LINUX()
+        if !CheckPythonModule('vim-vint')
+            " https://github.com/mattn/efm-langserver
+            " https://github.com/neoclide/coc.nvim/wiki/Language-servers
+            " https://github.com/igorshubovych/markdownlint-cli
+            "
+            "call system("pip install --user vim-vint")
         endif
     endif
 endif
@@ -431,7 +452,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'tpope/vim-speeddating', Cond(Mode(['editor',]) && Mode(['note',]))
 
     " Session management
-    "Plug 'thaerkh/vim-workspace', Cond(Mode(['editor',]))
+    Plug 'thaerkh/vim-workspace', Cond(Mode(['editor',]))
         "Plug 'xolox/vim-session'
         "Plug 'vim-ctrlspace/vim-ctrlspace', Cond(Mode(['editor',]))    | "[Bad performance], confuse
         "Plug 'tpope/vim-obsession' | Plug 'dhruvasagar/vim-prosession' | "[Conflict: cause 'vi -t tag' fail]
@@ -451,7 +472,7 @@ call plug#begin('~/.vim/bundle')
 "}}}
 
 " Syntax/Language {{{2
-    "Plug 'vim-syntastic/syntastic', Cond(Mode(['coder',]))
+    Plug 'vim-syntastic/syntastic', Cond(Mode(['editor',]))
     Plug 'Chiel92/vim-autoformat', Cond(Mode(['coder',]))
     Plug 'justinmk/vim-syntax-extra', Cond(Mode(['coder',]) && Mode(['vimscript',]))
     "Plug 'justinmk/vim-dirvish', Cond(Mode(['editor',]))   | " ?
@@ -517,6 +538,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'tpope/vim-surround', Cond(Mode(['editor',]))          | " ds - remove surround; cs - change surround; After Selected, S} - surround the selected; yss - surround the whole line; ysiw' - surround the current word;
     Plug 'tpope/vim-rsi', Cond(Mode(['admin',]))               | " Readline shortcut for vim
 
+    "Plug 'nathanaelkane/vim-indent-guides', Cond(Mode(['editor',]) && Mode(['advance',])) | "[Color issue]
     "Plug 'huawenyu/vim-indentwise', Cond(Mode(['editor',]))    | " Automatic set indent, shiftwidth, expandtab
     Plug 'ciaranm/detectindent', Cond(Mode(['editor',]))
     "Plug 'tpope/vim-sleuth', Cond(Mode(['editor',]))
@@ -569,14 +591,19 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " Search {{{3
-        Plug 'huawenyu/neovim-fuzzy', Cond(has('nvim') && Mode(['editor',]))
-        "Plug 'Dkendal/fzy-vim', Cond(Mode(['editor',]))
         Plug 'mhinz/vim-grepper', Cond(Mode(['editor',]))    | " :Grepper text
 
+        " [Create float-windows](https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html)
+        Plug 'junegunn/fzf', Cond(Mode(['editor',]) && Mode(['advance',]), { 'dir': '~/.fzf', 'do': './install --all' })
+        Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]) && Mode(['advance',]))
+
+        "Plug 'huawenyu/neovim-fuzzy', Cond(has('nvim') && Mode(['editor',]))
+        "Plug 'Dkendal/fzy-vim', Cond(Mode(['editor',]))
+
         " http://blog.owen.cymru/fzf-ripgrep-navigate-with-bash-faster-than-ever-before
-        Plug 'ctrlpvim/ctrlp.vim', Cond(Mode(['editor',]) && Mode(['todo',]))
+        "Plug 'ctrlpvim/ctrlp.vim', Cond(Mode(['editor',]) && Mode(['todo',]))
             "Plug 'nixprime/cpsm', Cond(Mode(['editor',]), {'do': 'env PY3=ON ./install.sh'})
-            Plug 'ryanoasis/vim-devicons', Cond(Mode(['editor',]) && Mode(['morecool',]))
+            "Plug 'ryanoasis/vim-devicons', Cond(Mode(['editor',]) && Mode(['morecool',]))
     "}}}
 
     " Async {{{3
@@ -647,9 +674,6 @@ call plug#begin('~/.vim/bundle')
     "Plug 'codeindulgence/vim-tig', Cond(Mode(['editor',])) | " Using tig in neovim
     Plug 'iberianpig/tig-explorer.vim', Cond(Mode(['editor',])) | Plug 'rbgrouleff/bclose.vim', Cond(Mode(['editor',]))        | " tig for vim (https://github.com/jonas/tig): should install tig first.
     Plug 'tpope/vim-fugitive', Cond(Mode(['editor',])) | Plug 'junegunn/gv.vim', Cond(Mode(['editor',]))  | " Awesome git wrapper
-
-    Plug 'junegunn/fzf', Cond(Mode(['editor',]) && Mode(['advance',]), { 'dir': '~/.fzf', 'do': './install --all' })
-    Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]) && Mode(['advance',]))          | " base-on: https://github.com/junegunn/fzf, create float-windows: https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html
 
     "Plug 'juneedahamed/svnj.vim', Cond(Mode(['editor',]))
     "Plug 'juneedahamed/vc.vim', Cond(Mode(['editor',]))        | " Bad performance: Support git, svn, ...
@@ -725,9 +749,11 @@ call plug#begin('~/.vim/bundle')
 
     Plug 'gu-fan/doctest.vim', Cond(Mode(['admin',]))     | " doctest for language vimscript, :DocTest
     Plug 'tpope/vim-scriptease', Cond(Mode(['admin',]))   | " A Vim plugin for Vim plugins
+        "Plug 'thinca/vim-ref', Cond(Mode(['editor',]) && Mode(['tool',]))   |"[Not good] Man with 'K', should after vim-scriptease to override 'K' map
     Plug 'huawenyu/vimlogger', Cond(Mode(['admin',]))
     "Plug 'vim-scripts/TailMinusF', Cond(Mode(['admin',])) | " Too slow, :Tail <file>
     Plug 'junegunn/vader.vim', Cond(Mode(['coder',]) && Mode(['vimscript',]))     | " A simple Vimscript test framework
+    "Plug 'tyru/restart.vim', Cond(Mode(['editor',]))       | " Not work under terminal
     "Plug 'huawenyu/Decho', Cond(Mode(['coder',]) && Mode(['vimscript',]))
     "Plug 'c9s/vim-dev-plugin', Cond(Mode(['coder',]) && Mode(['vimscript',]))   | " gf: goto-function-define, but when edit vimrc will trigger error
 "}}}
