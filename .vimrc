@@ -27,9 +27,10 @@
 "  Sample:
 "     'mode': ['all', ],
 "     'mode': ['basic', 'theme', 'local', 'editor', ],
+"     'mode': ['basic', 'theme', 'local', 'editor', 'advance'],
 "     'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
 let g:vim_confi_option = {
-      \ 'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script', 'tool'],
+      \ 'mode': ['basic', 'theme', 'local', 'editor', 'advance', 'admin', 'coder', 'c', 'vimscript', 'script', 'tool'],
       \ 'theme': 1,
       \ 'conf': 1,
       \ 'upper_keyfixes': 1,
@@ -646,7 +647,10 @@ call plug#begin('~/.vim/bundle')
     "Plug 'codeindulgence/vim-tig', Cond(Mode(['editor',])) | " Using tig in neovim
     Plug 'iberianpig/tig-explorer.vim', Cond(Mode(['editor',])) | Plug 'rbgrouleff/bclose.vim', Cond(Mode(['editor',]))        | " tig for vim (https://github.com/jonas/tig): should install tig first.
     Plug 'tpope/vim-fugitive', Cond(Mode(['editor',])) | Plug 'junegunn/gv.vim', Cond(Mode(['editor',]))  | " Awesome git wrapper
-    "Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]))          | " base-on: https://github.com/junegunn/fzf, create float-windows: https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html
+
+    Plug 'junegunn/fzf', Cond(Mode(['editor',]) && Mode(['advance',]) && Mode(['todo',]), { 'dir': '~/.fzf', 'do': './install --all' })
+    Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]) && Mode(['advance',]) && Mode(['todo',]))          | " base-on: https://github.com/junegunn/fzf, create float-windows: https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html
+
     "Plug 'juneedahamed/svnj.vim', Cond(Mode(['editor',]))
     "Plug 'juneedahamed/vc.vim', Cond(Mode(['editor',]))        | " Bad performance: Support git, svn, ...
     "Plug 'vim-scripts/vcscommand.vim', Cond(Mode(['editor',])) | " Bad performance: CVS, SVN, SVK, git, bzr, and hg within VIM

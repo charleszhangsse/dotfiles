@@ -308,3 +308,5 @@ alias t='$HOME/tools/todo.txt-cli-ex/todo.sh'
 # Disable warning messsage:
 #   WARNING: gnome-keyring:: couldn't connect to: /run/user/1000/keyring-s99rSr/pkcs11: Connection refused
 unset GNOME_KEYRING_CONTROL
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
