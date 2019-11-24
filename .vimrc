@@ -333,14 +333,21 @@ if g:vim_confi_option.auto_install_tools
 endif
 
 
+
 " Plugins {{{1}}}
 call plug#begin('~/.vim/bundle')
+
+" Plugs Global {{{2
+    " Disable all plugins's auto-maps
+    "let g:no_plugin_maps = 1
+"}}}
 
 " Plug setup: Basic-config/Plugs-customize, order-sensible {{{2
     Plug 'tpope/vim-sensible', Cond(Mode(['basic',]))
     "Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]), { 'do': function('PlugPatch')})
     Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]))
     Plug 'huawenyu/vim.before', Cond(Mode(['basic', 'local']))  | " config the plugs
+    Plug 'huawenyu/vim.after', Cond(Mode(['basic', 'local'])) | " Use plugs config our self IDE
 "}}}
 
 " ColorTheme {{{2
@@ -774,18 +781,10 @@ call plug#begin('~/.vim/bundle')
 
 
 " Plug-end setup: depend on plugins, should put at the end of plugs {{{2
-    Plug 'huawenyu/vim.after', Cond(Mode(['basic', 'local'])) | " Use plugs config our self IDE
+    "Plug 'huawenyu/vim.after', Cond(Mode(['basic', 'local'])) | " Use plugs config our self IDE
 "}}}2
 call plug#end()
 
-
-" Plugs Global {{{1
-    " Disable all plugins's auto-maps
-    "let g:no_plugin_maps = 1
-"}}}
-
-" Use after config if available {
-    if filereadable(expand("~/.vimrc.after"))
-        source ~/.vimrc.after
-    endif
-" }
+if filereadable(expand("~/.vimrc.after"))
+    source ~/.vimrc.after
+endif
