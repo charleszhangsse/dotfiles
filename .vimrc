@@ -31,8 +31,10 @@
 "     'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
 let g:vim_confi_option = {
       \ 'mode': ['basic', 'theme', 'local', 'editor', 'advance', 'admin', 'coder', 'c', 'vimscript', 'script', 'tool'],
+      \ 'default_leader': 0,
       \ 'theme': 1,
       \ 'conf': 1,
+      \ 'folding': 0,
       \ 'upper_keyfixes': 1,
       \ 'auto_install_vimplug': 1,
       \ 'auto_install_plugs': 1,
@@ -47,6 +49,18 @@ let g:vim_confi_option = {
       \ 'keywordprg_filetype': 1,
       \}
 " =============================================================
+
+if !g:vim_confi_option.default_leader
+    " Bother when termopen and input space cause a little pause-stop-wait
+    "let mapleader = "\<Space>"
+    " Bother when in select-mode and use the leader not works, so also provide another leader
+    " Space can be a bit tricky. Why not just map space to <leader>
+    let mapleader = ","
+    nmap <space> <leader>
+
+    " diable Ex mode
+    map Q <Nop>
+endif
 
 " Environment {{{1
     " Platform identification {
@@ -378,7 +392,7 @@ call plug#begin('~/.vim/bundle')
         "
         "Plug 'ludovicchabant/vim-gutentags', Cond(Mode(['coder',]))        | " autogen tags, bad performance
         "Plug 'skywind3000/gutentags_plus', Cond(Mode(['coder',]))
-        "Plug 'skywind3000/vim-preview', Cond(Mode(['coder',]))
+        Plug 'huawenyu/vim-preview', Cond(Mode(['coder',]))
         "Plug 'whatot/gtags-cscope.vim', Cond(Mode(['coder',]))
 
         "Plug 'lyuts/vim-rtags', Cond(Mode(['coder',]))         | " Bad performance

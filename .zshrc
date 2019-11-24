@@ -1,319 +1,211 @@
-# @note:zshrc
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+#!/bin/zsh
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-DISABLE_AUTO_UPDATE="true"
-DISABLE_UPDATE_PROMPT=true
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-
-# git clone https://github.com/zdharma/history-search-multi-word ~/.oh-my-zsh/custom/plugins/history-search-multi-word
-# git clone https://github.com/tymm/zsh-directory-history ~/.oh-my-zsh/custom/plugins/zsh-directory-history
-# git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
-# git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-#plugins=(lighthouse history-search-multi-word zsh-directory-history history-substring-search zsh-completions zsh-autosuggestions)
-plugins=(history-substring-search zsh-directory-history zsh-completions zsh-autosuggestions)
-autoload -U compinit && compinit
-
-source $ZSH/oh-my-zsh.sh
-
-# speed git dir prompt
-function git_prompt_info() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-  echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}${ZSH_THEME_GIT_PROMPT_CLEAN}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
+function lock {
+    while ! ln ${HOME}/.zshrc ${HOME}/.zshrc.lock 2>/dev/null
+    do
+        sleep 1
+    done
+    # Lock obtained
 }
 
-# Customize to your needs...
-# wilson
-# fix issue:
-#    "perl: warning: Please check that your locale settings:"
-#
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_TYPE=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-# By default 0.4 second delay after hit the <ESC>
-export KEYTIMEOUT=0
-
-
-SAVEHIST=10000 # Number of entries
-HISTSIZE=10000
-HISTFILE=~/.zsh_history     # File
-HISTCONTROL=erasedups
-# HISTCONTROL=ignoredups
-HISTIGNORE="?:??:???:&:ls:[bf]g:exit:pwd:df*:free*:cd*:ls*:man*:vi*:clear:[ \t]*:hisotry*"
-setopt APPEND_HISTORY       # Don't erase history
-setopt EXTENDED_HISTORY     # Add additional data to history like timestamp
-setopt INC_APPEND_HISTORY   # Add immediately
-unsetopt HIST_FIND_NO_DUPS    # Don't show duplicates in search
-setopt HIST_IGNORE_SPACE    # Don't into history if have space pre-command.
-setopt histignorespace
-setopt NO_HIST_BEEP         # Don't beep
-setopt SHARE_HISTORY        # Share history between session/terminals
-
-# Our local dir: data, tools, home
-#if [ ! -f "/tmp/zsh_init_flag" ]; then
-#  # remap caps to ESC
-#  xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-#  echo "have init" > "/tmp/zsh_init_flag"
-#fi
-
-#alias emacs='emacs -nw'
-alias cd=' cd'
-alias pwd=' pwd'
-alias man=' man'
-alias dict="$HOME/tools/dict"
-alias eclipse="env SWT_GTK3=0 $HOME/tools/eclipse/eclipse &> /dev/null &"
-#alias meld="nohup $HOME/tools/meld/bin/meld"
-alias xnview="nohup $HOME/tools/XnView/XnView &> /dev/null &"
-alias tmuxkill="tmux ls | grep -v attached | cut -d: -f1 | xargs -I{} tmux kill-session -t {}"
-
-# Use these lines to enable search by globs, e.g. gcc*foo.c
-bindkey "^R" history-incremental-pattern-search-backward
-bindkey "^S" history-incremental-pattern-search-forward
-
-# This will make C-z on the command line resume vi again, so you can toggle between them easily
-foreground-vi() {
-  fg %vi
-}
-zle -N foreground-vi
-bindkey '^Z' foreground-vi
-
-# Try zman fc or zman HIST_IGNORE_SPACE! (Use n if the first match is not what you were looking for.)
-zman() {
-  PAGER="less -g -s '+/^       "$1"'" man zshall
+function unlock {
+    rm -f ${HOME}/.zshrc.lock
+    # Lock released
 }
 
-# cd -<TAB>                 use dirs to display the dirstack,
-# zmv '(*).lis' '$1.txt'    dry-run mode -n
+lock
+trap unlock EXIT
 
-unsetopt correct_all
-unsetopt nomatch
+# Update dotfiles
+function dotfiles-update() {
+    # Update dotfiles
+    local DOTFILES
+    DOTFILES=$HOME/.dotfiles
 
-
-function Run()
-{
-    if [ "$dryrun" == "off" ]; then
-        echo "Executing $*"
-        eval "$@"
-    else
-        echo "Executing $*"
-        return 0
+    if [ -x /usr/bin/git -a -d $DOTFILES/.git -a -n "$SSH_AUTH_SOCK" ]; then
+        (cd $DOTFILES && /usr/bin/git pull)
+        (cd $DOTFILES && ./bootstrap.sh)
+        source ~/.zshrc
     fi
 }
 
+setopt extendedglob
 
-function _mytail()
-{
-  if [ -t 0 ]; then
-    tail "$@" 2> >(grep -v truncated >&2)
-  else
-    tail "$@" 2> >(grep -v truncated >&2)
-  fi
-};
-alias tail='_mytail'
-
-# ftpserver
-export LFTP_CMD='lftp -u test,test ftpsvr -e '
-export LFTP_DIR=upload/$USER
-#
-# sftpserver
-#export LFTP_CMD='lftp -u hyu, sftp://172.16.101.145 -e '
-#export LFTP_DIR=$USER
-
-function _myftpls()
-{
-    eval "$LFTP_CMD 'cd $LFTP_DIR; ls; quit;'"
-};
-alias ftpls='_myftpls'
-
-function _myftpget()
-{
-  if [ -z ${1} ]; then
-    dname=${PWD##*/}
-  else
-    dname=${1}
-  fi
-
-  for var in "$@"
-  do
-    eval "$LFTP_CMD 'cd $LFTP_DIR; get $var; quit;'"
-  done
-};
-alias ftpget='_myftpget'
-
-function _myftpput()
-{
-  if [ -z ${1} ]; then
-    dname=${PWD##*/}
-  else
-    dname=${1}
-  fi
-
-  for var in "$@"
-  do
-    eval "$LFTP_CMD 'cd $LFTP_DIR; put $var; quit;'"
-  done
-};
-alias ftpput='_myftpput'
-
-function _myftprm()
-{
-    if [ -z ${1} ]; then
-        dname=${PWD##*/}
-        echo "  Removing '$dname'!"
-        eval "$LFTP_CMD 'cd $LFTP_DIR; rm -fr $dname; quit;'"
-    else
-        for var in "$@"
-        do
-            echo "  Removing '$var'!"
-            eval "$LFTP_CMD 'cd $LFTP_DIR; rm -fr $var; quit;'"
-        done
-    fi
-
-    eval "$LFTP_CMD 'cd $LFTP_DIR; ls; quit;'"
-};
-alias ftprm='_myftprm'
-
-function _myftp()
-{
-  if [ -z ${1} ]; then
-    dname=${PWD##*/}
-  else
-    dname=${1}
-  fi
-
-  if [ -f image.out ]; then
-    file=image.out
-    eval "$LFTP_CMD 'cd $LFTP_DIR; ls; mkdir $dname; cd $dname; put $file; put patch.diff; put patch.eco.diff; put fgtcoveragebuild.tar.xz; put fgtcoveragebuild.tar.bz2; put checklist.txt; put fortios.qcow2; put fortiproxy.qcow2; put image.out.vmware.zip; put image.out.ovf.zip; put image.out.hyperv.zip; put image.out.gcp.tar.gz;put image.out.kvm.zip; put image.out.gcp.tar.gz;lpwd; pwd; ls; quit;'"
-  else
-    if [ -z "$1" ]; then
-      echo "File $1 not found!"
-      return 1
-    else
-      file=$1
-      eval "$LFTP_CMD 'cd $LFTP_DIR; mkdir $dname; cd $dname; put $file; ls; quit;'"
-    fi
-  fi
-};
-alias ftpme='_myftp'
-
-# used to generate the c/c++ ccls indexer db: ccls clang makefile
-function _bear()
-{
-
-    if [ -f compile_commands.json ]; then
-        ;
-    else
-        branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-        cp ~/workref/compile_commands.json-${branch} compile_commands.json || { echo 'The file ~/workref/compile_commands.json-${branch} not exist!' ; exit 1; }
-    fi
-    sample_dir=$(awk 'match($0, /-I(.*)\/fortiweb\/packages\/ext/, arr) {print arr[1]; exit}' compile_commands.json)
-    #echo $sample_dir
-    cur_dir=$(realpath .)
-    #sed -i "s;$sample_dir;$cur_dir;g" compile_commands.json
-    Run "sed -i 's;$sample_dir;$cur_dir;g' compile_commands.json"
-};
-alias bearme='_bear'
-
-# Customize to your needs...
-export TERM=screen-256color
-export EDITOR='vim'
-
-export PATH=/usr/lib64/qt-3.3/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/bin:$HOME/bin:/usr/local/sbin:/usr/sbin
-export PATH="$HOME/perl5/bin:$HOME/script:$HOME/script/git-scripts:$HOME/dotwiki/tool:$PATH";
-
-export PERL_LOCAL_LIB_ROOT="$PERL_LOCAL_LIB_ROOT:$HOME/perl5";
-export PERL_MB_OPT="--install_base $HOME/perl5";
-export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5";
-export PERL5LIB="./lib:$HOME/perl5/lib:$PERL5LIB";
-alias  perldoctest='perl -MTest::Doctest -e run'
-
-export AWKPATH=".:$HOME/script/awk:$HOME/script/awk/awk-libs:$AWKPATH";
-
-export PYTHONPATH=".:$HOME/dotwiki/lib/python:$PYTHONPATH"
-export PYENV_ROOT="${HOME}/.pyenv"
-
-if [ -d "${PYENV_ROOT}" ]; then
-  export PATH="${PYENV_ROOT}/bin:${PATH}"
-  eval "$(pyenv init -)"
+# Install zplugin if not present: https://github.com/zdharma/zplugin
+if [[ ! -d ${HOME}/.zplugin ]]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)"
 fi
 
 
-# export JAVA_HOME="/usr/java/latest"
-export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+# Initialize zplugin
+source "${HOME}/.zplugin/bin/zplugin.zsh"
+autoload -Uz _zplugin
+(( ${+_comps} )) && _comps[zplugin]=_zplugin
 
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
-export PATH="/opt/ActiveTcl-8.6/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
+# Initialize completion
+autoload -zU compinit
+compinit
 
-export USESUDO=$(which sudo)
-export FORTIPKG=$HOME/fortipkg
-#export JEMALLOC_PATH=$HOME/project/jemalloc
-#export MALLOC_CONF="prof:true,prof_prefix:jeprof.out"
+# Some defaults values
+zplugin light "oconnor663/zsh-sensible"
+zplugin light "huawenyu/zsh-local"
 
-# minicom line wrap: sudo -E minicom
-export MINICOM="-w"
-export RIPGREP_CONFIG_PATH=~/.ripgreprc
+setopt promptsubst
 
-# todo.txt-cli
-export TODOTXT_DEFAULT_ACTION=ls
-#alias t='$HOME/tools/todo.txt-cli-ex/todo.sh -d $HOME/tools/todo.txt-cli-ex/todo.cfg'
-alias t='$HOME/tools/todo.txt-cli-ex/todo.sh'
+zplugin ice wait lucid
+zplugin snippet OMZ::lib/git.zsh
 
-# Disable warning messsage:
-#   WARNING: gnome-keyring:: couldn't connect to: /run/user/1000/keyring-s99rSr/pkcs11: Connection refused
-unset GNOME_KEYRING_CONTROL
+zplugin ice wait atload"unalias grv" lucid
+zplugin snippet OMZ::plugins/git/git.plugin.zsh
+zplugin snippet PZT::modules/helper/init.zsh
+#zplugin snippet PZT::modules/git
 
-export FZF_DEFAULT_OPTS='
---bind=ctrl-p:up,ctrl-n:down
---color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220
---color info:150,prompt:110,spinner:150,pointer:167,marker:174
-'
+PS1="READY >" # provide a nice prompt till the theme loads
+zplugin ice wait'!' lucid
+zplugin snippet OMZ::themes/robbyrussell.zsh-theme
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+zplugin ice wait lucid
+zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+
+#zplugin ice wait as"completion" lucid
+#zplugin snippet OMZ::plugins/docker/_docker
+
+#zplugin ice atclone"dircolors -b dircolors.jellybeans > c.zsh" atpull'%atclone' pick"c.zsh"
+#zplugin light peterhellberg/dircolors-jellybeans
+
+# Semigraphical interface to zplugin
+zplugin light "zdharma/zui"
+zplugin light "zdharma/zplugin-crasis"
+
+# Add 256color if terminal the current terminal supports it.
+zplugin light "chrissicool/zsh-256color"
+
+# Some completions
+zplugin ice wait"0" blockf
+zplugin light "zsh-users/zsh-completions"
+
+# Vi-mode improved
+#zplugin ice wait as"completion" lucid
+#zplugin snippet OMZ::plugins/vi-mode
+zplugin load softmoth/zsh-vim-mode
+
+# A command tool helps navigating faster with learning
+# @note:z.lua https://github.com/skywind3000/z.lua
+zplugin load skywind3000/z.lua
+
+export _ZL_EXCLUDE_DIRS=1
+export _ZL_MATCH_MODE=1  # enhanced matching mode
+export _ZL_ECHO=1  # display the path after cd
+export _ZL_ADD_ONCE=1  # only add path if the $PWD is changed
+
+# alias for z.lua
+alias zi="z -i"  # interactive selection
+alias zb="z -b"  # jump backward
+alias zh='z -I -t .'	# using fzf to search mru
+
+# Suggestions for zsh
+zplugin ice wait"0" atload"_zsh_autosuggest_start"
+zplugin light "zsh-users/zsh-autosuggestions"
+
+# ZSH utilities
+# #############
+
+# Jump to bookmarks
+#zplugin light "jocelynmallon/zshmarks"
+
+# Autoenv
+#zplugin light "zpm-zsh/autoenv"
+
+# ZSH navigation tools
+#zplugin light "psprint/zsh-navigation-tools"
+
+# Use n-history widget
+autoload znt-history-widget
+zle -N znt-history-widget
+bindkey "^R" znt-history-widget
+
+# Notifies
+#zplugin light "t413/zsh-background-notify"
+
+# Miscelaneous plugins
+# ####################
+
+# Enable terminal multiplexing related plugins
+zplugin ice load'![[ -z "$TMUX" ]]'
+zplugin light "mdsn/zsh-tmux"
+
+# Agents
+zstyle ':omz:plugins:ssh-agent' identities 'id_rsa' 'xals.rsa' 'xals-old.rsa' 'alexis@sysnove.fr'
+zplugin light "hkupty/ssh-agent"
+
+# Syntax highlighting plugin. Must be last.
+zplugin ice wait"0" atinit"zpcompinit; zpcdreplay"
+zplugin light "zdharma/fast-syntax-highlighting"
+
+#zplugin light "jreese/zsh-titles"
+
+# Enable colorgcc, colormake, colordiff and ccache
+[[ -x /usr/bin/colorgcc ]] && export PATH="/usr/lib/colorgcc/bin/:$PATH"
+
+if [[ -d /usr/lib/ccache ]]; then
+    export PATH="/usr/lib/ccache/bin/:$PATH"
+fi
+
+# bin directory in $HOME
+[ -x "$HOME/bin" ] && export PATH="$HOME/bin:$PATH"
+[ -x "$HOME/.local/bin" ] && export PATH="$HOME/.local/bin:$PATH"
+
+# Some aliases and defaults.
+[ -x "$(which aptitude)" ] && alias aptitude="aptitude --disable-columns"
+[ -x "$(which vim)" ] && export EDITOR="vim"
+[ -x "$(which nvim)" ] && export EDITOR="nvim"
+[ -x "$(which most)" ] && export PAGER="most"
+
+# Some colors
+alias ls='ls --group-directories-first --color=auto'
+#alias grep='grep --color'
+
+# Venv commands
+#alias khal='pew in pim khal'
+#alias khard='pew in pim khard'
+
+# Define aliases for command with disabled flow control
+#alias vim="stty stop '' -ixoff ; vim"
+#alias neomutt="stty stop '' -ixoff ; neomutt"
+
+# Freeze tty to reset it after each command.
+ttyctl -f
+
+alias tmuxp='pew in tmuxp tmuxp'
+
+function _zsh_tmux_plugin_preexec(){
+    eval $(tmux show-environment -s)
+    unset TERMINFO
+}
+
+# Automatically refresh tmux environments if tmux is running.
+if [[ -n "$TMUX" ]]; then
+    autoload -U add-zsh-hook
+    add-zsh-hook preexec _zsh_tmux_plugin_preexec
+fi
+
+# Handle GPG agent manually.
+local GPG_AGENT_BIN=/usr/bin/gpg-agent
+local GPG_AGENT_ENV="$HOME/.gnupg/gpg-agent.env"
+local GPG_CONNECT_AGENT_ERR_MSG="gpg-connect-agent: no gpg-agent running in this session"
+
+if [[ "$(LC_ALL=C gpg-connect-agent --no-autostart --quiet /bye 2>&1)" == "$GPG_CONNECT_AGENT_ERR_MSG" ]]; then
+    # Starting GPG agent.
+    ${GPG_AGENT_BIN} --quiet --daemon 2> /dev/null > "${GPG_AGENT_ENV}"
+    chmod 600 "${GPG_AGENT_ENV}"
+fi
+
+if [[ -f "${GPG_AGENT_ENV}" ]]; then
+    . "${GPG_AGENT_ENV}" > /dev/null
+fi
+
+export GPG_TTY=$(tty)
+# End of GPG agent handling.
+
+unlock
+
