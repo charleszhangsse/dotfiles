@@ -34,13 +34,14 @@ let g:vim_confi_option = {
       \ 'default_leader': 0,
       \ 'theme': 1,
       \ 'conf': 1,
+      \ 'debug': 1,
       \ 'folding': 0,
       \ 'upper_keyfixes': 1,
       \ 'auto_install_vimplug': 1,
       \ 'auto_install_plugs': 1,
       \ 'auto_install_tools': 1,
-      \ 'plug_note': 'vim.before',
-      \ 'plug_patch': 'vim.before',
+      \ 'plug_note': 'vim.config',
+      \ 'plug_patch': 'vim.config',
       \
       \ 'auto_chdir': 0,
       \ 'auto_restore_cursor': 1,
@@ -204,14 +205,22 @@ endif
     endfunction
 
     " @Note only work with 'vim-plug'
-    " @param type  0, Enable the plug
-    "              1, Runtime Loaded/Active the plug
+    " @param type  0, Have the plug
+    "              1, Select the plug
+    "              2, Runtime Loaded the plug
     function! CheckPlug(name, type)
         if (exists("g:plugs") && has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir))
-            if a:type == 1
+            if a:type == 0
+                return 1
+            elseif a:type == 1
+                if has_key(g:plugs[a:name], 'on') && empty(g:plugs[a:name]['on'])
+                    return 0
+                else
+                    return 1
+                endif
+            elseif a:type == 2
                 return stridx(&rtp, g:plugs[a:name].dir) >= 0
             endif
-            return 1
         endif
         return 0
     endfunction
@@ -243,7 +252,7 @@ endif
     "   2. update
     "   3. patch again
     function! PlugForce()
-        if !empty(g:vim_confi_option.plug_patch) && CheckPlug(g:vim_confi_option.plug_patch, 0)
+        if !empty(g:vim_confi_option.plug_patch) && CheckPlug(g:vim_confi_option.plug_patch, 1)
             let dir_patch_repo = PlugGetDir(g:vim_confi_option.plug_patch)
             let dir_patch_tmp = dir_patch_repo. "../patch_tmp"
             call system(printf("rm -fr %s && mkdir -p %s", dir_patch_tmp, dir_patch_tmp))
@@ -417,7 +426,8 @@ call plug#begin('~/.vim/bundle')
         " https://github.com/zchee/deoplete-jedi
         "Plug 'neovim/python-client', Cond(Mode(['coder',]) && Mode(['python',]))
         Plug 'python-mode/python-mode', Cond(Mode(['coder',]) && Mode(['python',]))
-        Plug 'davidhalter/jedi-vim', Cond(Mode(['coder',]) && Mode(['python',]))
+        "Plug 'davidhalter/jedi-vim', Cond(Mode(['coder',]) && Mode(['python',]))
+        Plug 'davidhalter/jedi-vim'
     "}}}
 
     " LaTeX {{{3
@@ -783,6 +793,13 @@ call plug#begin('~/.vim/bundle')
 
 call plug#end()
 
+
+if g:vim_confi_option.debug
+    silent! call logger#init('ALL', ['/dev/stdout', '/tmp/vim.log'])
+endif
+
+
 if filereadable(expand("~/.vimrc.after"))
     source ~/.vimrc.after
 endif
+
