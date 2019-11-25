@@ -714,6 +714,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'szw/vim-dict', Cond(Mode(['editor',]) && Mode(['tool',]))
     Plug 'szw/vim-g', Cond(Mode(['editor',]) && Mode(['tool',]))
     "Plug 'google/vim-searchindex', Cond(Mode(['editor',]) && Mode(['tool',]))
+    Plug 'ianva/vim-youdao-translater', Cond(Mode(['editor',]) && Mode(['tool',]))  | " Youdao dictionay
 "}}}
 
 " AutoComplete {{{2
@@ -766,7 +767,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'thinca/vim-quickrun', Cond(Mode(['admin',]))                      | " :QuickRun
     "Plug 'fboender/bexec', Cond(Mode(['admin',]))                           | " :Bexec
     Plug 'huawenyu/SingleCompile', Cond(Mode(['admin',]))                     | " :SingleCompile, SingleCompileRun
-    Plug 'amiorin/vim-eval', Cond(Mode(['admin',]))
+    Plug 'amiorin/vim-eval', Cond(Mode(['coder',]) && Mode(['vimscript',]))
+    Plug 'mhinz/vim-lookup', Cond(Mode(['coder',]) && Mode(['vimscript',]))
 
     Plug 'gu-fan/doctest.vim', Cond(Mode(['admin',]))     | " doctest for language vimscript, :DocTest
     Plug 'tpope/vim-scriptease', Cond(Mode(['admin',]))   | " A Vim plugin for Vim plugins
