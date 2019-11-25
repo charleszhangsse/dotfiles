@@ -426,8 +426,7 @@ call plug#begin('~/.vim/bundle')
         " https://github.com/zchee/deoplete-jedi
         "Plug 'neovim/python-client', Cond(Mode(['coder',]) && Mode(['python',]))
         Plug 'python-mode/python-mode', Cond(Mode(['coder',]) && Mode(['python',]))
-        "Plug 'davidhalter/jedi-vim', Cond(Mode(['coder',]) && Mode(['python',]))
-        Plug 'davidhalter/jedi-vim'
+        Plug 'davidhalter/jedi-vim', Cond(Mode(['coder',]) && Mode(['python',]))
     "}}}
 
     " LaTeX {{{3

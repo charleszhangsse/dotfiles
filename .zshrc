@@ -13,8 +13,8 @@ function unlock {
     # Lock released
 }
 
-lock
-trap unlock EXIT
+#lock
+#trap unlock EXIT
 
 # Update dotfiles
 function dotfiles-update() {
@@ -52,20 +52,26 @@ zplugin light "huawenyu/zsh-local"
 
 setopt promptsubst
 
-zplugin ice wait lucid
-zplugin snippet OMZ::lib/git.zsh
+# speed git dir prompt
+function git_prompt_info() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+  echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}${ZSH_THEME_GIT_PROMPT_CLEAN}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
+}
 
-zplugin ice wait atload"unalias grv" lucid
-zplugin snippet OMZ::plugins/git/git.plugin.zsh
-zplugin snippet PZT::modules/helper/init.zsh
+#zplugin ice wait lucid
+#zplugin snippet OMZ::lib/git.zsh
+
+#zplugin ice wait atload"unalias grv" lucid
+#zplugin snippet OMZ::plugins/git/git.plugin.zsh
+#zplugin snippet PZT::modules/helper/init.zsh
 #zplugin snippet PZT::modules/git
 
 PS1="READY >" # provide a nice prompt till the theme loads
 zplugin ice wait'!' lucid
 zplugin snippet OMZ::themes/robbyrussell.zsh-theme
 
-zplugin ice wait lucid
-zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+#zplugin ice wait lucid
+#zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 
 #zplugin ice wait as"completion" lucid
 #zplugin snippet OMZ::plugins/docker/_docker
@@ -104,8 +110,8 @@ alias zb="z -b"  # jump backward
 alias zh='z -I -t .'	# using fzf to search mru
 
 # Suggestions for zsh
-zplugin ice wait"0" atload"_zsh_autosuggest_start"
-zplugin light "zsh-users/zsh-autosuggestions"
+#zplugin ice wait"0" atload"_zsh_autosuggest_start"
+#zplugin light "zsh-users/zsh-autosuggestions"
 
 # ZSH utilities
 # #############
@@ -139,8 +145,8 @@ zstyle ':omz:plugins:ssh-agent' identities 'id_rsa' 'xals.rsa' 'xals-old.rsa' 'a
 zplugin light "hkupty/ssh-agent"
 
 # Syntax highlighting plugin. Must be last.
-zplugin ice wait"0" atinit"zpcompinit; zpcdreplay"
-zplugin light "zdharma/fast-syntax-highlighting"
+#zplugin ice wait"0" atinit"zpcompinit; zpcdreplay"
+#zplugin light "zdharma/fast-syntax-highlighting"
 
 #zplugin light "jreese/zsh-titles"
 
@@ -207,5 +213,12 @@ fi
 export GPG_TTY=$(tty)
 # End of GPG agent handling.
 
-unlock
+export FZF_DEFAULT_OPTS='
+--bind=ctrl-p:up,ctrl-n:down
+--color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220
+--color info:150,prompt:110,spinner:150,pointer:167,marker:174
+'
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#
+#unlock
