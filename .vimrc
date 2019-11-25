@@ -346,8 +346,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'tpope/vim-sensible', Cond(Mode(['basic',]))
     "Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]), { 'do': function('PlugPatch')})
     Plug 'huawenyu/vim-basic', Cond(Mode(['basic',]))
-    Plug 'huawenyu/vim.before', Cond(Mode(['basic', 'local']))  | " config the plugs
-    Plug 'huawenyu/vim.after', Cond(Mode(['basic', 'local'])) | " Use plugs config our self IDE
+    Plug 'huawenyu/vim.config', Cond(Mode(['basic', 'local']))  | " config the plugs
+    Plug 'huawenyu/vim.command', Cond(Mode(['basic', 'local']))  | " config the plugs
 "}}}
 
 " ColorTheme {{{2
@@ -779,10 +779,6 @@ call plug#begin('~/.vim/bundle')
     "Plug 'c9s/vim-dev-plugin', Cond(Mode(['coder',]) && Mode(['vimscript',]))   | " gf: goto-function-define, but when edit vimrc will trigger error
 "}}}
 
-
-" Plug-end setup: depend on plugins, should put at the end of plugs {{{2
-    "Plug 'huawenyu/vim.after', Cond(Mode(['basic', 'local'])) | " Use plugs config our self IDE
-"}}}2
 call plug#end()
 
 if filereadable(expand("~/.vimrc.after"))
