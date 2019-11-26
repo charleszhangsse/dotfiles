@@ -54,8 +54,8 @@ setopt promptsubst
 
 # speed git dir prompt
 function git_prompt_info() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-  echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}${ZSH_THEME_GIT_PROMPT_CLEAN}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
+    ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+    echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}${ZSH_THEME_GIT_PROMPT_CLEAN}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
 }
 
 #zplugin ice wait lucid
@@ -64,7 +64,7 @@ function git_prompt_info() {
 #zplugin ice wait atload"unalias grv" lucid
 #zplugin snippet OMZ::plugins/git/git.plugin.zsh
 #zplugin snippet PZT::modules/helper/init.zsh
-#zplugin snippet PZT::modules/git
+##zplugin snippet PZT::modules/git
 
 PS1="READY >" # provide a nice prompt till the theme loads
 zplugin ice wait'!' lucid
@@ -87,12 +87,14 @@ zplugin light "zdharma/zplugin-crasis"
 zplugin light "chrissicool/zsh-256color"
 
 # Some completions
-zplugin ice wait"0" blockf
+zplugin ice wait"0" blockf lucid
 zplugin light "zsh-users/zsh-completions"
+zplugin light "zsh-users/zsh-history-substring-search"
 
 # Vi-mode improved
 #zplugin ice wait as"completion" lucid
 #zplugin snippet OMZ::plugins/vi-mode
+## Implement the history substring search by arrow key
 zplugin load softmoth/zsh-vim-mode
 
 # A command tool helps navigating faster with learning
@@ -110,7 +112,7 @@ alias zb="z -b"  # jump backward
 alias zh='z -I -t .'	# using fzf to search mru
 
 # Suggestions for zsh
-#zplugin ice wait"0" atload"_zsh_autosuggest_start"
+#zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
 #zplugin light "zsh-users/zsh-autosuggestions"
 
 # ZSH utilities
@@ -122,13 +124,13 @@ alias zh='z -I -t .'	# using fzf to search mru
 # Autoenv
 #zplugin light "zpm-zsh/autoenv"
 
-# ZSH navigation tools
+## ZSH navigation tools
 #zplugin light "psprint/zsh-navigation-tools"
-
-# Use n-history widget
-autoload znt-history-widget
-zle -N znt-history-widget
-bindkey "^R" znt-history-widget
+#
+## Use n-history widget
+#autoload znt-history-widget
+#zle -N znt-history-widget
+#bindkey "^R" znt-history-widget
 
 # Notifies
 #zplugin light "t413/zsh-background-notify"
@@ -145,7 +147,7 @@ zstyle ':omz:plugins:ssh-agent' identities 'id_rsa' 'xals.rsa' 'xals-old.rsa' 'a
 zplugin light "hkupty/ssh-agent"
 
 # Syntax highlighting plugin. Must be last.
-#zplugin ice wait"0" atinit"zpcompinit; zpcdreplay"
+#zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
 #zplugin light "zdharma/fast-syntax-highlighting"
 
 #zplugin light "jreese/zsh-titles"
