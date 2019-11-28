@@ -674,7 +674,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'kassio/neoterm', Cond(Mode(['admin',]) && has('nvim'))        | " a terminal for neovim; :T ls, # exit terminal mode by <c-\\><c-n>
 
         "Plug 'webdevel/tabulous', Cond(Mode(['editor',]))
-        Plug 'huawenyu/taboo.vim', Cond(Mode(['editor',]))
+        Plug 'gcmt/taboo.vim', Cond(Mode(['editor',]))
 
         Plug 'vim-scripts/DrawIt', Cond(Mode(['editor',]))                       | " \di \ds: start/stop;  draw by direction-key
         Plug 'reedes/vim-pencil', Cond(Mode(['editor',]))
