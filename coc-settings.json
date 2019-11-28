@@ -1,21 +1,35 @@
 {
-	"coc.preferences.useQuickfixForLocations": true,
+  "coc.preferences.useQuickfixForLocations": true,
+  "coc.preferences.timeout": 500000,
+  "coc.preferences.noselect": false,
+  "coc.preferences.preferCompleteThanJumpPlaceholder": false,
+  "coc.preferences.acceptSuggestionOnCommitCharacter": false,
+  "coc.preferences.diagnostic.displayByAle": false,
+  "coc.preferences.formatOnType": false,
 
-	"languageserver": {
-		"ccls": {
-			"command": "ccls",
-			"filetypes": ["c", "cpp", "objc", "objcpp"],
-			"rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
-			"initializationOptions": {
-				"cache": {
-					"directory": ".ccls-cache"
-				}
-			}
-		},
-		"rust": {
-			"command": "ra_lsp_server",
-			"filetypes": ["rust"],
-			"rootPatterns": ["Cargo.toml"]
-		}
-	}
+  "coc.preferences.localityBonus": false,
+  "coc.preferences.codeLens.enable": false,
+  "coc.preferences.autoTrigger": "none",
+  "coc.suggest.autoTrigger": "none",
+
+  "languageserver": {
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cpp", "objc", "objcpp"],
+      "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
+      "initializationOptions": {
+        "cache": {
+          "directory": ".ccls-cache"
+        },
+        "clang": {
+          "extraArgs": ["-Wno-microsoft"]
+        }
+      }
+    },
+    "lua": {
+      "command": "lua-lsp",
+      "filetypes": ["lua"]
+    }
+  },
+  "python.jediEnabled": false
 }

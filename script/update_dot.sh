@@ -179,6 +179,11 @@ Main ()
             Run "ln -s ~/.vimrc $gvimrc"
         fi
 
+        if [ ! -f "~/.vim/coc-settings.json" ]; then
+            Run "mkdir -p ~/.vim/"
+            Run "ln -s $phy_dotfiles_dir/coc-settings.json ~/.vim/coc-settings.json"
+        fi
+
         ## neovim
         ##Run "ln -s ~/.vim ~/.config/nvim"
         ##Run "ln -s ~/.vimrc ~/.config/nvim/init.vim"

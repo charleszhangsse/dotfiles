@@ -408,7 +408,7 @@ call plug#begin('~/.vim/bundle')
         "
         "Plug 'ludovicchabant/vim-gutentags', Cond(Mode(['coder',]))        | " autogen tags, bad performance
         "Plug 'skywind3000/gutentags_plus', Cond(Mode(['coder',]))
-        Plug 'huawenyu/vim-preview', Cond(Mode(['coder',]))
+        "Plug 'huawenyu/vim-preview', Cond(Mode(['coder',]))
         "Plug 'whatot/gtags-cscope.vim', Cond(Mode(['coder',]))
 
         "Plug 'lyuts/vim-rtags', Cond(Mode(['coder',]))         | " Bad performance
@@ -660,7 +660,6 @@ call plug#begin('~/.vim/bundle')
                                       " <Space>            Expand/contract the current node
                                       " ^^, __, <<, >>     Move up/down, left, right the select nodes
         Plug 'vim-voom/VOoM_extras', Cond(Mode(['editor',]))
-        "Plug 'mhinz/vim-signify', Cond(Mode(['editor',]))
         " Why search tags from the current file path:
         "   consider in new-dir open old-dir's file, bang!
         "Plug 'huawenyu/vim-autotag', Cond(Mode(['coder',])) | " First should exist tagfile which tell autotag auto-refresh: ctags -f .tags -R .
