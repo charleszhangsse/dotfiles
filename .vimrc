@@ -418,6 +418,8 @@ call plug#begin('~/.vim/bundle')
         Plug 'neoclide/coc.nvim', Cond(Mode(['coder',]), {'do': 'yarn install --frozen-lockfile'})  | " sometimes find references fail
         "Plug 'neoclide/coc.nvim', Cond(Mode(['coder',]), {'on': ['<Plug>(coc-definition)', '<Plug>(coc-references)'], 'do': 'yarn install --frozen-lockfile'})  | " Increase stable by only load the plugin after the 1st command call.
         "Plug 'neoclide/coc-rls', Cond(Mode(['coder',]))
+
+        Plug 'liuchengxu/vista.vim', Cond(Mode(['coder',]))    | " tagbar kinds support Language Server Protocol
     "}}}
 
     " Python {{{3
