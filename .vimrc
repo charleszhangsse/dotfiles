@@ -628,7 +628,7 @@ call plug#begin('~/.vim/bundle')
 
         " [Create float-windows](https://kassioborges.dev/2019/04/10/neovim-fzf-with-a-floating-window.html)
         Plug 'junegunn/fzf', Cond(Mode(['editor',]) && Mode(['advance',]), { 'dir': '~/.fzf', 'do': './install --all' })
-        Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]) && Mode(['advance',]))
+        Plug 'junegunn/fzf.vim', Cond(Mode(['editor',]) && Mode(['advance',]) && CheckPlug('fzf', 1))
         Plug 'huawenyu/fzf-cscope.vim', Cond(Mode(['coder',]) && Mode(['advance',]))
 
         "Plug 'huawenyu/neovim-fuzzy', Cond(has('nvim') && Mode(['editor',]))
