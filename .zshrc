@@ -215,6 +215,8 @@ fi
 export GPG_TTY=$(tty)
 # End of GPG agent handling.
 
+export CSCOPE_DB=$PWD/cscope.out
+
 export FZF_DEFAULT_OPTS='
 --bind=ctrl-p:up,ctrl-n:down
 --color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220

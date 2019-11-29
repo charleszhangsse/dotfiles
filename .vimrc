@@ -9,6 +9,7 @@
 " 3. Help: press 'K'
 "    When focus a plug's name, for example, please move cursor to following line, then press 'K':
 "       @note:nvim
+"       @note:test-vim
 " 4. Start slow troubleshooting:
 "       $ vi --startuptime /tmp/log.1
 " 5. Displaying the current Vim environment
