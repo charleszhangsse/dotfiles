@@ -218,9 +218,9 @@ export GPG_TTY=$(tty)
 export CSCOPE_DB=$PWD/cscope.out
 
 export FZF_DEFAULT_OPTS='
---bind=ctrl-p:up,ctrl-n:down
---color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220
---color info:150,prompt:110,spinner:150,pointer:167,marker:174
+--bind=ctrl-p:up,ctrl-n:down,alt-p:preview-up,alt-n:preview-down 
+--color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220 
+--color info:150,prompt:110,spinner:150,pointer:167,marker:174 
 '
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

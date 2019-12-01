@@ -483,6 +483,7 @@ call plug#begin('~/.vim/bundle')
     Plug 'vim-scripts/iptables', Cond(Mode(['admin',]))
     "Plug 'jceb/vim-orgmode', Cond(Mode(['editor',]) && Mode(['note',]))
     "Plug 'tpope/vim-speeddating', Cond(Mode(['editor',]) && Mode(['note',]))
+    Plug 'tpope/vim-commentary', Cond(Mode(['editor',]))
 
     " Session management
     Plug 'thaerkh/vim-workspace', Cond(Mode(['editor',]))
