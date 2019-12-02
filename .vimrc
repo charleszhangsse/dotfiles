@@ -32,7 +32,7 @@
 "     'mode': ['basic', 'theme', 'local', 'editor', 'admin', 'coder', 'c', 'vimscript', 'script'],
 let g:vim_confi_option = {
       \ 'mode': ['basic', 'theme', 'local', 'editor', 'advance', 'admin', 'coder', 'c', 'vimscript', 'script', 'tool'],
-      \ 'default_leader': 0,
+      \ 'change_leader': 1,
       \ 'theme': 1,
       \ 'conf': 1,
       \ 'debug': 1,
@@ -52,13 +52,13 @@ let g:vim_confi_option = {
       \}
 " =============================================================
 
-if !g:vim_confi_option.default_leader
+if g:vim_confi_option.change_leader
     " Bother when termopen and input space cause a little pause-stop-wait
-    "let mapleader = "\<Space>"
-    " Bother when in select-mode and use the leader not works, so also provide another leader
-    " Space can be a bit tricky. Why not just map space to <leader>
-    let mapleader = ","
-    nmap <space> <leader>
+    let mapleader = "\<Space>"
+    "" Bother when in select-mode and use the leader not works, so also provide another leader
+    "" Space can be a bit tricky. Why not just map space to <leader>
+    "let mapleader = ","
+    "nmap <space> <leader>
 
     " diable Ex mode
     map Q <Nop>
