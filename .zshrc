@@ -86,11 +86,6 @@ zplugin light "zdharma/zplugin-crasis"
 # Add 256color if terminal the current terminal supports it.
 zplugin light "chrissicool/zsh-256color"
 
-# Some completions
-zplugin ice wait"0" blockf lucid
-zplugin light "zsh-users/zsh-completions"
-zplugin light "zsh-users/zsh-history-substring-search"
-
 # Vi-mode improved
 #zplugin ice wait as"completion" lucid
 #zplugin snippet OMZ::plugins/vi-mode
@@ -110,6 +105,11 @@ export _ZL_ADD_ONCE=1  # only add path if the $PWD is changed
 alias zi="z -i"  # interactive selection
 alias zb="z -b"  # jump backward
 alias zh='z -I -t .'	# using fzf to search mru
+
+# Some completions
+zplugin ice wait"0" blockf lucid
+zplugin light "zsh-users/zsh-completions"
+zplugin light "zsh-users/zsh-history-substring-search"
 
 # Suggestions for zsh
 #zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
