@@ -477,6 +477,7 @@ call plug#begin('~/.vim/bundle')
     "}}}
 
     " Rust {{{3
+        Plug 'racer-rust/vim-racer', Cond(Mode(['coder',]) && Mode(['rust',]))
         Plug 'rust-lang/rust.vim', Cond(Mode(['coder',]) && Mode(['rust',]))
     "}}}
 
@@ -735,6 +736,7 @@ call plug#begin('~/.vim/bundle')
     "Plug 'Shougo/denite.nvim', Cond(Mode(['editor',]))
 
     "Plug 'ncm2/ncm2', Cond(Mode(['editor',]) && has('nvim'))                   | " Compare to deoplete, it's slower
+    "Plug 'SirVer/ultisnips', Cond(Mode(['editor',]) && has('nvim'))
     Plug 'Shougo/deoplete.nvim', Cond(Mode(['editor',]) && has('nvim'))         | "{ 'do': ':UpdateRemotePlugins' }
     Plug 'Shougo/neosnippet.vim', Cond(Mode(['editor',]) && has('nvim'))        | " c-k apply code, c-n next, c-p previous
     Plug 'Shougo/neosnippet-snippets', Cond(Mode(['editor',]) && has('nvim'))
