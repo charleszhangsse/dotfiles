@@ -182,6 +182,7 @@ fi
 
 # Some colors
 #alias ls='ls --group-directories-first --color=auto'
+alias ls='ls --color=auto'
 #alias grep='grep --color'
 
 # Venv commands
@@ -229,3 +230,5 @@ export GPG_TTY=$(tty)
 export CSCOPE_DB=$PWD/cscope.out
 #
 #unlock
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

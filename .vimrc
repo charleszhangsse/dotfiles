@@ -734,15 +734,17 @@ call plug#begin('~/.vim/bundle')
 " AutoComplete {{{2
     "Plug 'ervandew/supertab', Cond(Mode(['editor',]))
     "Plug 'Shougo/denite.nvim', Cond(Mode(['editor',]))
+    "Plug 'ycm-core/YouCompleteMe', Cond(Mode(['editor',]))
+
+    Plug 'Shougo/deoplete.nvim', Cond(Mode(['editor',]) && has('nvim'))         | "{ 'do': ':UpdateRemotePlugins' }
+    Plug 'Shougo/neosnippet.vim', Cond(Mode(['editor',]) && has('nvim'))        | " c-k apply code, c-n next, c-p previous, :NeoSnippetEdit
+    Plug 'Shougo/neosnippet-snippets', Cond(Mode(['editor',]) && has('nvim'))
+    Plug 'huawenyu/vim-snippets.local', Cond(Mode(['editor',]) && has('nvim'))
 
     "Plug 'ncm2/ncm2', Cond(Mode(['editor',]) && has('nvim'))                   | " Compare to deoplete, it's slower
     "Plug 'SirVer/ultisnips', Cond(Mode(['editor',]) && has('nvim'))
-    Plug 'Shougo/deoplete.nvim', Cond(Mode(['editor',]) && has('nvim'))         | "{ 'do': ':UpdateRemotePlugins' }
-    Plug 'Shougo/neosnippet.vim', Cond(Mode(['editor',]) && has('nvim'))        | " c-k apply code, c-n next, c-p previous
-    Plug 'Shougo/neosnippet-snippets', Cond(Mode(['editor',]) && has('nvim'))
-
-
     Plug 'honza/vim-snippets', Cond(Mode(['editor',]) && has('nvim'))
+
     Plug 'reedes/vim-wordy', Cond(Mode(['editor',]) && has('nvim'))
     "Plug 'vim-scripts/CmdlineComplete', Cond(Mode(['admin',]) && has('nvim'))
 "}}}
