@@ -105,7 +105,7 @@ zplugin light "chrissicool/zsh-256color"
 #zplugin ice wait as"completion" lucid
 #zplugin snippet OMZ::plugins/vi-mode
 ## Implement the history substring search by arrow key
-#zplugin load softmoth/zsh-vim-mode
+zplugin load softmoth/zsh-vim-mode
 
 ## A command tool helps navigating faster with learning
 ## @note:z.lua https://github.com/skywind3000/z.lua
