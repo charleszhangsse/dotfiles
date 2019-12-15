@@ -30,6 +30,10 @@ function dotfiles-update() {
 }
 
 setopt extendedglob
+setopt promptsubst
+setopt menu_complete
+setopt list_ambiguous
+set completion-ignore-case on
 
 # Install zplugin if not present: https://github.com/zdharma/zplugin
 if [[ ! -d ${HOME}/.zplugin ]]; then
@@ -62,8 +66,6 @@ esac
 # Some defaults values
 #zplugin light "oconnor663/zsh-sensible"
 zplugin light "huawenyu/zsh-local"
-
-setopt promptsubst
 
 # speed git dir prompt
 function git_prompt_info() {
@@ -156,6 +158,7 @@ zplugin light "zsh-users/zsh-history-substring-search"
 # Agents
 #zstyle ':omz:plugins:ssh-agent' identities 'id_rsa' 'xals.rsa' 'xals-old.rsa' 'alexis@sysnove.fr'
 #zplugin light "hkupty/ssh-agent"
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 # Syntax highlighting plugin. Must be last.
 #zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
