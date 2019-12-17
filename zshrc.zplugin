@@ -30,6 +30,10 @@ function dotfiles-update() {
 }
 
 setopt extendedglob
+setopt promptsubst
+setopt menu_complete
+setopt list_ambiguous
+set completion-ignore-case on
 
 # Install zplugin if not present: https://github.com/zdharma/zplugin
 if [[ ! -d ${HOME}/.zplugin ]]; then
@@ -43,14 +47,25 @@ autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
 # Initialize completion
-autoload -zU compinit
-compinit
+autoload -Uz compinit
+
+case $SYSTEM in
+  Darwin)
+    if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+      compinit;
+    else
+      compinit -C;
+    fi
+    ;;
+  Linux)
+    # not yet match GNU & BSD stat
+  ;;
+esac
+
 
 # Some defaults values
-zplugin light "oconnor663/zsh-sensible"
+#zplugin light "oconnor663/zsh-sensible"
 zplugin light "huawenyu/zsh-local"
-
-setopt promptsubst
 
 # speed git dir prompt
 function git_prompt_info() {
@@ -137,12 +152,13 @@ zplugin light "zsh-users/zsh-history-substring-search"
 # ####################
 
 # Enable terminal multiplexing related plugins
-zplugin ice load'![[ -z "$TMUX" ]]'
-zplugin light "mdsn/zsh-tmux"
+#zplugin ice load'![[ -z "$TMUX" ]]'
+#zplugin light "mdsn/zsh-tmux"
 
 # Agents
-zstyle ':omz:plugins:ssh-agent' identities 'id_rsa' 'xals.rsa' 'xals-old.rsa' 'alexis@sysnove.fr'
-zplugin light "hkupty/ssh-agent"
+#zstyle ':omz:plugins:ssh-agent' identities 'id_rsa' 'xals.rsa' 'xals-old.rsa' 'alexis@sysnove.fr'
+#zplugin light "hkupty/ssh-agent"
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 # Syntax highlighting plugin. Must be last.
 #zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
@@ -168,7 +184,8 @@ fi
 [ -x "$(which most)" ] && export PAGER="most"
 
 # Some colors
-alias ls='ls --group-directories-first --color=auto'
+#alias ls='ls --group-directories-first --color=auto'
+alias ls='ls --color=auto'
 #alias grep='grep --color'
 
 # Venv commands
@@ -180,20 +197,20 @@ alias ls='ls --group-directories-first --color=auto'
 #alias neomutt="stty stop '' -ixoff ; neomutt"
 
 # Freeze tty to reset it after each command.
-ttyctl -f
+#ttyctl -f
 
-alias tmuxp='pew in tmuxp tmuxp'
-
-function _zsh_tmux_plugin_preexec(){
-    eval $(tmux show-environment -s)
-    unset TERMINFO
-}
-
-# Automatically refresh tmux environments if tmux is running.
-if [[ -n "$TMUX" ]]; then
-    autoload -U add-zsh-hook
-    add-zsh-hook preexec _zsh_tmux_plugin_preexec
-fi
+#alias tmuxp='pew in tmuxp tmuxp'
+#
+#function _zsh_tmux_plugin_preexec(){
+#    eval $(tmux show-environment -s)
+#    unset TERMINFO
+#}
+#
+## Automatically refresh tmux environments if tmux is running.
+#if [[ -n "$TMUX" ]]; then
+#    autoload -U add-zsh-hook
+#    add-zsh-hook preexec _zsh_tmux_plugin_preexec
+#fi
 
 # Handle GPG agent manually.
 local GPG_AGENT_BIN=/usr/bin/gpg-agent
@@ -214,13 +231,7 @@ export GPG_TTY=$(tty)
 # End of GPG agent handling.
 
 export CSCOPE_DB=$PWD/cscope.out
-
-export FZF_DEFAULT_OPTS='
---bind=ctrl-p:up,ctrl-n:down,alt-p:preview-up,alt-n:preview-down 
---color fg:-1,bg:-1,hl:178,fg+:3,bg+:233,hl+:220 
---color info:150,prompt:110,spinner:150,pointer:167,marker:174 
-'
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #
 #unlock
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
