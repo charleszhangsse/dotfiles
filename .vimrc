@@ -688,10 +688,11 @@ call plug#begin('~/.vim/bundle')
         Plug 'reedes/vim-pencil', Cond(Mode(['editor',]))
         Plug 'chrisbra/NrrwRgn', Cond(Mode(['editor',]))                         | " focus on a selected region. <leader>nr :NR - Open selected into new window; :w - (in the new window) write the changes back
         Plug 'stefandtw/quickfix-reflector.vim', Cond(Mode(['editor',]))
-        Plug 'junegunn/vim-easy-align', Cond(Mode(['editor',]))                  | " selected and ga=
+        Plug 'junegunn/vim-easy-align', Cond(Mode(['editor',]))                  | " tablize selected and ga=
         Plug 'junegunn/goyo.vim', Cond(Mode(['editor',]))                        | " :Goyo 80
         "Plug 'junegunn/limelight.vim', Cond(Mode(['editor',]))                  | " Unsupport colorscheme
         Plug 'jamessan/vim-gnupg', Cond(Mode(['admin',]))                        | " implements transparent editing of gpg encrypted files.
+        Plug 'FooSoft/vim-argwrap', Cond(Mode(['coder',]))
     "}}}
 "}}}
 
