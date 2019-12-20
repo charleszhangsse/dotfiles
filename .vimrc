@@ -694,7 +694,7 @@ call plug#begin('~/.vim/bundle')
         Plug 'jamessan/vim-gnupg', Cond(Mode(['admin',]))                        | " implements transparent editing of gpg encrypted files.
 
         Plug 'FooSoft/vim-argwrap', Cond(Mode(['coder',]))
-        Plug 'sk1418/blockit', Cond(Mode(['editor',]))              | " Draw a Box around text region
+        Plug 'sk1418/blockit', Cond(Mode(['editor',]))                           | " :Block -- Draw a Box around text region
     "}}}
 "}}}
 
@@ -713,7 +713,8 @@ call plug#begin('~/.vim/bundle')
     "Plug 'cohama/agit.vim', Cond(Mode(['editor',]))    | " :Agit show git log like gitk
     "Plug 'codeindulgence/vim-tig', Cond(Mode(['editor',])) | " Using tig in neovim
     Plug 'iberianpig/tig-explorer.vim', Cond(Mode(['editor',])) | Plug 'rbgrouleff/bclose.vim', Cond(Mode(['editor',]))        | " tig for vim (https://github.com/jonas/tig): should install tig first.
-    Plug 'tpope/vim-fugitive', Cond(Mode(['editor',])) | Plug 'junegunn/gv.vim', Cond(Mode(['editor',]))  | " Awesome git wrapper
+    Plug 'tpope/vim-fugitive', Cond(Mode(['editor',]))   | " Gdiff, Gblame, or from shell 'git dt' to code view
+        Plug 'junegunn/gv.vim', Cond(Mode(['editor',]))  | " Awesome git wrapper
 
     "Plug 'juneedahamed/svnj.vim', Cond(Mode(['editor',]))
     "Plug 'juneedahamed/vc.vim', Cond(Mode(['editor',]))        | " Bad performance: Support git, svn, ...
