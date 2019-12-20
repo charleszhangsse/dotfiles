@@ -692,7 +692,9 @@ call plug#begin('~/.vim/bundle')
         Plug 'junegunn/goyo.vim', Cond(Mode(['editor',]))                        | " :Goyo 80
         "Plug 'junegunn/limelight.vim', Cond(Mode(['editor',]))                  | " Unsupport colorscheme
         Plug 'jamessan/vim-gnupg', Cond(Mode(['admin',]))                        | " implements transparent editing of gpg encrypted files.
+
         Plug 'FooSoft/vim-argwrap', Cond(Mode(['coder',]))
+        Plug 'sk1418/blockit', Cond(Mode(['editor',]))              | " Draw a Box around text region
     "}}}
 "}}}
 
