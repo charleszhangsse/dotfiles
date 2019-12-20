@@ -580,8 +580,8 @@ call plug#begin('~/.vim/bundle')
     Plug 'ciaranm/detectindent', Cond(Mode(['editor',]))
     "Plug 'tpope/vim-sleuth', Cond(Mode(['editor',]))
 
-    "Plug 'szw/vim-maximizer', Cond(Mode(['editor',]))
-    Plug 'ervandew/maximize', Cond(Mode(['editor',]))
+    Plug 'szw/vim-maximizer', Cond(Mode(['editor',]))
+    "Plug 'ervandew/maximize', Cond(Mode(['editor',]))          | " Cannot max the quickfix windows
     Plug 'huawenyu/vim-mark', Cond(Mode(['editor',]))
     "Plug 'tomtom/tmarks_vim', Cond(Mode(['editor',]))
     "Plug 'tomtom/quickfixsigns_vim', Cond(Mode(['editor',]))
