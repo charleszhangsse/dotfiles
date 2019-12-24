@@ -49,6 +49,8 @@ let g:vim_confi_option = {
       \ 'auto_qf_height': 1,
       \
       \ 'keywordprg_filetype': 1,
+      \
+      \ 'editor_number': 1,
       \}
 " =============================================================
 
