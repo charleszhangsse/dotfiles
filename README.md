@@ -1,5 +1,9 @@
 ## dotfiles
 
+The whole repository was copied from https://github.com/huawenyu/dotfiles. 
+Just have my own copy so that I can change the files to suite my own
+unique needs.
+
 linux config files: zsh, tmux, vim, script, ...
 
 ## Install
@@ -9,7 +13,7 @@ You can git download dotfiles to any where
 ```Shell
 $ cd ~
 $ apt-get install git
-$ git clone https://github.com/huawenyu/dotfiles.git
+$ git clone https://github.com/charleszhang/dotfiles.git
 $ cd dotfiles/script
 $ ./update_dot.sh -a pull
 ```
