@@ -344,7 +344,7 @@ if g:vim_confi_option.auto_install_tools
     endif
 endif
 
-
+set nu
 
 " Plugins {{{1}}}
 call plug#begin('~/.vim/bundle')
@@ -813,7 +813,7 @@ if g:vim_confi_option.debug
     silent! call logger#init('ALL', ['/dev/stdout', '/tmp/vim.log'])
 endif
 
-
+set tabstop=4
 if filereadable(expand("~/.vimrc.after"))
     source ~/.vimrc.after
 endif
