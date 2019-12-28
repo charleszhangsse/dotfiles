@@ -151,8 +151,8 @@ endif
     if LINUX()
         let s:uname = system("uname")
 
-        let g:python_host_prog = '/usr/bin/python'
-        let g:python3_host_prog = '/usr/bin/python3'
+        let g:python_host_prog = '/home/charleszhang/.linuxbrew/bin/python'
+        let g:python3_host_prog = '/home/charleszhang/.linuxbrew/bin/python3'
 
         if s:uname == "Darwin\n"
             let g:python_host_prog='/usr/bin/python'

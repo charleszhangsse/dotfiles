@@ -1,0 +1,264 @@
+/* insert and replace*/
+o: insert in this line
+i: insert current
+I: insert at beggin
+a: insert next
+A: insert at end
+s: like i, but remove current character
+S: like I, but remove whole line
+r: replace the current character
+R: like i, but in replace mode
+J: join 2 lines
+
+
+/*moving*/
+h: left
+l: right
+k: up
+j: down
+10+dir:
+
+0: beigin of cur line
+^: begin of the first none space character
+$: end of cur line
+3$: end of next 3 line
+Ctrl + f PgDn
+Ctrl + b PgUp
+f+character: jump to the character
+f: after the above command, it will search further
+F+character: jump backward to the character
+3f+character: jump to the 3rd character
+% moving to matching character for coding
+30g goto line 30
+gg begining
+GG end
+50%: goto  50%
+H: top of the screen
+M: middle of the screen
+L: bottom of the screen
+Ctrl+U: up   half page cursor same
+Ctrl+D  down half page cursor same
+Ctrl+E  pp   one line
+Ctrl+Y  down one line
+Ctrl+F  down one page cursor same
+Ctrl+B  up   one page cursor same
+z+t     cursor line to top
+z+b     cursor line to bottom
+Ctrl+O  back to old position
+Ctrl+I  to new position
+Tab     same as Ctrl+I
+''      jump back-forward
+
+:n jump
+:$ end of file
+:0 begin of file
+
+w: begin of next word
+e: end of cur word
+b: begin of pre word
+[[ startf of prev function
+]] start of next function
+[{ start of the current block
+]} end of the current block
+[] end of prev function
+[( similar to [[, but working on ( instead of {
+[/
+]/
+[I: find identifier
+:checkpath
+:checkpath!  actually found
+lead M M mark a word
+gD: goto definition
+
+
+Buufers/copy/paste/undo/redo/editing
+x: del cur
+X: del pre
+dw: del word from cur pos
+D:  del line from cur pos
+dd: del line
+Y:  copy cur line
+p:  paste after cur cursor
+P:  paste before cur cusor
+d$  delete to the end of line
+d^: delete to the start of line
+
+daw: delete the whole word even cursor is in the middle
+5dw: repeat dw 5 times
+c2w: just like d2w. but in insert mode
+
+u: undo
+3u: undo 3 times
+
+
+
+Search:
+
+set incsearch
+set hlsearch
+set noincrsearch
+set nohlsearch
+
+/:  search forward
+n:  next
+N:  pre
+/: without anything using his
+/: with something and arrow key, match search his with the prefix
+\> as the mark to match end of word
+  /open\>  search phrase ends with open
+\< as the mark to match beg of word
+  /\<open search phrase starts with open
+  /\<open\> match whole word only
+
+set wrapscan
+
+?: search backward
+*: search the next of cur word
+#: seaxh the pre of cur word
+
+
+Working with multiple things:
+:e     load a new file (called buffer)
+:edit  same as :e
+:e <tab>  list files for loading
+:edit <tab>  same as :e <tab>
+
+:badd <file>
+:bN   Swith to nth file
+:bnext next file
+:nprevious pre file
+:buffers list all buffers
+:bfirst
+:blast
+:ball
+:buffers
+:ls same as buffers
+:bdelete <num>
+
+
+:tabnew <file>
+cat: /tmp/vim.yank: No such file or directory
+:tabclose
+:tabnext
+:tabprevious
+:tabfirst
+:tablast
+
+:new new window
+:oldfiles list all files processed before
+4:e #<2 to open #2 file
+(#<2 can be used for any commands that accept file name as parameter)
+
+:browse oldfiles
+
+
+Bookmark
+m<name>
+`<name>
+:marks list all bookmarks
+:delmarks <name>
+global mark are upper case
+' cursor position before last jump
+" curosr position of last editing
+[ start of last change
+] end of last change
+
+
+Register
+"<register name><comm>
+"aY      copy text to register a
+"ap      copy text from register a
+:registers
+
+unnamed register
+named register
+numered registers: from copy and delete
+default registers:
+  % current file
+  # alternative file
+  : most recent command
+  . last inserted text
+  " last used register
+
+
+Folder
+:set foldenable
+:set foldmethod=syntax
+:set nofoldenable
+zc:  close folding
+zo:  open folding
+zC:  like zc, but all level
+zO:  like zO, but all level
+zR:  open all folds
+zM:  c;pse all folds
+
+v: start visual mode
+V: visual mode in whole line
+Ctrl+V: vissual mode in block
+o: other end
+
+Ctrl+^ switch between  file
+Ctrl+W +: increase height
+Ctrl+W -: decrease height
+{height} Ctrl+W _: set height
+Ctrl+W <  decrease width
+Ctrl+W >  increase size
+Ctrl+W K  move the current to top
+Ctrl+W H  move the current to far left
+Ctrl+W J  move the current to bottom
+Ctrl+W L  move the curre to far right
+
+
+'0 load Previous vi env
+
+:wshada!  <file-name>
+:rshada!  <file-name>
+! to force overwriting
+
+
+Sessions
+:mksession <file-name>
+:source    <file-name>
+
+Sessions store many things, but not the position of marks, contents of
+registers and the command line history.  You need to use the shada feature
+for these things.
+
+Views
+
+A session stores the looks of the whole of Vim.  When you want to store the
+properties for one window only, use a view.
+:mkview
+:loadview
+:mkview <file-name>
+:loadview <file-name>
+
+:e .
+
+:set display=uhex
+
+Ctrl+W ] open the definition in new window
+
+
+In Edit mode
+Ctrl+W delete a word
+Ctrl+U delete whole line before cursor
+
+:se  = :set
+:s   = :substitute
+
+:history
+
+q:  open command window
+
+gt: next tab
+gT: pre tab
+
+]c: next change
+[c: pre change
+
+:tabdo windo set number
+
+<lead> m m: mark current word in current document
+* highlight current word
+<lead> a: swap between h and c|cpp
