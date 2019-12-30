@@ -1,0 +1,9 @@
+sudo add-apt-repository ppa:noobslab/themes
+sudo apt-get update
+sudo apt-get install arc-theme
+
+sudo apt install gnome-tweak-tool
+
+sudo apt install wmctrl
+
+sudo apt-get install tint2
