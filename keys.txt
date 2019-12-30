@@ -310,4 +310,6 @@ das
 dG delete until end of the file
 dgg delete until start of the file
 D: delete until end of line (same as d$)
+add (parenthesis)
 
+document location: /usr/share/nvim/runtime/doc/
