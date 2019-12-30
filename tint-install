@@ -1,0 +1,14 @@
+sudo apt-get install tint2
+cd ~/.config/tint2
+
+Modified the settings:
+   1. Make panel size larger
+      Change "panel_size = 100% 30" to "panel_size = 100% 64"
+   2. Change the panel location
+      Change "panel_position = bottom center horizontal" to "panel_position = top center horizontal"
+
+Move the file and add symblic link so that we can track it using git hub
+   1. move the config file to dotfiles folder
+      mv tint2rc ~/dotfiles
+   2. Add the symblic link for the file moved
+      ln -s /home/charleszhang/dotfiles/tint2rc tint2rc

@@ -9,7 +9,7 @@ S: like I, but remove whole line
 r: replace the current character
 R: like i, but in replace mode
 J: join 2 lines
-
+~: change the case
 
 /*moving*/
 h: left
@@ -55,6 +55,8 @@ Tab     same as Ctrl+I
 
 w: begin of next word
 e: end of cur word
+E: end of cur word separated by space
+ge: end of pre word
 b: begin of pre word
 [[ startf of prev function
 ]] start of next function
@@ -102,19 +104,21 @@ set nohlsearch
 /:  search forward
 n:  next
 N:  pre
-/: without anything using his
-/: with something and arrow key, match search his with the prefix
+/: using up or down key will see the search history that match the prefix if any
 \> as the mark to match end of word
   /open\>  search phrase ends with open
 \< as the mark to match beg of word
   /\<open search phrase starts with open
   /\<open\> match whole word only
+^ match beginning of line
+. match one character
+
 
 set wrapscan
 
 ?: search backward
 *: search the next of cur word
-#: seaxh the pre of cur word
+#: search the pre of cur word
 
 
 Working with multiple things:
@@ -162,7 +166,7 @@ global mark are upper case
 " curosr position of last editing
 [ start of last change
 ] end of last change
-
+'' can be used to go back-forward
 
 Register
 "<register name><comm>
@@ -190,7 +194,7 @@ zo:  open folding
 zC:  like zc, but all level
 zO:  like zO, but all level
 zR:  open all folds
-zM:  c;pse all folds
+zM:  clapse all folds
 
 v: start visual mode
 V: visual mode in whole line
@@ -262,3 +266,48 @@ gT: pre tab
 <lead> m m: mark current word in current document
 * highlight current word
 <lead> a: swap between h and c|cpp
+ZZ save and quit
+
+
+In commad line:
+% replaced with current file
+# replaced with alternative file
+#n replace with the file name of buffer n
+#<n replace with oldfiles number n
+
+for instance, the following command runs a shell command list the current file
+!ls -l %
+
+:help i_CTRL-W
+:help CTRL-W: insert mode help for CTRL-W
+:help c_%: command line help
+:help  <whatever> then Ctrl-D, list all help topic. Match help topic with the prefix
+    where whatever the prefix you typed
+:help <whatever> <Tab> key will have less choices
+
+:history c
+:history =
+:history s
+:history
+:map
+:imap
+:nmap
+:map
+:xmap
+
+:nmap <Leader>j :call tmp#GotoJump()
+
+
+ci): delete everything inside the () and enter insert mode
+
+:help usr_toc.txt
+
+y is action so that it can be combined with other nouns. such as
+yte
+y3w
+cis
+das
+dG delete until end of the file
+dgg delete until start of the file
+D: delete until end of line (same as d$)
+

@@ -36,7 +36,7 @@ let g:vim_confi_option = {
       \ 'theme': 1,
       \ 'conf': 1,
       \ 'debug': 1,
-      \ 'folding': 0,
+      \ 'folding': 1,
       \ 'upper_keyfixes': 1,
       \ 'auto_install_vimplug': 1,
       \ 'auto_install_plugs': 1,
@@ -344,7 +344,7 @@ if g:vim_confi_option.auto_install_tools
     endif
 endif
 
-set nu
+set number
 
 " Plugins {{{1}}}
 call plug#begin('~/.vim/bundle')
@@ -814,7 +814,7 @@ if g:vim_confi_option.debug
 endif
 
 set tabstop=4
-if filereadable(expand("~/.vimrc.after"))
+if filereadable(expand("$HOME/.vimrc.after"))
     source ~/.vimrc.after
 endif
 
