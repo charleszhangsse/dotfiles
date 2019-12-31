@@ -1,8 +1,7 @@
 [user]
-	name = Huawen Yu
-	email = hyu@fortinet.com
+	name = Charles Zhan
+	email = charleszhangsse@gmail.com
 [core]
-	excludesfile = /home/wilson/.gitignore_global
 #[format]
 #	pretty = format:%h %ad %s(%an)
 [log]
@@ -17,6 +16,8 @@
 	d = difftool
 	dt = "!f() { vim -p $(git diff --name-only) +\"tabdo Gvdiff $@\" +tabfirst; }; f"
 	vimdiff = "!f() { vim -p $(git diff --name-only) +\"tabdo Gvdiff $@\" +tabfirst; }; f"
+	co = checkout
+	pr = pull --rebase
 [credential]
 	helper = cache --timeout 3600
 [pack]
@@ -30,5 +31,6 @@
 	tool = meld
 [diff]
 	tool = vimdiff
+	tool = bcompare
 [difftool]
 	prompt = false
