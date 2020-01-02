@@ -1,0 +1,17 @@
+C-U up half page  | % cur file
+C-D dn half page  | # alt file
+C-Y up one  line  | : most r file
+C-E dn one  line  | . last ins text
+''  back-forward  | " last used reg
+C-^ swap btw file | C-W del word (i)
+gt  next tab      | C-U delete line bef(i)
+gT  pre  tab
+;j  buf w FZF
+
+Commad line:
+%: cur file
+#: alt file
+#n buf n
+#<n old file n
+:w
+

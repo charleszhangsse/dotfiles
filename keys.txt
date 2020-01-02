@@ -10,6 +10,8 @@ r: replace the current character
 R: like i, but in replace mode
 J: join 2 lines
 ~: change the case
+U: change the selected to upper case
+u: change the selected to lower case
 
 /*moving*/
 h: left
@@ -36,17 +38,16 @@ GG end
 H: top of the screen
 M: middle of the screen
 L: bottom of the screen
-Ctrl+U: up   half page cursor same
-Ctrl+D  down half page cursor same
-Ctrl+E  pp   one line
-Ctrl+Y  down one line
-Ctrl+F  down one page cursor same
-Ctrl+B  up   one page cursor same
-z+t     cursor line to top
-z+b     cursor line to bottom
-Ctrl+O  back to old position
-Ctrl+I  to new position
-Tab     same as Ctrl+I
+C-U: up   half page cursor same
+C-D  down half page cursor same
+C-E  down one line
+C-Y  up   one line
+C-F  down one page cursor same
+C-B  up   one page cursor same
+z+t  cursor line to top
+z+b  cursor line to bottom
+C-O  back to old position:u
+C-I  to new position
 ''      jump back-forward
 
 :n jump
@@ -138,6 +139,15 @@ Working with multiple things:
 :buffers
 :ls same as buffers
 :bdelete <num>
+%: cur buff
+#: alt buff
+a: 
+h: hidden
+=: read only
+-: not modufiable
++: buf modified
+buf <Tab> will 
+
 
 
 :tabnew <file>
@@ -147,10 +157,12 @@ cat: /tmp/vim.yank: No such file or directory
 :tabprevious
 :tabfirst
 :tablast
+gt: next tab
+gT: pre tab
 
 :new new window
 :oldfiles list all files processed before
-4:e #<2 to open #2 file
+:e #<2 to open #2 file
 (#<2 can be used for any commands that accept file name as parameter)
 
 :browse oldfiles
@@ -162,17 +174,22 @@ m<name>
 :marks list all bookmarks
 :delmarks <name>
 global mark are upper case
-' cursor position before last jump
+' cursor posicursor position before last jumption before last jump
 " curosr position of last editing
 [ start of last change
 ] end of last change
 '' can be used to go back-forward
+< begining of visual selection
+> end of visual selection
 
 Register
 "<register name><comm>
 "aY      copy text to register a
 "ap      copy text from register a
 :registers
+eg:
+   "fy5w    copy 5 words to register f.
+   "fp      copy register f to current cursor
 
 unnamed register
 named register
@@ -198,7 +215,7 @@ zM:  clapse all folds
 
 v: start visual mode
 V: visual mode in whole line
-Ctrl+V: vissual mode in block
+Ctrl+v: vissual mode in block
 o: other end
 
 Ctrl+^ switch between  file
@@ -223,6 +240,11 @@ Ctrl+W L  move the curre to far right
 Sessions
 :mksession <file-name>
 :source    <file-name>
+
+   A Vim session contains all the information about what you are editing.
+This includes things such as the file list, window layout, global variables,
+options and other information.  (Exactly what is remembered is controlled by
+the 'sessionoptions' option, described below.)
 
 Sessions store many things, but not the position of marks, contents of
 registers and the command line history.  You need to use the shada feature
@@ -254,9 +276,6 @@ Ctrl+U delete whole line before cursor
 :history
 
 q:  open command window
-
-gt: next tab
-gT: pre tab
 
 ]c: next change
 [c: pre change
@@ -313,3 +332,135 @@ D: delete until end of line (same as d$)
 add (parenthesis)
 
 document location: /usr/share/nvim/runtime/doc/
+
+:options to show help for options
+
+Alternative file: ctrl-^
+
+Ctrl-W  + Ctrl-^:Open the alternative file in a new window
+
+Recording and playback
+For instance, there are 5 lines as the following:
+
+stdio.h
+fcntl.h
+unistd.h
+stdlib.h
+ctype.h
+
+to:
+#include "stdio.h"
+#include "fcntl.h"
+#include "unistd.h"
+#include "stdlib.h"
+#include "ctype.h"
+
+We can move to the first character of the first line (s of "stdio").
+then press qu to start recording and create a "record" named as u.
+then type:
+i#include "<Esc>$a"<Esc>0jq
+
+The last q ending the recording
+4@u to replay the recording 4 times.
+
+recording to yank shared the same register.
+
+substitution:
+:[range]substitute/from/to/[flags]
+if "range" is omitted, the it replace the current line only
+range: 1,5s/.../.../  from line 1 to line 5
+       .,$s/.../.../  from cur line to the last line. Where . is for cur line
+marks can be used in range expression
+  such as '>,$  is for a range of "begin of the visual selection to the last line
+you can speficy a range like .,.+4
+flags: g, c
+
+Insert into multiple lines:
+For instance, you have tje following 4 lines:
+	include one
+	include two
+	include three
+	include four
+Move the cursor to the "o" of the first line and press Ctrl-V to
+start visual mode. Move it down with 3j to "four". Type
+Imain <Esc>, the result will be
+	include main one
+	include main two
+	include main three
+	include main four
+
+append to a file:
+  :write >> <file name>
+
+a range can be used in write.
+:.,$write temp          write from cur line to end to a file named as temp
+
+gU: change object to upper case. such gU3W, change 3 words to upper case
+gu: just like gu, but to lower case
+gUgU and gugu work on current line (just like dd or yy etc).
+
+:read !ls ~      read the home directory contents into the current file
+:0read !date -u  insert the output "date -u" command to first line
+
+"vi -r" to start in recovery mode.
+
+~/.local/share/nvim/swap//:
+
+vi *.cpp to open all cpp of current directory
+
+Commad line edit:
+S-Left S-Right move one word
+Ctrl-B beging of the command
+CtrlE  end of the command
+
+:set cc= <Tab> will fill the old value
+q:  command line window
+
+Remembering information; ShaDa   (SHAred DAta)
+  Store status including:
+      Command line and search history
+      Text in registers
+      Marks for various files
+      The buffer list
+      Global variables
+12
+:help shada
+
+'0
+Vim creates marks each time you quit it. The last one is 0, then 1, and so on.
+There are 10 of these in total.
+
+:tab help <>   open the help in new tab
+
+redirect help output to files (following commands saving
+:map contents to ~/my-mapping.txt)
+
+:redir >> ~/my-mapping.txt
+:map
+:redir END
+
+Modelines:
+	The lines needs to be either the first line or the last line
+	(unless the modelines is set).
+
+cd <dir>
+:set path+= <path>
+gf: fide the file of current cursor
+
+<num>go jump to specific byte of the file
+
+to edit binary file:
+vi -b <file>
+:%!xxd    show file in hex format
+:%!xxd -r read back the binary
+This is testing auto 
+
+This is completing file:
+I insert these words in insert mode
+I insert these words in insert mode..
+
+	b_array[i]->s_next = a_array[i]->s_next; 
+	b_array[i]->s_next = a_array[i]->s_next;
+cursor position before last jump
+
+:iabbrev ad advertisement
