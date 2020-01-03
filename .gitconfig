@@ -1,6 +1,6 @@
 [user]
-	name = Charles Zhan
-	email = charleszhangsse@gmail.com
+	name = Charles Zhang
+	email = charleszhang@fortinet.com
 [core]
 #[format]
 #	pretty = format:%h %ad %s(%an)
@@ -18,6 +18,34 @@
 	vimdiff = "!f() { vim -p $(git diff --name-only) +\"tabdo Gvdiff $@\" +tabfirst; }; f"
 	co = checkout
 	pr = pull --rebase
+    bc=difftool --extcmd bcompare
+    pr=pull --rebase
+    sp=stash pop
+    sn=status -uno
+    ss=stash save
+    sl=stash list
+    co=checkout
+    cb=checkout -b
+    s=status
+    rh=reset HEAD
+    l=log
+    sh=show
+    c=commit
+    ca=commit -a
+    cm=commit -a -m
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    ls = ls-files
+    st = status
+    ci = commit
+    br = branch
+    co = checkout
+    df = diff
+    dc = diff --cached
+    lg = log -p
+    ls = ls-files
+    ign = ls-files -o -i --exclude-standard
+
 [credential]
 	helper = cache --timeout 3600
 [pack]
