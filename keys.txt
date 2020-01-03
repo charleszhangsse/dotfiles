@@ -120,6 +120,28 @@ set wrapscan
 ?: search backward
 *: search the next of cur word
 #: search the pre of cur word
+foo\|bar:  match foo or bar
+/one\|two\|three   match one or two or three
+/\(foo\|bar\)\+    match 1+ times
+/\(ab\)* repeat "ab" 0+ times
+/\(ab\)+ repeat "ab" 1+ times
+/\(ab\)\{3,5} repeat "ab" 3 to 5 times
+\d: digits
+\D: non-digits
+\x hex digits
+\X non-hex
+\s white space
+\S non-white space
+\l lower case
+\L non-lower case
+\u upper case
+\U non-upper case
+\n line break
+\_s line break or white space
+\_. line break or any char
+\h  [A-Za-z_]: such as /<\h\w*\> to find c identifier
+
+
 
 
 Working with multiple things:
@@ -453,14 +475,12 @@ to edit binary file:
 vi -b <file>
 :%!xxd    show file in hex format
 :%!xxd -r read back the binary
-This is testing auto 
 
-This is completing file:
-I insert these words in insert mode
-I insert these words in insert mode..
+Enter special characters:
+C-V then 3 digits will enter a character with accii code
+:digraohs to show the list
 
-	b_array[i]->s_next = a_array[i]->s_next; 
-	b_array[i]->s_next = a_array[i]->s_next;
-cursor position before last jump
+":set virtualedit=all" makes it easier to edit a table
+":set virtualedit=" to reset virtual editing mode
 
-:iabbrev ad advertisement
+

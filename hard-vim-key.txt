@@ -1,17 +1,28 @@
-C-U up half page  | % cur file
-C-D dn half page  | # alt file
-C-Y up one  line  | : most r file
-C-E dn one  line  | . last ins text
-''  back-forward  | " last used reg
-C-^ swap btw file | C-W del word (i)
-gt  next tab      | C-U delete line bef(i)
-gT  pre  tab
-;j  buf w FZF
+C-U up half page  | % cur file        | zc cls fold
+C-D dn half page  | # alt file        | zo open fold
+C-Y up one  line  | : most r file     | zC all level
+C-E dn one  line  | . last ins text   | zO all level
+zt cur lin top    | <l> mm mark iden  |
+zb cur lin bottom | [I: find iden     
+H  cur to top     |
+M  cur to mid     |
+L  cur to bottom  |
+[{ start of blk   |
+]} end of blk     |
+[] end of pre fun |
+[(  ]) [\  ]\     |
+''  back-forward  | " last used reg   | zR open all
+C-^ swap btw file | C-W del word (i)  | zM close all
+gt  next tab      | C-U del line(i)   | zn unfolding
+gT  pre  tab      | C-O run comm (i)  | zN reco folding
+;j  buf w FZF     | C-P auto compl(i) |
+% mov to match    | C-A ins pre(i)    | J join 2 lines
+                  | C-Y: cp 1c abv(i) | ~ chg case
+gv: reuse vis reg | C-E: cp 1c blw(i) | u chg sel to lo
+                  | C-R {reg} cpy reg | U chg sel to hi
+%: cur file (c)   |                   |
+#: alt file (c)   |                   |
+#n buf n  (c)     |                   |
+#<n old n (c)     |
 
-Commad line:
-%: cur file
-#: alt file
-#n buf n
-#<n old file n
-:w
 
