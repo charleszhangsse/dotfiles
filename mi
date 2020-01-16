@@ -1,0 +1,1 @@
+make CONFIG_OPT=no -j11 -s image

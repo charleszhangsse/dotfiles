@@ -4,7 +4,7 @@ C-Y up one  line  | : most r file     | zC all level
 C-E dn one  line  | . last ins text   | zO all level
 zt cur lin top    | <l> mm mark iden  |
 zb cur lin bottom | [I: find iden     
-H  cur to top     |
+H  cur to top     | word vs WORD
 M  cur to mid     |
 L  cur to bottom  |
 [{ start of blk   |
@@ -20,9 +20,16 @@ gT  pre  tab      | C-O run comm (i)  | zN reco folding
                   | C-Y: cp 1c abv(i) | ~ chg case
 gv: reuse vis reg | C-E: cp 1c blw(i) | u chg sel to lo
                   | C-R {reg} cpy reg | U chg sel to hi
-%: cur file (c)   |                   |
+%: cur file (c)   | C+\ C+N leave ins                  |
 #: alt file (c)   |                   |
 #n buf n  (c)     |                   |
 #<n old n (c)     |
+a(  (v)
+i(  (v)
+a[  (v)
+i[  (v)
+a{  (v)
+i{  (v)
+
 
 

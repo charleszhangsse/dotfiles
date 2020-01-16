@@ -1,0 +1,14 @@
+echo "before copying"
+ls -l ~/phab/charleszhang/$1
+
+echo ""
+echo "********"
+echo "build files"
+ls -l image.out fgtcoveragebuild.tar.xz changeorder.diff
+
+cp image.out ~/phab/charleszhang/image-$2.out
+cp fgtcoveragebuild.tar.xz ~/phab/charleszhang/$1/fgtcoveragebuild-$2.tar.xz
+cp changeorder.diff ~/phab/charleszhang/$1/changeorder.diff
+echo ""
+echo "after copying"
+ls -l ~/phab/charleszhang/$1
