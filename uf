@@ -1,7 +1,5 @@
 echo "before copying"
 ls -l ~/phab/charleszhang/$1
-
-echo ""
 echo "********"
 echo "build files"
 ls -l image.out fgtcoveragebuild.tar.xz changeorder.diff

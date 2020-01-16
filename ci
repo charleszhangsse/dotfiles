@@ -1,0 +1,1 @@
+scp image.out admin@172.16.62.76:fgt-image
