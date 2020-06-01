@@ -73,26 +73,7 @@
 
 21. install review board client
     sudo apt-get install -y python-rbtools21. install review board client
-	    sudo apt-get install -y python-rbtools21. install review board client
-		    sudo apt-get install -y python-rbtools21. install review board client
-			    sudo apt-get install -y python-rbtools21. install review board client
-				    sudo apt-get install -y python-rbtools21. install review board client
-					    sudo apt-get install -y python-rbtools21. install review board client
-						    sudo apt-get install -y python-rbtools21. install review board client
-							    sudo apt-get install -y python-rbtools21. install review board client
-								    sudo apt-get install -y python-rbtools21. install review board client
-									    sudo apt-get install -y python-rbtools21. install review board client
-										    sudo apt-get install -y python-rbtools21. install review board client
-											    sudo apt-get install -y python-rbtools21. install review board client
-												    sudo apt-get install -y python-rbtools21. install review board client
-													    sudo apt-get install -y python-rbtools21. install review board client
-														    sudo apt-get install -y python-rbtools21. install review board client
-															    sudo apt-get install -y python-rbtools21. install review board client
-																    sudo apt-get install -y python-rbtools21. install review board client
-																	    sudo apt-get install -y python-rbtools21. install review board client
-																		    sudo apt-get install -y python-rbtools21. install review board client
-																			    sudo apt-get install -y python-rbtools21. install review board client
-																				    sudo apt-get install -y python-rbtools
+sudo apt-get install -y python-rbtools
 
 
 
