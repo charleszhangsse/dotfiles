@@ -36,7 +36,7 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 # Develop Env
 sudo apt-get install -y build-essential ia32-libs libc6-dbg:i386 manpages-dev
-# Gcc Compile: check header not found error
+#Install a RedHat Linux, with kernel source and development packages Install a RedHat Linux, with kernel source and development packages Gcc Compile: check header not found error
 # sudo updatedb
 # locate stdio.h
 

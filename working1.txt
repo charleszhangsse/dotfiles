@@ -1,0 +1,144 @@
+scaling factor (system wise: 125%)
+
+left whole:  wmctrl -r :ACTIVE: -e 0,0,0,3800,3510
+right-whole: wmctrl -r :ACTIVE: -e 0,4050,0,2150,3510
+right-up:    wmctrl -r :ACTIVE: -e 0,4050,0,2150,1700
+right-down:  wmctrl -r :ACTIVE: -e 0,4050,1920,2150,1600
+https://bluejeans.com/111/webrtc
+
+29:  firmware FortiGate-VM64-KVM v7.0.0,build0016b0016,210213 (interim)
+31:  application reportd
+32:  *** signal 11 (Segmentation fault) received ***
+33:  Register dump:
+34:  RAX: 00007ffe4b26bff0 RBX: 00007f3f3dcc9f93
+35:  RCX: 000000000000003f RDX: ffffffffffff8901
+36:  R08: 0000000000000003 R09: 0000000000000079
+37:  R10: 00000000037e2400 R11: 00000000037e3c90
+38:  R12: 00000000000071de R13: 00007f3f3dcc9fab
+39:  R14: 00000000037e3c90 R15: 000000000000002f
+40:  RSI: 00007ffe4b26bff0 RDI: 00007f3f3dcc9fab
+41:  RBP: 00007ffe4b26c9e0 RSP: 00007ffe4b26bf18
+42:  RIP: 000000000119917c EFLAGS: 0000000000010202
+43:  CS: 0033 FS: 0000 GS: 0000
+44:  Trap: 000000000000000e Error: 0000000000000004
+45:  OldMask: 0000000000004000
+46:  CR2: 00007f3f3dcc28bc
+47:  stack: 0x7ffe4b26bf18 - 0x7ffe4b26e7e0
+48:  Backtrace:
+49:  _pop_admin_logout_val + 0x000c => /code/FortiOS/fortinet/migbase/reportapi/report_groups.c:3881
+50:  _insert_logs.isra.41 + 0x0391 => /code/FortiOS/fortinet/migbase/reportapi/report_groups.c:3395
+51:  _flush_event + 0x0296 => /code/FortiOS/fortinet/migbase/reportapi/report_groups.c:3951 (discriminator 3)
+52:  _flush_hash_group + 0x0012 => /code/FortiOS/fortinet/migbase/reportapi/report_groups.c:4282
+53:  _flush_group + 0x0022 => reportd/report_group.c:164
+54:  foreach_grp_step + 0x002a => /code/FortiOS/fortinet/migbase/reportapi/rpt_grp_steps.c:65
+55:  flush_all_groups + 0x0046 => reportd/report_group.c:174
+56:  _flush_db_vdom + 0x0070 => reportd/reportd_main.c:85
+57:  vd_iterate_all_vd + 0x0089 => /code/FortiOS/fortinet/migbase/migapi/vd.c:62 (discriminator 2)
+58:  __reportd_die + 0x0038 => reportd/reportd_main.c:89
+
+valgrind -v --log-file=/var/log/log.txt --leak-check=full --track-origins=yes --error-limit=no --time-stamp=yes /var/log/reportd 
+
+
+16346:  <05964> firmware FortiGate-VM64 v6.4.2,build1723b1723,200730 (GA) (Release)
+16347:  <05964> application reportd
+16348:  <05964> *** signal 11 (Segmentation fault) received ***
+16349:  <05964> Register dump:
+16350:  <05964> RAX: 0000000000000000 RBX: 00007fff73724160
+16351:  <05964> RCX: 0000000000000007 RDX: 0000000000000000
+16352:  <05964> R08: 0000000000000f32 R09: 0000000100000000
+16353:  <05964> R10: 000000000cb5bc30 R11: 0000000100003601
+16354:  <05964> R12: 000000000cc25d70 R13: 0000000000000000
+16355:  <05964> R14: 000000000d154da0 R15: 000000000d154da0
+16356:  <05964> RSI: 0000000002cc990e RDI: 0000000002a5815d
+16357:  <05964> RBP: 00007fff73724110 RSP: 00007fff73722530
+16358:  <05964> RIP: 000000000112e04d EFLAGS: 0000000000013246
+16359:  <05964> CS: 0033 FS: 0000 GS: 0000
+16360:  <05964> Trap: 000000000000000e Error: 0000000000000005
+16361:  <05964> OldMask: 0000000000000000
+16362:  <05964> CR2: fffffffffffffff8
+16363:  <05964> stack: 0x7fff73722530 - 0x7fff7372aa70
+16364:  <05964> Backtrace:
+_draw_pie_chart_with_table.isra.42 + 0x04cd => reportd/report_pdf_writer.c:4982
+ _draw_video_sites + 0x00fc => reportd/report_pdf_writer_web.c:563
+rptwriter_pdf_draw_custom_chart + 0x0322 => reportd/report_pdf_writer.c:6231
+_handle_chart_item + 0x046f => reportd/report_engine.c:844
+rptengine_exec + 0x1387 => reportd/report_engine.c:984
+generate_report_file + 0x00c5 => reportd/reportd_main.c:690
+__handle_cron_message + 0x0293 => reportd/reportd_main.c:920
+16372:  fos_epoll_work_with_prepare + 0x00da => /code/FortiOS/fortinet/migbase/osapi/fos_epoll.c:94
+16373:  <05964> [0x0110e5e1] => /bin/reportd => reportd_main_1 + 0x0561 => reportd/reportd_main.c:1074
+16374:  <05964> [0x00436947] => /bin/reportd => fortiexecve + 0x0237 => /code/FortiOS/fortinet/fgtutil/fg_exit.h:21
+16375:  <05964> [0x0043d94f] => /bin/reportd => run_initentry.part.1 + 0x018f => /code/FortiOS/fortinet/sysinit/init.c:906
+16376:  <05964> [0x0043a668] => /bin/reportd => run_initentry + 0x0048 => /code/FortiOS/fortinet/sysinit/init.c:921
+16377:  <05964> [0x0043ad4f] => /bin/reportd => run_initlevel + 0x047f => /code/FortiOS/fortinet/sysinit/init.c:1093
+16378:  <05964> [0x0043cd4d] => /bin/reportd => initd_mainloop + 0x018d => /code/FortiOS/fortinet/sysinit/init.c:2260
+16379:  <05964> [0x0043d59f] => /bin/reportd => main + 0x075f => /code/FortiOS/fortinet/sysinit/init.c:2687
+16380:  <05964> [0x7fb63fbe3eaa] => /usr/lib/x86_64-linux-gnu/libc.so.6 => n/a => ??:0
+16381:  (__libc_start_main+0x000000ea) liboffset 00020eaa
+16382:  <05964> [0x00432a3a] => /bin/reportd => _start + 0x002a => /tmp/src/_build/glibc/glibc-2.26/csu/../sysdeps/x86_64/start.S:122
+16383:  <05964> fortidev 5.0.5.0013
+16384:  the killed daemon is /bin/reportd: status=0x0
+
+
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
+
+./Configure -m FGT_VM64_IBM -d y
+ ./Configure -m FGT_VM64_KVM -d y
+
+sudo apt install cpu-checker   
+sudo apt install qemu-kvm libvirt-bin bridge-utils virtinst virt-manager
+sudo systemctl is-active libvirtd
+
+sudo usermod -aG libvirt $USER
+sudo usermod -aG kvm $USER
+
+Unable to connect to libvirt qemu:///system.
+
+Verify that the 'libvirtd' daemon is running.
+
+Libvirt URI is: qemu:///system
+
+Traceback (most recent call last):
+  File "/usr/share/virt-manager/virtManager/connection.py", line 1036, in _do_open
+    self._backend.open(self._do_creds_password)
+  File "/usr/share/virt-manager/virtinst/connection.py", line 144, in open
+    open_flags)
+  File "/usr/lib/python2.7/dist-packages/libvirt.py", line 105, in openAuth
+    if ret is None:raise libvirtError('virConnectOpenAuth() failed')
+libvirtError: Failed to connect socket to '/var/run/libvirt/libvirt-sock': Permission denied
+
+virt-install --name vm1 --ram=1024 --disk size=40 --vcpus 1 --os-type linux --os-variant ubuntu20.04 --graphics none --location '/home/charleszhang/kvm/fortios.qcow2'  --extra-args "console=tty0 console=ttyS0,115200n8"
+# When prompted, use the vm name for the host name, and be sure to add openssh when asked for software to pre-install 
+# otherwise take defaults or most reasonable options. Follow install instructions till reboot, then ^]
+virsh domifaddr vm1 # get ip address
+ssh-copy-id rkamradt@192.168.122.95 # use ip address from previous step
+
+_popu_changed_revisions
+
+hardinfo
+sudo apt install hardinfo
+sudo apt-get install lm-sensors
+
+s
+sudo sensors-detect
+sensors
+
+Feb 20, 2021
+networkctl status -a
+nmcli con show
+virsh net-list --all
+nmcli con add type bridge-slave ifname eno1 master br0
+
+sudo nmcli con down "Wired connection 1"
+sudo nmcli con up br0
+
+https://www.answertopia.com/ubuntu/creating-an-ubuntu-kvm-networked-bridge-interface/
+
+sudo virsh net-autostart br0 
+virsh net-list --all
+
+virt-install --name MyFedora --memory 1024 --disk path=/tmp/myFedora.img,size=10 --network network=br0 --os-variant fedor
+
+nmcli con add ifname br0 type bridge con-name br0
