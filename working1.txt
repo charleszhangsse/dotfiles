@@ -141,4 +141,377 @@ virsh net-list --all
 
 virt-install --name MyFedora --memory 1024 --disk path=/tmp/myFedora.img,size=10 --network network=br0 --os-variant fedor
 
-nmcli con add ifname br0 type bridge con-name br0
+
+#setup 10.10.1.3 for bridge
+
+1.5  Creating a Network Manager Bridge from the Command-Line
+The first step in creating the network bridge is to add a new connection to the network configuration. This can be achieved using the nmcli tool, specifying that the connection is to be a bridge and providing names for both the connection and the interface:
+
+sudo nmcli con add ifname br1 type bridge con-name br1
+
+Once the connection has been added, a bridge slave interface needs to be established between physical device eno1 (the slave) and the bridge connection br0 (the master) as follows:
+
+
+At this point, the NetworkManager connection list should read as follows:
+nmcli con show
+
+br0                 1a54ccae-0691-4b08-9a41-ae582f99edb9  bridge    --     
+br1                 f46d4d2c-5728-45eb-b2d4-36b69ef0028d  bridge    --     
+bridge-slave-eno1   c48f76c8-4206-49ac-bd5c-d59828daa7ee  ethernet  --     
+bridge-slave-eno2   4e4f6ff8-1e79-4919-a3dc-d3d8713d21fb  ethernet  --     
+Wired connection 1  fcba270a-be46-300e-9e66-5b6371f1adf6  ethernet  --     
+Wired connection 2  080937ed-897a-3b56-93e3-434821ce7c8d  ethernet  -- 
+
+The next step is to start up the bridge interface. If the steps to configure the bridge are being performed over a network connection (i.e. via SSH) this step can be problematic because the current eno1 connection must be closed down before the bridge connection can be brought up. This means that the current connection will be lost before the bridge connection can be enabled to replace it, potentially leaving the remote host unreachable.
+#!/bin/bash
+sudo nmcli con down "Wired connection 2"
+sudo nmcli con up br1
+
+1.6  Declaring the KVM Bridged Network
+At this point, the bridge connection is present on the system but is not visible to the KVM environment. Running the virsh command should still list the default network as being the only available network option:
+
+➜  ~ virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ br0       active   yes         yes
+ default   active   yes         yes
+
+
+By default, the KVM virtualization environment on Ubuntu creates a virtual network to which virtual machines may connect. It is also possible to configure a direct connection using a MacVTap driver, though as outlined in the chapter entitled “An Overview of Virtualization Techniques”, this approach does not allow the host and guest systems to communicate.
+
+The goal of this chapter is to cover the steps involved in creating a network bridge on Ubuntu enabling guest systems to share one or more of the host system’s physical network connections while still allowing the guest and host systems to communicate with each other.
+
+In the remainder of this chapter we will explain how to configure an Ubuntu network bridge for use by KVM-based guest operating systems.
+
+https://www.answertopia.com/ubuntu/creating-an-ubuntu-kvm-networked-bridge-interface/
+
+1.1  Identifying the Network Management System
+The steps to create a network bridge will differ depending on whether the host system is using Network Manager or Netplan for network management. If you installed Ubuntu using the desktop installation media then you most likely have a system running Network Manager. If, on the other hand, you installed from the server or Network installer image, then your system is most likely using Netplan.
+
+To identify which networking system is being used, open a Terminal window and run the following command:
+
+# networkctl status
+If the above command generates output similar to the following then the system is using Netplan:
+
+# networkctl status
+●          State: routable                             
+         Address: 192.168.86.242 on enp0s3             
+                  fe80::a00:27ff:fe52:69a9 on enp0s3   
+         Gateway: 192.168.86.1 (Google, Inc.) on enp0s3
+             DNS: 192.168.86.1                         
+  Search Domains: lan                                  
+​
+May 04 15:46:09 demo systemd[1]: Starting Network Service...
+May 04 15:46:09 demo systemd-networkd[625]: Enumeration completed
+.
+.
+If, on the other hand, output similar to the following appears, then Netplan is not running:
+
+# networkctl status -a
+WARNING: systemd-networkd is not running, output will be incomplete.
+​
+Failed to query link bit rates: Unit dbus-org.freedesktop.network1.service not found.
+.
+.
+To identify if NetworkManager is running, change directory to /etc/netplan. If you are using NetworkManager this directory will contain a file named 01-network-manager-all.yaml with the following content:
+
+# Let NetworkManager manage all devices on this system
+network:
+  version: 2
+  renderer: NetworkManager
+Having identified your network management system, follow the corresponding steps in the remainder of this chapter.
+
+1.2  Getting the Netplan Network Settings
+Before creating the network bridge on a Netplan based system, begin by obtaining information about the current network configuration using the networkctl command as follows:
+
+# networkctl status -a
+● 1: lo
+       Link File: /lib/systemd/network/99-default.link
+    Network File: n/a
+            Type: loopback
+           State: carrier (unmanaged)
+         Address: 127.0.0.1
+                  ::1
+ 
+● 2: eno1
+       Link File: /lib/systemd/network/99-default.link
+    Network File: /run/systemd/network/10-netplan-eno1.network
+            Type: ether
+           State: routable (configured)
+            Path: pci-0000:00:19.0
+          Driver: e1000e
+          Vendor: Intel Corporation
+           Model: 82579LM Gigabit Network Connection (Lewisville)
+      HW Address: fc:4d:d4:3b:e4:0f (Universal Global Scientific Industrial Co., Ltd.)
+         Address: 192.168.86.214
+                  fe80::fe4d:d4ff:fe3b:e40f
+         Gateway: 192.168.86.1
+             DNS: 192.168.86.1
+  Search Domains: lan
+ 
+● 3: virbr0
+       Link File: /lib/systemd/network/99-default.link
+    Network File: n/a
+            Type: ether
+           State: no-carrier (unmanaged)
+          Driver: bridge
+      HW Address: 52:54:00:2d:f4:2a
+         Address: 192.168.122.1
+ 
+● 4: virbr0-nic
+       Link File: /lib/systemd/network/99-default.link
+    Network File: n/a
+            Type: ether
+           State: off (unmanaged)
+          Driver: tun
+      HW Address: 52:54:00:2d:f4:2a
+In the above output we can see that the host has an Ethernet network connection established via a device named eno1 and the default bridge interface named virbr0 which provides access to the NAT-based virtual network to which KVM guest systems are connected by default. The output also lists the loopback interface (lo).
+
+1.3  Creating a Netplan Network Bridge
+The creation of a network bridge on an Ubuntu system using Netplan involves the addition of an entry to the /etc/netplan/01-netcfg.yaml or /etc/netplan/00-installer-config.yaml file. Using your preferred editor, open the file and add a bridges entry beneath the current content as follows (replacing eno1 with the connection name on your system):
+
+network:
+  ethernets:
+    eno1:
+      dhcp4: true
+  version: 2
+​
+  bridges:
+    br0:
+      interfaces: [eno1]
+      dhcp4: yes
+Note that the bridges: line must be indented by two spaces. Without this indentation, the netplan tool will fail with the following error when run:
+
+Error in network definition: unknown key ‘bridges’
+Once the changes have been made, apply them using the following command:
+
+# netplan apply
+Note that this command will switch the network from the current connection to the bridge resulting in the system being assigned a different IP address by the DHCP server. If you are connected via a remote SSH session this will cause you to lose contact with the server. If you would prefer to assign a static IP address to the bridge connection, modify the bridge declaration as follows (making sure to turn off DHCP for both IPv4 and IPv6):
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eno1:
+      dhcp4: no
+      dhcp6: no
+ 
+  bridges:
+    br0:
+      interfaces: [eno1]
+      dhcp4: no
+      addresses: [192.168.86.230/24]
+      gateway4: 192.168.86.1
+      nameservers:
+        addresses: [192.168.86.1]
+After running the netplan apply command, check that the bridge is now configured and ready for use within KVM virtual machines:
+
+# networkctl status -a
+● 1: lo
+       Link File: /lib/systemd/network/99-default.link
+    Network File: n/a
+            Type: loopback
+           State: carrier (unmanaged)
+         Address: 127.0.0.1
+                  ::1
+ 
+● 2: eno1
+       Link File: /lib/systemd/network/99-default.link
+    Network File: /run/systemd/network/10-netplan-eno1.network
+            Type: ether
+           State: carrier (configured)
+            Path: pci-0000:00:19.0
+          Driver: e1000e
+          Vendor: Intel Corporation
+           Model: 82579LM Gigabit Network Connection (Lewisville)
+      HW Address: fc:4d:d4:3b:e4:0f (Universal Global Scientific Industrial Co.,
+.
+.
+● 5: br0
+       Link File: /lib/systemd/network/99-default.link
+    Network File: /run/systemd/network/10-netplan-br0.network
+            Type: ether
+           State: routable (configured)
+          Driver: bridge
+      HW Address: b6:56:ed:e9:d5:75
+         Address: 192.168.86.230
+                  fe80::b456:edff:fee9:d575
+         Gateway: 192.168.86.1
+             DNS: 192.168.86.1
+1.4  Getting the Current Network Manager Settings
+A network bridge can be created using the NetworkManager command-line interface tool (nmcli). The NetworkManager is installed and enabled by default on Ubuntu desktop systems and is responsible for detecting and connecting to network devices in addition to providing an interface for managing networking configurations.
+
+A list of current network connections on the host system can be displayed as follows:
+
+ con show
+# nmcli con show
+NAME                UUID                                  TYPE      DEVICE
+Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  eno1
+virbr0              59bf4111-e0d2-4e6c-b8d4-cb70fa6d695e  bridge    virbr0
+In the above output we can see that the host has an Ethernet network connection established via a device named eno1 and the default bridge interface named virbr0 which provides access to the NAT-based virtual network to which KVM guest systems are connected by default.
+
+Similarly, the following command can be used to identify the devices (both virtual and physical) that are currently configured on the system:
+
+# nmcli device show
+GENERAL.DEVICE:                         eno1
+GENERAL.TYPE:                           ethernet
+GENERAL.HWADDR:                         FC:4D:D4:3B:E4:0F
+GENERAL.MTU:                            1500
+GENERAL.STATE:                          100 (connected)
+GENERAL.CONNECTION:                     Wired connection 1
+GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/1
+WIRED-PROPERTIES.CARRIER:               on
+IP4.ADDRESS[1]:                         192.168.86.207/24
+IP4.GATEWAY:                            192.168.86.1
+IP4.ROUTE[1]:                           dst = 0.0.0.0/0, nh = 192.168.86.1, mt = 100
+IP4.ROUTE[2]:                           dst = 192.168.86.0/24, nh = 0.0.0.0, mt = 100
+IP4.ROUTE[3]:                           dst = 169.254.0.0/16, nh = 0.0.0.0, mt = 1000
+IP4.DNS[1]:                             192.168.86.1
+IP4.DOMAIN[1]:                          lan
+IP6.ADDRESS[1]:                         fe80::d3e2:c3dc:b69b:cd30/64
+IP6.GATEWAY:                            --
+IP6.ROUTE[1]:                           dst = ff00::/8, nh = ::, mt = 256, table=255
+IP6.ROUTE[2]:                           dst = fe80::/64, nh = ::, mt = 256
+IP6.ROUTE[3]:                           dst = fe80::/64, nh = ::, mt = 100
+ 
+GENERAL.DEVICE:                         virbr0
+GENERAL.TYPE:                           bridge
+GENERAL.HWADDR:                         52:54:00:9D:19:E5
+GENERAL.MTU:                            1500
+GENERAL.STATE:                          100 (connected)
+GENERAL.CONNECTION:                     virbr0
+GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/2
+IP4.ADDRESS[1]:                         192.168.122.1/24
+IP4.GATEWAY:                            --
+IP4.ROUTE[1]:                           dst = 192.168.122.0/24, nh = 0.0.0.0, mt = 0
+IP6.GATEWAY:                            --
+.
+.
+The above partial output indicates that the host system on which the command was executed contains a physical Ethernet device (eno1) and the virtual bridge (virbr0).
+
+The virsh command may also be used to list the virtual networks currently configured on the system:
+
+# virsh net-list --all
+ Name                 State      Autostart     Persistent
+----------------------------------------------------------
+ default              active     yes           yes
+At this point, the only virtual network present is the default network provided by virbr0. Now that some basic information about the current network configuration has been obtained, the next step is to create a network bridge connected to the physical network device (in this case the device named eno1).
+
+1.5  Creating a Network Manager Bridge from the Command-Line
+The first step in creating the network bridge is to add a new connection to the network configuration. This can be achieved using the nmcli tool, specifying that the connection is to be a bridge and providing names for both the connection and the interface:
+
+# nmcli con add ifname br0 type bridge con-name br0
+# nmcli con add ifname br0 type bridge con-name br0
+Once the connection has been added, a bridge slave interface needs to be established between physical device eno1 (the slave) and the bridge connection br0 (the master) as follows:
+
+# nmcli con add type bridge-slave ifname eno1 master br0
+# nmcli con add type bridge-slave ifname eno1 master br0
+At this point, the NetworkManager connection list should read as follows:
+
+# nmcli con show
+NAME                UUID                                  TYPE      DEVICE 
+Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  eno1   
+br0                 8416607e-c6c1-4abb-8583-1661689b95a9  bridge    br0    
+virbr0              dffab88d-1588-4e69-8d1c-2148090aa5ee  bridge    virbr0 
+bridge-slave-eno1   43383092-6434-448f-b735-0cbea39eb38f  ethernet  --
+The next step is to start up the bridge interface. If the steps to configure the bridge are being performed over a network connection (i.e. via SSH) this step can be problematic because the current eno1 connection must be closed down before the bridge connection can be brought up. This means that the current connection will be lost before the bridge connection can be enabled to replace it, potentially leaving the remote host unreachable.
+
+If you are accessing the host system remotely this problem can be avoided by creating a shell script to perform the network changes. This will ensure that the bridge interface is enabled after the eno1 interface is brought down, allowing you to reconnect to the host after the changes are complete. Begin by creating a shell script file named bridge.sh containing the following commands:
+
+#!/bin/bash
+nmcli con down "Wired connection 1"
+nmcli con up br0
+#!/bin/bash
+nmcli con down "Wired connection 1"
+nmcli con up br0
+Once the script has been created, execute it as follows:
+
+# sh ./bridge.sh
+When the script executes, the connection will be lost when the eno1 connection is brought down. After waiting a few seconds, however, it should be possible to reconnect to the host once the br0 connection has been activated.
+
+If you are working locally on the host, the two nmcli commands can be run within a terminal window without any risk of losing connectivity:
+
+nmcli con up br0
+# nmcli con down "Wired connection 1"
+# nmcli con up br0
+Once the bridge is up and running, the connection list should now include both the bridge and the bridge-slave connections:
+
+# nmcli con show
+NAME                UUID                                  TYPE      DEVICE 
+br0                 8416607e-c6c1-4abb-8583-1661689b95a9  bridge    br0    
+bridge-slave-eno1   43383092-6434-448f-b735-0cbea39eb38f  ethernet  eno1   
+virbr0              dffab88d-1588-4e69-8d1c-2148090aa5ee  bridge    virbr0 
+Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
+Note that the Wired Connection 1 connection is still listed but is actually no longer active. To exclude inactive connections from the list, simply use the –active flag when requesting the list:
+
+# nmcli con show --active
+NAME               UUID                                  TYPE      DEVICE 
+br0                8416607e-c6c1-4abb-8583-1661689b95a9  bridge    br0    
+bridge-slave-eno1  43383092-6434-448f-b735-0cbea39eb38f  ethernet  eno1   
+virbr0             dffab88d-1588-4e69-8d1c-2148090aa5ee  bridge    virbr0
+
+
+1.6  Declaring the KVM Bridged Network
+At this point, the bridge connection is present on the system but is not visible to the KVM environment. Running the virsh command should still list the default network as being the only available network option:
+
+➜  ~ virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ br0       active   yes         yes
+ default   active   yes         yes
+
+Before the bridge can be used by a virtual machine it must be declared and added to the KVM network configuration. This involves the creation of a definition file and, once again, the use of the virsh command-line tool.
+
+Begin by creating a definition file for the bridge network named bridge2.xml that reads as follows:
+<network>
+  <name>br1</name>
+  <forward mode="bridge"/>
+  <bridge name="br1" />
+</network>
+
+Next, use the file to define the new network:
+
+Once the network has been defined, start it and, if required, configure it to autostart each time the system reboots:
+sudo virsh net-start br1
+
+Once again list the networks to verify that the bridge network is now accessible within the KVM environment:
+  ~ virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ br0       active   yes         yes 
+ br1       active   yes         yes 
+ default   active   yes         yes 
+
+
+#172.16.62.72
+sudo vim /etc/fstab
+# /etc/fstab: static file system information.    
+#    
+# Use 'blkid' to print the universally unique identifier for a    
+# device; this may be used with UUID= as a more robust way to name devices    
+# that works even if disks are added and removed. See fstab(5).    
+#    
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>    
+# / was on /dev/sdb5 during installation    
+UUID=8b4f2da4-2e74-4113-9cfc-79173428a88a /               ext4    errors=remount-ro 0       1    
+# /boot/efi was on /dev/sdb1 during installation    
+UUID=DEA2-80A0  /boot/efi       vfat    umask=0077      0       1    
+#disable swapfile is desireable    
+#/swapfile                                 none            swap    sw              0       0    
+UUID=0370822b-7612-410f-9973-4ce96aedfd80 /home            ext4    errors=remount-ro 0       1 
+
+sudo umount /dev/sda1
+sudo mount -a
+
+Feb 21, 2021
+Trouble shooting mic
+cat /proc/asound/card*/codec* | grep Codec
+
+cat /proc/asound/card*/codec* | grep Codec
+Codec: Realtek ALCS1200A
+Codec: Intel Kabylake HDMI
+
+sudo apt install alsa-tools-gui
+hdajackretask
+
+
